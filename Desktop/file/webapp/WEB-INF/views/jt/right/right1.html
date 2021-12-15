@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+       	<hy-filllayout rows="*,40" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="false"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="组织名称"  name="groupName" :rules="{ required: true}" :maxlength="255"  ></hy-forminput> 
+						<hy-forminput label="编号"  name="groupCode" :maxlength="32"  ></hy-forminput> 
+						<hy-formselect label="级别" clearable name="groupLevel" dropname="ORG.GROUP_LEVEL"></hy-formselect>
+						<hy-formselect label="部门类别" clearable name="groupType" dropname="HR.GROUP_LB"></hy-formselect>
+						<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="255" ></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+			<hy-fillarea >
+				<div style="text-align:center">
+					<hy-button text="保存" @click="save"></hy-button>
+					<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+				</div>	
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var upPartyId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				orgUuid : "",
+				parentPartyId : "",
+				readonly:true 
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+		    	upPartyId=response.getParameter("parentPartyId");
+			},
+			methods : {	
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/right/right1/save',
+								data : dataArr,
+								params:{"upPartyId":upPartyId},
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

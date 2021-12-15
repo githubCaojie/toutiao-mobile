@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="200,*">
+			<hy-fillarea>
+				 <hy-tree  id="firstTree" @checkchange="treeClick"  :checkstrictly="true"
+				  valueprovider="com.haiyisoft.hr.org.tree.Right1OrgTree"  v-model="code" :multiple="true" ></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea>
+				<hy-table border name="dataWrap"
+					id="ajaxgrid" showpage :readonly="false" height="90%"
+					@queryfunc="" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+					<hy-table-column title="组织名称"  name="groupName" align="center"	width="250"  ></hy-table-column> 
+				</hy-table> 
+				<hy-row>
+					<hy-col :span="10"> </hy-col>
+					<hy-col :span="3"  > <hy-button text="确定" @click="ok()" ></hy-button> </hy-col>
+				</hy-row>
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				code : null
+			},
+			mounted : function(){
+			},
+			methods : {				
+				treeClick : function(node, checked){
+					if (checked) {
+						var beanArray = firstTree.getParentCascade(node.code);
+						if (beanArray == null) {
+							return;
+						}
+						/* for ( var i = 0; i < beanArray.length; i++) {
+							if (firstTree.isChecked(beanArray[i].code)) {
+								$.alert("父级节点【" + beanArray[i].label + "】被选中，不允许选该节点！");
+								firstTree.cancelCheckedNodes(node.code);
+								return;
+							}
+						} */
+						beanArray = firstTree.getChildrenCascade(node.code);
+						/* for ( var i = 0; i < beanArray.length; i++) {
+							if (firstTree.isChecked(beanArray[i].code)) {
+								$.alert("子级节点【" + beanArray[i].label + "】被选中，不允许选该节点！");
+								firstTree.cancelCheckedNodes(node.code);
+								return;
+							}
+						} */
+						// add
+						vm.addRecord(node);
+					} else {
+						// remove
+						vm.delRecord(node);
+					}
+					
+				},
+				ok : function(){
+					var partyIds = "";
+					var groupNames = "";
+					var records = ajaxgrid.getAllRecords();
+					if (records.length > 0) {
+						for ( var i = 0; i < records.length; i++) {
+							 partyIds+=','+records[i].get("partyId");
+							 groupNames+=','+records[i].get("groupName");
+						}
+						 if(records.length>=1){
+							 partyIds = partyIds.substring(1);
+							 groupNames = groupNames.substring(1);
+						 }
+					}
+					if (vm.busiUuid!= '') {
+						$.request({
+							url : $$pageContextPath + 'jt/right/selectOrg/save',
+							params : {"busiUuid" : vm.busiUuid,"relaType":vm.relaType,"partyIdsStr":partyIds},
+							success : function(){
+								$.close({
+									"partyIds" : partyIds,
+									"groupNames" : groupNames
+								});
+							}
+						});
+						
+					} else
+						$.close({
+							"partyIds" : partyIds,
+							"groupNames" : groupNames
+						});
+						
+				},
+				addRecord : function(treeBean) {
+					var record = new HyRecord();
+					record.set("partyId", treeBean.code);
+					record.set("groupName", treeBean.label);
+					ajaxgrid.addRecord(record);
+				},
+				delRecord : function(treeBean) {
+					var records = ajaxgrid.getAllRecords();
+					for ( var i = 0; i < records.length; i++) {
+						if (records[i].get("partyId") == treeBean.code) {
+							ajaxgrid.delRecord(records[i]);
+						}
+					}
+				}
+			}
+			
+		});
+		
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/message/message",
+    "pages/application/application",
+    "pages/address/address",
+    "pages/my/my"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#808e99",
+    "selectedColor": "#003a7c",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/message/message",
+        "iconPath": "static/image/tabBar-message-icon.png",
+        "selectedIconPath": "static/image/tabBar-message-icon.png",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/application/application",
+        "iconPath": "static/image/tabBar-application-icon.png",
+        "selectedIconPath": "static/image/tabBar-application-icon.png",
+        "text": "应用"
+      },
+      {
+        "pagePath": "pages/address/address",
+        "iconPath": "static/image/tabBar-address-icon.png",
+        "selectedIconPath": "static/image/tabBar-address-icon.png",
+        "text": "通讯录"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "iconPath": "static/image/tabBar-my-icon.png",
+        "selectedIconPath": "static/image/tabBar-my-icon.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap43.json"
+}

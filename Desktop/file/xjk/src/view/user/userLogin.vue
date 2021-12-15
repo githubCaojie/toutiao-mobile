@@ -11,26 +11,17 @@
             ref="ruleForm"
             label-width="0"
           >
+          
             <div class="title">系统用户登录</div>
-            <el-form-item class="form-item" prop="name">
+            <el-form-item class="form-item" prop="mobile">
               <p class="img icon"><el-image :src="require('../../assets/img/login/user_icon.png')"/></p>
               <el-input
                 class="form-input"
                 type="text"
-                ref="name"
-                v-model="ruleForm.name"
-                placeholder="请输入用户名"
-                @keyup.enter.native="submitForm('ruleForm')"
-              ></el-input>
-            </el-form-item>
-            <el-form-item class="form-item" prop="pass">
-              <p class="img icon"><el-image :src="require('../../assets/img/login/passwrod_icon.png')"/></p>
-              <el-input
-                class="form-input"
-                type="password"
-                ref="pass"
-                v-model="ruleForm.pass"
-                placeholder="请输入密码"
+                ref="mobile"
+                v-model="ruleForm.mobile"
+                placeholder="请输入手机号"
+                :validate-event="false"
                 @keyup.enter.native="submitForm('ruleForm')"
               ></el-input>
             </el-form-item>
@@ -42,14 +33,16 @@
                 ref="code"
                 v-model="ruleForm.code"
                 placeholder="请输入验证码"
+                :validate-event="false"
                 @keyup.enter.native="submitForm('ruleForm')"
               >
                 <template slot="append">
-                  <el-image class="form-item-code" :src="require('../../assets/img/login/validateCode.png')"/>
+                  <el-button v-show="!ruleForm.codeViewShow" class="code-btn" @click="getCodehandler">获取验证码</el-button>
+                  <el-button disabled v-show="ruleForm.codeViewShow" class="code-btn">{{ruleForm.codeTime}}s</el-button>
                 </template>
               </el-input>
             </el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+            <el-button class="loginSubmit" type="primary" @click="submitForm('ruleForm')" :loading="ruleForm.isLoginLoading">{{ruleForm.isLoginLoading == false ? '登录' : '登录中'}}</el-button>
           </el-form>
         </div>
       </div>
@@ -62,76 +55,99 @@
 export default {
   name: 'login',
   data() {
-    var validateName = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入账号!'));
-      }else {
-        callback()
-      }
-    };
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码!'));
-      }else {
-        callback()
-      }
-    };
-    var validateCode = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入验证码'))
-      }else if(value !== this.ruleForm.correctCode) {
-        callback(new Error('请输入正确的验证码'))
-      }else {
-        callback()
-      }
-    }
     return {
       ruleForm: {
-        name: '',
-        pass: '',
+        mobile: '',
         code: '',
-        correctCode: 'a44t'
+        correctCode: '',
+        codeTime: 60,
+        codeViewShow: false,
+        getCodeNum: 0,
+        isLoginLoading: false
       },
       rules: {
-        name: [
-          { validator: validateName, trigger: 'blur' }
-        ],
-        pass: [
-          { validator: validatePass, trigger: 'blur' }
+        mobile: [
+          { required: true, message: '请输入手机号' },
+          { min: 11, message: '手机号长度不足' },
+          { required: true, pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' },
         ],
         code: [
-          { validator: validateCode, trigger: 'blur' }
+          { required: true, message: '请输入验证码' }
         ]
       },
-      visible: false
     };
   },
   methods: {
-    // 点击登录
-    submitForm(formName) {
-      console.log(this.$refs[formName])
-      this.$refs[formName].validate((valid) => {
-        console.log(valid)
-        if (valid) {
-          this.login(this.ruleForm)
-        } else {
-          return console.log('error submit!!');
+    // 获取验证码
+    getCodehandler() {
+      this.$refs.ruleForm.validateField('mobile', err => {
+        if(!err) {
+          let params = {
+            mobile: this.ruleForm.mobile,
+          }
+          // 判断用户是否存在
+          this.request.post(this.api.hasUser, params).then(res => {
+            if(res.status == 200) {
+              // 验证码接口以及处理
+              this.request.post(this.api.getCode, params).then(res => {
+                if(res.status == 200) {
+                  this.ruleForm.codeViewShow = true
+                  this.ruleForm.getCodeNum ++
+                  // 验证码计时
+                  this.timer = setInterval(() => {
+                    this.ruleForm.codeTime --
+                    if(this.ruleForm.codeTime === 0){
+                      clearInterval(this.timer)
+                      this.ruleForm.codeViewShow = false
+                      this.ruleForm.codeTime = 60
+                    }
+                  },1000)
+                }else {
+                  this.$message(res.message)
+                }
+              })
+            }else {
+              this.$message(res.message)
+            }
+          })
         }
-      });
-    },
-    // 登录接口
-    login(ruleForm) {
-      console.log(ruleForm)
-      this.$router.push({
-        name: 'home'
       })
-      this.$message({
-        type: 'success',
-        message: '登录成功!',
-      });
-      this.ruleForm.name = ''
-      this.ruleForm.pass = ''
-      this.ruleForm.code = ''
+    },
+    // 登录
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 登录校验接口与处理
+          let params = {
+            mobile: this.ruleForm.mobile,
+            code: this.ruleForm.code
+          }
+          this.ruleForm.isLoginLoading = true
+          this.request.post(this.api.login, params)
+          .then(res => {
+            if(res.status == 200) {
+              let userInfo = res.data.userInfo
+              userInfo.loginId = res.data.loginId
+              let token = res.data.token
+              // 将userInfo保存到Vuex
+              this.$store.commit('handleUserInfo', userInfo)
+              this.$store.commit('handleToken', token)
+              this.$message({
+                type: 'success',
+                message: '登录成功!',
+              })
+              this.ruleForm.isLoginLoading = false
+              // 跳转至门户首页
+              this.$router.push({
+                name: 'home'
+              })
+            }else {
+              this.$message.error('错误：' + res.message)
+              this.ruleForm.isLoginLoading = false
+            }
+          })
+        }
+      })
     }
   }
   
@@ -153,6 +169,7 @@ export default {
 #height() {
   fromheight: 44px;
 }
+@max768: ~"(max-width: 768px)";
 .login {
   height: 100vh;
   background: url('../../assets/img/login/login_bg.png') center center / 100% 100% no-repeat;
@@ -160,11 +177,16 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    padding: unset;
     .content {
       display: flex;
       flex-direction: column;
       width: #width[fromwidth];
       margin: 0 10%;
+      @media @max768 {
+        margin: 0 auto;
+        width: 100vw;
+      }
       .login-form {
         padding: 20px;
         margin-top: 20px;
@@ -185,6 +207,10 @@ export default {
             margin: 0 auto 24px;
             background-color: #fff;
             border: 1px solid #dee1e3;
+            @media @max768 {
+              width: 96%;
+              margin: 0 2% 24px;
+            }
             .el-form-item__content {
               display: flex;
               align-items: center;
@@ -197,6 +223,7 @@ export default {
                 }
               }
               .form-input {
+                width: calc(100% - 38px);
                 .el-input__inner {
                   border: unset;
                   height: #height[fromheight];
@@ -205,16 +232,26 @@ export default {
                 }
                 .el-input-group__append {
                   padding: 0;
+                  border: unset;
                   .form-item-code {
                     width: #width[codewidth];
                     height: #height[fromheight];
                     display: block;
                   }
+                  .code-btn {
+                    margin: 0;
+                    border: unset;
+                  }
                 }
+              }
+              .el-form-item__error {
+                text-indent: 38px;
+                padding-top: 0;
+                line-height: 26px;
               }
             }
           }
-          .el-button {
+          .loginSubmit {
             display: block;
             width: #width[fromitemwidth];
             height: #height[fromheight];
@@ -223,6 +260,10 @@ export default {
             border: unset;
             color: #color[button];
             border-radius: unset;
+            @media @max768 {
+              width: 96%;
+              margin: 0 auto;
+            }
           }
         }
       }
@@ -230,8 +271,8 @@ export default {
   }
   .bottom {
     .container {
-      font-size: var(--the-body-font-size);
-      color: var(--white-color);
+      font-size: 14px;
+      color: #ffffff;
       height: 100%;
       display: flex;
       justify-content: center;

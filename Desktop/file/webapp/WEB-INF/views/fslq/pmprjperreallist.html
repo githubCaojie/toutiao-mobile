@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件" >
+				<table>
+	              <tr>
+	                <td align="right" width="60px">姓名</td>
+	                <td width="120px" align="left"><hy-input name="personName" :upload="true"></hy-input> </td>
+	                <td align="right" width="60px">手机号</td>
+	                <td width="120px" align="left"><hy-input name="linkmenPhone" :upload="true"></hy-input> </td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				<hy-button text="添加" @click="add"></hy-button>	
+				<hy-button text="删除" @click="remove"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column title="所属单位"  name="perType" align="center" type="drop" :items="perTypeList" width="150"></hy-table-column> 
+						<hy-table-column title="人员名称"  name="person.personName" align="center"	width="150"></hy-table-column> 
+						<hy-table-column title="单位名称"  name="person.orgName" align="center"	width="210"></hy-table-column> 
+						<hy-table-column title="手机号"  name="person.linkmenPhone" align="center"	width="180"></hy-table-column> 
+						<hy-table-column title="角色"  name="roleCodes"  dropname="RIT.ROLE_LIST" multiple align="center" width="350" type="drop" ></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var infoId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				add : function(){
+					$.popWindow({
+						url: $$pageContextPath + 'pmPrjPerReal/add?prjPartyId='+vm.prjPartyId+"&realType="+vm.realType,
+						title: "添加",	
+						callback: vm.onsavecomplete,
+						css:{width:1000,height:600},
+						button:0,
+						isRunCallback : true
+					});
+				},
+				remove : function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'pmPrjPerReal/remove',this.query);
+				},
+				onsavecomplete : function(response){
+					vm.query();
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pmPrjPerReal/list',
+						params : {
+							prjPartyId : vm.prjPartyId,
+							realType : vm.realType
+						},
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+			}
+		});
+	</script>
+</body>
+</html>

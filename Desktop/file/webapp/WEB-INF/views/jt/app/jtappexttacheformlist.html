@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*">
+			<hy-fillarea>
+				<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false">
+					<hy-fillarea align="left">
+			      		<div style="float:left">
+							<hy-button text="分组" @click="group" ></hy-button>
+							<hy-button text="环节数据模型" @click="extField" ></hy-button>
+							<hy-button text="添加" @click="add" ></hy-button>
+							<hy-button text="删除" @click="remove" ></hy-button>
+							<hy-button text="保存" @click="save" ></hy-button>
+				      		</div>
+					</hy-fillarea>
+					
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" :showpage="false" height="100%" :readonly="false"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="字段名称"  name="jtExtField.fieldName" width="150" align="center" readonly></hy-table-column>
+								<hy-table-column title="分组" name="groupId" type="drop" :items="groupDrop" align="center" width="100" ></hy-table-column>
+								<hy-table-column title="权限" name="rightFlag" dropname="JT.RIGHT_FLAG" type="drop"  align="center"  width="100"></hy-table-column>
+								<hy-table-column title="排序号"  name="orderSn" align="center" width="60" ></hy-table-column> 
+								<hy-table-column title="备注" name="remark" align="center" maxlength="32"  width="150"></hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			tacheId:'',
+			formId:'',
+			groupDrop : []
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {		
+			extField : function(){
+				if(!vm.tacheId){
+					return setRM("alert","请选择环节！");
+				}
+				$.popWindow({
+					url: $$pageContextPath + 'jt/jtExtField/?editFlag=Y&tableId='+vm.tacheId,
+					title: "扩展属性",	
+					callback: vm.query,
+					css:{width:1400,height:650,type:1},
+					button:0,
+					isRunCallback :true
+				});
+			},
+			group : function(){
+				if(!vm.tacheId){
+					return setRM("alert","请选择环节！");
+				}
+				$.popWindow({
+					url: $$pageContextPath + 'jt/jtExtFieldGroup/?editFlag=Y&tableId='+vm.tacheId,
+					title: "扩展属性",
+					callback: function() {
+						window.location.reload();
+					},
+					css:{width:800,height:400,type:1},
+					button:0,
+					isRunCallback :true
+				});
+			},
+			add : function(){
+				if(!vm.tacheId){
+					return setRM("alert","请选择环节！");
+				}
+				$.popWindow({
+					url: $$pageContextPath + '/jt/jtExtField/selectApp?tableId='+vm.tacheId+"&formId="+vm.formId,
+					title: "添加",
+					callback: vm.addComp,
+					css:{width:1400,height:650,type:1},
+					button:0,
+					isRunCallback :true
+				});
+			},
+			addComp : function(data){
+				if(!data){
+					return ;
+				}
+				$.request({
+					url : $$pageContextPath + 'jt/app/jtAppExtTacheform/add',
+					params : {
+						"tacheId":vm.tacheId,
+						"fields":data
+					},
+					success : function(response){
+						setRM(vm.query());
+					}
+				});	
+			},
+			query : function(){
+				if(!vm.tacheId){
+					return setRM("alert","请选择环节！");
+				}
+				var gridData = ajaxgrid.collectData(true) ;
+				var dataArr = [];
+				dataArr.push(gridData) ;
+				$.request({
+					url : $$pageContextPath + 'jt/app/jtAppExtTacheform/list?tacheId='+vm.tacheId,
+					data : dataArr,
+					success : function(response){
+						ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+					}
+				});					
+			},
+			save:function(){
+				if(ajaxgrid.isValid()){
+					var gridData = ajaxgrid.collectData(true, "update");
+					var dataArr = [];
+					dataArr.push(gridData);
+					$.request({
+						url : $$pageContextPath + 'jt/app/jtAppExtTacheform/save',
+						data : dataArr,
+						success : function(response){
+							setRM(vm.query());
+						}
+					});
+				}
+			},	
+			remove : function(){
+				dataDel(ajaxgrid,$$pageContextPath + 'jt/app/jtAppExtTacheform/remove',this.query);
+			},	
+		}
+	});
+	</script>
+</body>
+</html>

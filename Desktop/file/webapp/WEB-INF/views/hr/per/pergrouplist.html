@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea title="查询条件">
+				 <table>
+		              <tr> 
+						<td align="right" width="80">组代码</td>
+						<td width="120" align="left"><hy-input name="dataWrap.query.groupCode_LIKE" :upload="true"/></td>
+						<td align="right" width="80">组名称</td>
+						<td width="120" align="left"><hy-input name="dataWrap.query.groupName_LIKE" :upload="true"/></td>
+						<td align="right" width="80">管理单位</td>
+						<td width="120" align="left">
+							<hy-droptree name="dataWrap.query.busiCode" :highlight-current="true"  :rootvisible="false"
+								valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree" :upload="true" />
+							<!-- <hy-droptree name="dataWrap.query.busiCode" :upload="true" :rootvisible="false"
+								:highlight-current="true" default-expand-all  valueprovider="com.haiyisoft.jt.right.tree.Right1Tree"/> -->
+						</td>
+						<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+		              <tr/>
+		            </table>
+			</hy-fillarea> 
+			
+			<hy-fillarea align="left">
+	      		<div style="float:left">
+					<hy-button text="添加" @click="add" :pkain="true"></hy-button>
+					<hy-button text="删除" @click="remove" :pkain="true"></hy-button>
+		      		</div>
+			</hy-fillarea>
+			
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+					id="ajaxgrid" showpage height="100%" :readonly="true"
+					@queryfunc="query" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="60" type="index" />
+					<hy-table-column title="多选" align="center" type="selection" /> 
+				    <hy-table-column title="操作" width="100" align="center">
+				      <template scope="scope">
+				     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+				     	 <a href="javascript:void(0)" @click="person(scope.row)">人员</a>&nbsp;
+				      </template>
+				    </hy-table-column>
+					<hy-table-column title="组代码" name="groupCode" align="center" width="150" ></hy-table-column>
+					<hy-table-column title="组名称" name="groupName" align="center" width="200" ></hy-table-column>
+					<hy-table-column title="负责人" name="leader" align="center" width="100" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column>
+					<hy-table-column title="联系电话" name="leadTel" align="center" width="150" ></hy-table-column>
+					<hy-table-column type="drop" name="busiCode" title="所属单位" align="center" width="200" dropname="ORG.ORG_PARTY_NAME"/>
+					<hy-table-column title="备注" name="remark" align="center" width="250" ></hy-table-column>
+				</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'hr/per/perGroup/query',
+						data : dataArr,
+						params:{groupClass:vm.groupClass},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'hr/per/perGroup/queryOne?editFlag=N&uuid='+row.uuid, "详细", vm.onsavecomplete, null, 600, 350, 0);
+				},
+				onsavecomplete : function(response,b,c){
+					vm.query();
+				},
+				add : function(){
+					$.showModalDialog($$pageContextPath + 'hr/per/perGroup/queryOne?editFlag=Y&groupClass='+vm.groupClass, "添加", vm.onsavecomplete, null, 600, 350, 0);
+				},
+				remove :function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'hr/per/perGroup/remove',vm.query);
+				},
+				person : function(row){
+// 					if(vm.editRight == "Y"){
+						$.showModalDialog($$pageContextPath + 'jt/right/selectPer/mulper?relaType='
+								+vm.relaType+"&busiUuid="+row.uuid, "小组人员", null, null, 1000, 500, 0);
+// 					}else{
+// 						$.showModalDialog('glyh/yh/yhPrjFile/showPers?editFlag=N&uuid='+uuid, 
+// 								"管理人员", null, null, 600, 400, 0);
+// 					}
+				}
+			}
+		});
+	</script>
+</body>
+</html>

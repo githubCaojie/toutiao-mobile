@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hytreetable.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*">
+			<hy-fillarea>
+			<hy-tree id="treeview"  v-model="slTreeCode"  dataprovider="com.haiyisoft.glyh.yh.tree.YhCompanyTree"
+		  			:expandlevel='2' :dynamic="false" @nodedblclick="treeClick" :rootvisible="false"></hy-tree>
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				slTreeCode : null
+			},
+			mounted : function(){
+				
+			},
+			methods : {				
+				treeClick : function(){
+					var partyId,groupName;
+					var nodeBean = treeview.getSelectedNode();
+					if (nodeBean) {
+						partyId = nodeBean.code;
+						groupName = nodeBean.label;
+					}
+					$.close({
+						"partyId" : partyId,
+						"groupName" : groupName
+					});
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

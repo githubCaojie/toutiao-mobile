@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="300,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+		  		<hy-tree id="treeview" @nodeclick="treeClick" v-model="slTreeCode" :rootcode="menuClass"
+		  			valueprovider="com.haiyisoft.web.tree.WpMenuTree" :dynamic="false"></hy-tree>
+	        </hy-fillarea>
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea  >
+						<table>
+			              <tr>
+			                <td align="right" width="80px">目录名称</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.menuName_LIKE"  :upload="true" ></hy-input> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+						<hy-button text="添加" @click="add"></hy-button>	
+						<hy-button text="删除" @click="remove"></hy-button>	
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="目录代码"  name="menuCode" align="center"	width="100"></hy-table-column> 
+								<hy-table-column title="目录名称"  name="menuName" align="center" width="200" ></hy-table-column> 
+<!-- 								<hy-table-column title="目录url"  name="menuUrl" align="center" width="260"   ></hy-table-column>  -->
+								<hy-table-column title="排序号"  name="orderSn" align="center" width="80"   ></hy-table-column> 
+								<hy-table-column  title="操作"  width="80" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				slTreeCode :"" 
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'wp/wpMenu/queryOne?id='+row.id, "详细", vm.onsavecomplete, null, 1000, 400, 0);
+				},
+				add : function(){
+					if(!vm.slTreeCode){
+						return setRM("alert","请选择类型！");
+					}debugger;
+					$.showModalDialog($$pageContextPath + 'wp/wpMenu/queryOne?upId='+vm.slTreeCode+"&menuClass="+vm.menuClass, "添加", vm.onsavecomplete, null, 1000, 400, 0);
+				},
+				remove : function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'wp/wpMenu/remove',function(){
+						var checked = ajaxgrid.getCheckedRecords();
+						for(var i=0;i<checked.length;i++){
+							treeview.deleteNodeByCode(checked[i].data.id);
+						}
+						vm.query();
+					});
+					
+				},
+				onsavecomplete : function(response){
+					setRM(this.refreshTree);
+				},
+				refreshTree : function(response){
+					if(!!vm.slTreeCode){
+						var treeBean = treeview.getNodeByCode(vm.slTreeCode);
+						treeview.refreshNode(treeBean);
+					}else{
+						treeview.refreshRootNode();
+					}
+					this.query();
+				},
+				treeClick : function(){
+					vm.query();
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'wp/wpMenu/query',
+						data : dataArr,
+						params : {"upId":vm.slTreeCode,"menuClass":vm.menuClass},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>我的待办</title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hytreetable.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%" >
+							<hy-table-column title="序号"  align="center" width="10%" type="index"></hy-table-column>
+							<hy-table-column title="审批内容" name="content" align="center" width="80%"></hy-table-column> 
+					        <hy-table-column title="操作" width="10%" align="center">
+								<template scope="scope">
+									<a href="javascript:void(0)"  @click="openTaskExecInfo(scope.row)" >详情&nbsp;</a>
+								</template>
+							</hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {	
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/curTask/retrieve',
+						data : dataArr,
+						params : { "appType": this.appType,
+							   "appNo" : this.appNo,
+							   "content" : this.content},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				openTaskExecInfo : function(cell){
+					$.popWindow({
+						title:cell.appTypeName+"("+cell.appNo+")",
+						url:$$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + cell.instanceId+"&appTaskId=" +cell.taskId+ "&openMode=1" ,
+						callback:vm.query,
+						button:0,
+						css:{width:window.top.innerWidth,height:window.top.innerHeight,type:1},
+					});
+				},
+				onsavecomplete : function(response){
+					treeTable.refreshTreeGrid();
+				}
+			
+			}
+		});
+	</script>
+</body>
+</html>

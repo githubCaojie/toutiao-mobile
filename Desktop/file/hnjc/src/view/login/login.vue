@@ -2,8 +2,6 @@
   <div class="login">
     <div class="top">
       <p class="img logo"><el-image :src="require('@/assets/img/login/logo.png')"/></p>
-      <div>
-      </div>
     </div>
     <div class="content">
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0" class="demo-ruleForm">
@@ -119,6 +117,8 @@
       right: 18vw;
       top: 50%;
       transform: translateY(-50%);
+      border-radius: 5px;
+      overflow: hidden;
       .title {
         text-align: center;
         color: var(--blue-color);
@@ -190,7 +190,7 @@
   }
   .bottom {
     height: 110px;
-    background: #003A7C;
+    background: #1f3666;
     .container {
       font-size: var(--the-body-font-size);
       color: var(--white-color);

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="220,*">
+			<hy-fillarea>
+				<hy-tree v-model="tacheNo" valueprovider="com.haiyisoft.jt.app.tree.AppTacheTree"  id="tacheNoTree" :expandlevel="2" @nodeclick="query" :rootcode="appType" :rootvisible="true" :onlyselectleaf="true"></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea>
+				<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false">
+					<hy-fillarea align="left">
+			      		<div style="float:left">
+							<hy-button text="添加" @click="add" ></hy-button>
+							<hy-button text="删除" @click="remove" ></hy-button>
+				      		</div>
+					</hy-fillarea>
+					
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" :showpage="false" height="100%" :readonly="true"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+							    <hy-table-column title="操作" width="60" align="center">
+							      <template scope="scope">
+							     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+								<hy-table-column title="环节名称"  name="activityNo":items="activityDrop" type="drop" align="center" width="200" ></hy-table-column> 
+								<hy-table-column title="办理人" name="dealMan" dropname="ORG.PERSON_NAME" type="drop"  align="center"  width="100"/>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			activityDrop : null,
+			tacheNo:''
+		},
+		mounted : function(){
+			this.activityDrop = response.getParameter("activityDrop");
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath +'jt/app/jtAppDealman/query?appType='+vm.appType,
+						data : dataArr,
+						params:{"activityNo":vm.tacheNo},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					if(vm.tacheNo == '')
+						return setRM("alert","请选择环节");
+					var records = ajaxgrid.getAllRecords();
+					if(records.length >= 1)
+						return setRM("alert","只能添加一个人员");
+					$.popWindow({
+						url: $$pageContextPath + 'jt/app/jtAppDealman/pageForm?editFlag=Y&appType='+vm.appType+"&activityNo="+vm.tacheNo,
+						title: "添加",	
+						callback: vm.query,
+						css:{width:900,height:550},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'jt/app/jtAppDealman/pageForm?editFlag=Y&id='+row.id, "详细", vm.onsavecomplete, null, 600, 350, 0);
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'jt/app/jtAppDealman/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				},	
+				onsavecomplete : function(response,b,c){
+					setRM(vm.query());
+				},
+			}
+		});
+	</script>
+</body>
+</html>

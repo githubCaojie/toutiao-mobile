@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				 <hy-form id="myform" name="dataWrap" 
+					label-position="left" :labelwidth="120" 
+					label-suffix="：" :cols="2" size="normal" > 
+					<hy-forminput label="类型名称"  name="taskName" :maxlength="16"   :rules="{ required: true}"></hy-forminput> 
+					<hy-forminput label="服务名"  name="serviceName" :maxlength="16"  ></hy-forminput> 
+					<hy-forminput label="排序号"  name="orderSn" :maxlength="16" ></hy-forminput> 
+					<hy-forminput label="TITLE模板"  name="titleTemplate" type="testarea" :colspan="2" :maxlength="64"  ></hy-forminput> 
+					<hy-forminput label="消息模板"  name="taskTemplate" :maxlength="64"type="textarea" :colspan="2" :rowspan="1"  ></hy-forminput> 
+					<hy-forminput label="明细URL"  name="detailUrl" :maxlength="64" type="textarea" :colspan="2" :rowspan="1" ></hy-forminput> 
+					<hy-forminput label="mobileUrl"  name="mobileUrl" :maxlength="64"type="textarea" :colspan="2" :rowspan="1" ></hy-forminput> 
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				sendPahtData:''
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {		
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/taskType/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-tabs  id="tabpanel"    :showtabbar="true" type="card" v-model="selectedindex" >
+			    <hy-tab-pane id="tab1"  :title="tacheName"  :href="showTacheUrl"> </hy-tab-pane>
+			    <hy-tab-pane id="tab2"  title="流程图展示"  :lazy="true"> 
+			    	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+						<hy-fillarea >
+							<div  id="container" style="height:100%;overflow:auto"> 
+						   <iframe id="svgframe" src="about:blank" height="100%" width="100%"  frameborder="0">
+						   </iframe>
+						  </div> 
+						</hy-fillarea>
+					</hy-filllayout>
+			    </hy-tab-pane>
+			</hy-tabs>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action,appTemplateNo ,appVersionNo,appInstanceId,appBusiUuid,prtActiveNo,openMode,appTaskId,confirmTask;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				selectedindex : 0,
+				tacheName : "",
+				showTacheUrl : "",
+				appAppNo : ""
+			},
+			created : function(){
+				action = response.getParameter("action");
+				prtActiveNo = response.getParameter("prtActiveNo");
+				this.tacheName = response.getParameter("tacheName");
+				this.appAppNo = response.getParameter("appAppNo");
+				if(appTemplateNo == ""){
+					return ;
+				}
+			},
+			mounted : function(){
+				$("#svgframe").attr("src",$$pageContextPath+"FlowSVG?templateNo="+this.appTemplateNo+"&versionNo="+this.appVersionNo + "&instanceId=" + this.appInstanceId);
+			},
+			methods : {				
+			}
+			
+		});
+	</script>
+</body>
+</html>

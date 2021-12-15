@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="false"
+					label-suffix="：" :cols="3" size="normal"> 
+					<hy-forminput label="目录代码"  name="menuCode" :maxlength="16"  :rules="{ required: true}"></hy-forminput> 
+					<hy-forminput label="目录名称"  name="menuName" :maxlength="32"  :rules="{ required: true}"></hy-forminput> 
+					<hy-forminput label="排序号"  name="orderSn" :maxlength="5"  :rules="[{required: true,pattern: /^\d*$/, message: '只能输入数字' ,trigger: 'blur,change'}]"></hy-forminput> 
+<!-- 					<hy-forminput label="目录url"  name="menuUrl" :rowspan="1" :colspan="3" type="textarea" :maxlength="64" ></hy-forminput> -->
+<!-- 					<hy-forminput label="路径"  name="menuPath" :rowspan="2" :colspan="3" type="textarea" :maxlength="128" ></hy-forminput> -->
+					<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="3" type="textarea" :maxlength="128" ></hy-forminput>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script type="text/javascript">
+	</script>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'wp/wpMenu/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

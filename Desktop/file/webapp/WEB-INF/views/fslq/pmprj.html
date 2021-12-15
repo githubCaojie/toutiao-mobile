@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true" :showpadding="false">
+			<hy-fillarea> 
+				<hy-button text="保存" @click="save"></hy-button>
+			</hy-fillarea> 
+			<hy-fillarea> 
+			<hy-form id="myform" name="dataWrap"
+				:labelwidth="150" :readonly="false" :cols="3" size="normal">
+				<hy-formgroup title="基本信息"> 
+					<hy-forminput label="项目编号" name="prjNo" :rules="{ required: true}" :maxlength="64" ></hy-forminput>
+					<hy-forminput label="项目法人" name="legalPer" :maxlength="64"></hy-forminput>
+					<hy-forminput label="所属省份" name="province" :maxlength="32"></hy-forminput>
+					<hy-formselect label="项目所属集团公司" name="beGroup" dropname="PRJ.BE_GROUP" :rules="{ required: true}" :colspan="3" @change="chageDrop"></hy-formselect> 
+					<hy-formselect label="项目所属管理处" name="beSection"  :items="sectionDrop"    :clearable="true" :rules="{ required: true}" :colspan="3"></hy-formselect> 
+					<hy-forminput label="项目名称" name="prjName" :rules="{ required: true}"  :colspan="3" :maxlength="128"></hy-forminput>
+					<hy-forminput label="项目全称" name="prjAllName" :colspan="3" :maxlength="128"></hy-forminput>
+					<hy-forminput label="项目别名" name="prjNickName" :colspan="3" :maxlength="128" :rules="{ required: true}"></hy-forminput>
+					<hy-forminput label="建设单位名称" name="consUnit" :colspan="3" :maxlength="128"></hy-forminput>
+					<hy-forminput label="主要设计单位名称" name="designUnit" :colspan="3" :maxlength="128"></hy-forminput>
+					<hy-forminput label="项目介绍" name="discribe" :colspan="3" :maxlength="250" :rules="{ required: true}"></hy-forminput>
+					<hy-formselect label="是否存在子项目" name="leftFlag" dropname="UEP.YES_OR_NO" :rules="{ required: true}" @change="setLeft"></hy-formselect> 
+					<hy-formselect label="项目类型" name="prjType" dropname="FSLQ.PRJ_TYPE" :rules="{ required: true}"></hy-formselect> 
+					<hy-forminput label="线路走向" name="direction" :maxlength="64" ></hy-forminput>
+					<hy-formselect label="建设标准" name="consStandard"  dropname="FSLQ.CONS_STANDARD" ></hy-formselect> 
+					<hy-formdatepicker label="计划开工日期" name="planBeginDate" ></hy-formdatepicker>
+					<hy-formdatepicker label="计划完工日期" name="planEndDate" ></hy-formdatepicker>
+					<hy-forminput label="工期（月）" name="timeLimit" :maxlength="5" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-formdatepicker label="实际开工日期" name="beginDate" ></hy-formdatepicker>
+					<hy-formdatepicker label="实际完工日期" name="endDate" ></hy-formdatepicker>
+					<hy-formdatepicker label="实际竣工日期" name="relaEndDate"  ></hy-formdatepicker>
+					<hy-forminput label="工程概算额(亿元)" name="budgetCost" :maxlength="25" 
+						:rules="[{pattern: /^\d{0,16}$|^\d{1,16}\.\d{1,8}$/ ,message: '只能为整数部分不大于16位小数部分不大于8位的数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-forminput label="工程预算额(亿元)" name="designCost" :maxlength="25" 
+						:rules="[{pattern: /^\d{0,16}$|^\d{1,16}\.\d{1,8}$/ ,message: '只能为整数部分不大于16位小数部分不大于8位的数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-forminput label="工程结算(元)" name="cost" :maxlength="25" 
+						:rules="[{pattern: /^\d{0,22}$|^\d{1,22}\.\d{1,4}$/ ,message: '只能为整数部分不大于22位小数部分不大于4位的数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-formselect label="状态" name="status" dropname="FSLQ.PRO_STATUS"></hy-formselect>
+					<hy-forminput label="排序号" name="orderSn" :maxlength="4" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+				</hy-formgroup> 
+<!-- 				<hy-formgroup title="详细信息">  -->
+<!-- 					<hy-forminput label="初步设计审批机关" name="preDesignUnit" :maxlength="64" ></hy-forminput> -->
+<!-- 					<hy-forminput label="初步设计审批文号" name="preDesignNo" :maxlength="64"></hy-forminput> -->
+<!-- 					<hy-formdatepicker label="初步设计审批日期" name="preDesignDate" ></hy-formdatepicker> -->
+<!-- 					<hy-forminput label="调整概算审批机关" name="changeDudgetUnit" :maxlength="64" ></hy-forminput> -->
+<!-- 					<hy-forminput label="调整概算审批文号" name="changeDudgetNo" :maxlength="64"></hy-forminput> -->
+<!-- 					<hy-formdatepicker label="调整概算审批日期" name="changeDudgetDate" ></hy-formdatepicker> -->
+<!-- 					<hy-forminput label="项目简介" name="prjDesc" :rowspan="4" :colspan="3" type="textarea" :maxlength="2000"></hy-forminput>  -->
+<!-- 				</hy-formgroup>  -->
+				<hy-formgroup title="详细信息"> 
+					<hy-formselect label="建设等级" name="consLevel"  dropname="FSLQ.CONS_LEVEL" ></hy-formselect> 
+					<hy-forminput label="起点桩号" name="beginMile" :maxlength="25" :rules="{pattern: /^([-+]?\d{0,20})(\.\d{0,5})?$/, message: '只能为整数部分不大于20位小数部分不大于5位的数字'}" :formatter="chgMilestone" ></hy-forminput>
+					<hy-forminput label="止点桩号" name="endMile" :maxlength="25" :rules="{pattern: /^([-+]?\d{0,20})(\.\d{0,5})?$/, message: '只能为整数部分不大于20位小数部分不大于5位的数字'}" :formatter="chgMilestone"></hy-forminput>
+					<hy-forminput label="线路总长（KM）" name="length" :maxlength="15" :rules="[{pattern: /^([-+]?\d{0,10})(\.\d{0,4})?$/,message: '只能为整数部分不大于10位小数部分不大于4位的数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-formselect label="主线" name="mainRoad" dropname="FSLQ.ROAD_NUM" ></hy-formselect> 
+					<hy-formselect label="辅道" name="subRoad" dropname="FSLQ.ROAD_NUM" ></hy-formselect>
+					<hy-formselect label="设计时速" name="sjSpeed" dropname="FSLQ.SJ_SPEED" ></hy-formselect>
+					<hy-forminput label="桥梁数量（座）" name="qlsl" :maxlength="15" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+				</hy-formgroup>
+		   </hy-form> 
+		  </hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				sectionDrop:null
+			},
+			mounted : function() {
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+			},
+			methods : {
+				chageDrop : function(){
+					debugger;
+					var id = myform.getColumnValue("beGroup");
+					$.request({
+						url :$$pageContextPath + 'pmPrj/getDrop',
+						params : {
+							"partid":id
+						},
+						success : function(response) {
+							debugger;
+							vm.sectionDrop = response.getParameter("sectionDrop");
+						}
+					});
+				},
+				save : function() {
+					myform.validate(function(data) {
+						if (data) {
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath + 'pmPrj/save',
+								data : dataArr,
+								params : {
+									"upid":vm.upid
+								},
+								success : function(response) {
+									setRM(function() {
+										$.close(response)
+									})
+								}
+							});
+						}
+					});
+				},
+				chgMilestone:function(obj){
+					return msFormatK(obj);
+				},
+				setLeft : function() {
+					var id = myform.getColumnValue("id");
+					var value = myform.getColumnValue("leftFlag");
+					var upId = myform.getColumnValue("upId");
+					if(id == null || id == "" || id == "undefind") {
+						if(upId != "-1" && value == "Y") {
+							myform.setValue("leftFlag", "N");
+							return setRM("alert", "二级项目只能设置为子项目!");
+						}
+					} else {
+						// 如果为是, 查看是否已经有子节点, 已经有就不让修改
+						if(value == "N") {
+							$.request({
+								url : $$pageContextPath + 'pmPrj/checkSub',
+								params : {
+									"upId" : id
+								},
+								success : function(response) {
+									var flag = response.getParameter("flag");
+									if(flag == "Y") {
+										myform.setValue("leftFlag", "Y");
+										return setRM("alert", "已有子项目, 不允许设置为子项目!");
+									}
+								}
+							})
+						} else {
+							if(upId != "-1") {
+								myform.setValue("leftFlag", "N");
+								return setRM("alert", "二级项目只能设置为子项目!");
+							}
+						}
+					}
+				}
+			}
+		});
+	</script>
+</body>
+</html>

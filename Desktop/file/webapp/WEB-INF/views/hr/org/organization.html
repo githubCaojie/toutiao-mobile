@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="false"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="组织名称"  name="groupName" :rules="{ required: true}" :maxlength="255" ></hy-forminput> 
+						<hy-forminput label="编号"  name="groupCode" :maxlength="64"  :rules="{ required: true}" ></hy-forminput> 
+						<hy-formselect label="级别" clearable name="groupLevel" dropname="ORG.GROUP_LEVEL" :rules="{ required: true}" ></hy-formselect>
+						<hy-forminput label="行政字"  name="groupNameShort" :maxlength="8"  ></hy-forminput> 
+						<hy-formselect label="组织类别" clearable name="groupType" dropname="HR.ORG_TYPE" ></hy-formselect>
+						<hy-forminput label="排序号"  name="sortCode" :maxlength="10" ></hy-forminput> 
+						<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="255" ></hy-forminput>
+					
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var upOrgPartyId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+
+			},
+			mounted : function(){
+				console.log(response.getAjaxDataWrap("dataWrap"));
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				upOrgPartyId = response.getParameter("upOrgPartyId");
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'org/organization/save',
+								data : dataArr,
+								params:{"upOrgPartyId":upOrgPartyId},
+								success : function(response){
+									setRM(function(){$.close(response)});
+								}
+							});	
+						}	
+					});
+				
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

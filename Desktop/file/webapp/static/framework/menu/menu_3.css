@@ -1,0 +1,152 @@
+.hy-menu1-container {
+  display: block;
+  float: left;
+  z-index: 1000;
+}
+.hy-menu1-first-menu-container {
+  /**第一层菜单的容器样式，最外层的div **/
+  overflow: hidden;
+  float: left;
+  height: 38px;
+  line-height: 36px;
+}
+.hy-menu1-first-menu-table {
+  /**第一层菜单的外层table样式 **/
+  cursor: default;
+  /**字体大小**/
+  font-size: 12px;
+  /**内边距**/
+  padding: 0;
+  /**无边框设置**/
+  border: 0;
+  /**设定不换行**/
+  white-space: nowrap;
+  word-break: break-all;
+  border-collapse: collapse;
+  /**设定表格不被撑开**/
+  table-layout: fixed;
+  /**背景图片x方向扩展**/
+  background-repeat: repeat-x;
+  /**显示宽度**/
+  width: 100%;
+  /**水平方向字体显示位置**/
+  align: left;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+.hy-menu1-first-menuitem-td {
+  color: white;
+}
+.hy-menu1-first-menu-mouseover {
+  /**第一级横向菜单的鼠标经过样式*/
+  background: red;
+  color: white;
+}
+.hy-menu1-submenu-container {
+  /**非第一级菜单的边框样式*/
+  border: 1px solid #d3dae5;
+  background: #ffffff;
+}
+.hy-menu1-submenu-mouseover {
+  /**非第一级菜单鼠标经过样式*/
+  background: #3169C5;
+  /**背景颜色**/
+  color: white;
+  /**字体颜色**/
+  cursor: pointer;
+}
+.hy-menu1-submenu-item-first-td {
+  /**非第一级竖直菜单的第一列的背景色*/
+  background: #D2E9FF;
+  width: 25px;
+  align: center;
+}
+.hy-menu1-submenu-indicate-close {
+  /**无子菜单图片指示样式*/
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url("images/mbi_032.gif");
+}
+.hy-menu1-submenu-indicate-open {
+  /**有子菜单图片指示样式*/
+  display: inline-block;
+  width: 19px;
+  height: 16px;
+  background: url("images/ie_folder.gif");
+}
+.hy-menu1-submenu-arrow-td {
+  /**子菜单图标指示列*/
+  width: 20px;
+}
+.hy-menu1-submenu-arrow-img {
+  /**有子菜单图标*/
+  display: inline-block;
+  width: 19px;
+  height: 16px;
+  background: url("images/ie_arrow.gif");
+}
+.hy-menu1-submenu-item {
+  /**非第一级子菜单的菜单项*/
+  height: 30px;
+}
+/**
+ * 	一级菜单左右箭头的样式，牵扯js宽度的计算，不建议修改以下属性
+ */
+.ctrl {
+  width: 10px;
+  height: 18px;
+  overflow: hidden;
+  text-indent: -9999px;
+  background: url(images/tc.gif) no-repeat;
+  cursor: pointer;
+}
+.tablectrl {
+  width: 10px;
+  height: 30px;
+  overflow: hidden;
+  margin-top: 4.75px;
+  text-indent: -9999px;
+  background: url(images/tc.gif) no-repeat;
+  cursor: pointer;
+}
+.goLeft {
+  float: left;
+  background-position: 0 -4px;
+}
+.goRight {
+  float: left;
+  background-position: 100% -4px;
+}
+.leftAct {
+  background-position: 0 -60px;
+}
+.rightAct {
+  background-position: 100% -60px;
+}
+.leftEnd {
+  background-position: 0 -32px;
+}
+.rightEnd {
+  background-position: 100% -32px;
+}
+.goLeft-chrome {
+  float: left;
+  background-position: 0 -1px;
+}
+.goRight-chrome {
+  float: left;
+  background-position: 100% -1px;
+}
+.leftAct-chrome {
+  background-position: 0 -56px;
+}
+.rightAct-chrome {
+  background-position: 100% -56px;
+}
+.leftEnd-chrome {
+  background-position: 0 -29px;
+}
+.rightEnd-chrome {
+  background-position: 100% -29px;
+}

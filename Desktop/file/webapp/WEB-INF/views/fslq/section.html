@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true" :showpadding="false">
+			<hy-fillarea> 
+				<hy-button text="保存" @click="save"></hy-button>
+			</hy-fillarea> 
+			<hy-fillarea> 
+			<hy-form id="myform" name="dataWrap"
+				:labelwidth="150" :readonly="false" :cols="3" size="normal">
+				<hy-formgroup title="基本信息"> 
+					<hy-formselect label="所属集团公司" name=proId dropname="PRJ.BE_GROUP" :rules="{ required: true}" :colspan="3" @change="chageDrop"></hy-formselect> 
+					<hy-forminput label="管理处名称" name="sectionName" :rules="{ required: true}"  :colspan="3" :maxlength="128"></hy-forminput>
+					<hy-forminput label="备注" name="remark" :maxlength="64" :colspan="3"></hy-forminput></hy-formgroup>
+		   </hy-form> 
+		  </hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				sectionDrop:null
+			},
+			mounted : function() {
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+			},
+			methods : {
+				save : function() {
+					myform.validate(function(data) {
+						if (data) {
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath + 'section/save',
+								data : dataArr,
+								params : {
+									"upid":vm.upid
+								},
+								success : function(response) {
+									setRM(function() {
+										$.close(response)
+									})
+								}
+							});
+						}
+					});
+				},
+			}
+		});
+	</script>
+</body>
+</html>

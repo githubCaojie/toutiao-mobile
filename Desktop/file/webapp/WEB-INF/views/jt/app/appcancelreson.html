@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	
+	<hy-filllayout rows="*,35" :showborder="true"  :showpadding="false">
+			
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="100" :readonly="false"
+					label-suffix="：" :cols="3" size="normal">
+					<hy-formgroup title="工单作废原因">
+						<hy-forminput label="作废原因"  name="remark" :rowspan="4"type="textarea" :colspan="3" 
+						 :rules="{ required: true}" :maxlength="256" ></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		    <hy-fillarea >
+				<hy-button text="作废" @click="doAppCancel"></hy-button>	
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+
+			},
+			mounted : function(){
+				console.log(response.getAjaxDataWrap("dataWrap"));
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				doAppCancel : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/app/appcancelreason/appCancel',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				
+				}
+			}
+			
+		});
+		function callback(data){
+			alert(data);
+		}
+		function returnValue(){
+			return 1;
+		}
+	</script>
+</body>
+</html>

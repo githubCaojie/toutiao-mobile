@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,35">
+			<hy-fillarea>
+			<!-- <table>
+						<tr height="10px"></tr>
+						<tr><td>请选择需要传递的环节：<hy:drop id="nextActiId" list="nextActiList" listKey="value" listValue="label" width="80" name="nextActi" upload="true"/></td></tr>
+					</table> -->
+				 <table>
+						<tr height="10px"></tr>
+					<tr><td>请选择需要传递的环节：<hy-select    id="nextActiId"v-model="nextActi" :items="options"name="nextActi" :upload="true"width="200" ></hy-select></td></tr> 
+					</table>  
+			</hy-fillarea>
+			<hy-fillarea >
+				 <hy-row>
+					<hy-col :span="9"> </hy-col>
+					<hy-col :span="3"> <hy-button text="确定" @click="ok()" ></hy-button> </hy-col>
+					<hy-col :span="3"> <hy-button text="取消" onclick="$.close()" ></hy-button> </hy-col>
+				</hy-row>
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				nextActi:"",
+				  options: [] 
+			},
+			mounted : function(){
+				var nextActiList = response.getParameter("nextActiList");
+				this.options=nextActiList; 
+			},
+			methods : {				
+				/* query : function(){
+					var formData = myform.collectData();
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(formData);
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'wl/ps/PsOrderselect/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}, */
+				ok :function (){
+					if(nextActiId.getSelectedValue()==""){
+						$.alert("请选择传递环节！");
+						return;
+					}
+					$.close(nextActiId.getSelectedValue());
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.ok();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

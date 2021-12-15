@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>考评类型</title>
+<template th:substituteby="framework/pageset.html"></template>
+<script src="../../../nqi/common.js"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea>
+						<table>
+			              <tr>
+			                <td align="right" width="80px">群组名称</td>
+			                <td width="250px" align="left"><hy-input name="dataWrap.query.groupName_LIKE"  :upload="true"  ></hy-input> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			               	<td><hy-button text="添加" @click="add"></hy-button></td>
+			               	<td><hy-button text="启用" @click="isUsed('Y')"></hy-button></td>
+			               	<td><hy-button text="取消启用" @click="isUsed('N')"></hy-button></td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="群组名称"  name="groupName"align="center"	width="240"></hy-table-column> 
+								<hy-table-column title="管理员"  name="groupHolder" align="center"	width="100" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column> 
+								<hy-table-column title="群组单位"  name="unitName" align="center"	width="160"></hy-table-column> 
+								<hy-table-column title="创建时间"  name="createTime" align="center"	width="160"></hy-table-column> 
+								<hy-table-column title="创建人"  name="createPerson" align="center"	width="100" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column>  
+								<hy-table-column title="是否启用"  name="isUsed" align="center"	width="100" type="drop" dropname="UEP.YES_OR_NO"></hy-table-column> 
+								<hy-table-column  title="操作"   align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="getInsider(scope.row)">添加组织内人员</a>&nbsp;
+							     	<a href="javascript:void(0)" @click="getOutsider(scope.row)">添加企业业务人员</a>&nbsp;
+							     	<a href="javascript:void(0)" @click="groupMsg(scope.row)">发送群消息</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+</body>
+</html>
+
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function() {
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {
+			query : Query,
+			//详细、修改
+			detail: Detail,
+			//添加
+			add : Add,
+			//添加组织内人员
+			getInsider : function(row){
+				$.showModalDialog( $$pageContextPath + 'jt/com/group/getInsider?uuid='+row.uuid, "添加内部人员", vm.query, null, 1000, 600,
+						0);
+			},
+			//添加企业业务人员
+			getOutsider : function(row){
+				$.showModalDialog( $$pageContextPath + 'jt/com/group/getOutsider?uuid='+row.uuid, "添加企业人员", vm.query, null, 1250, 600,
+						0);
+			},
+			groupMsg : function(row){
+				$.showModalDialog( $$pageContextPath + 'jt/com/group/groupMsg?uuid='+row.uuid + "&groupName="+row.groupName, "发送群消息", vm.query, null, 800, 400,
+						0);
+			},
+			//禁用、不禁用
+			isUsed : function(isUsed){
+				var checked = ajaxgrid.getCheckedRecords();
+				if (checked.length <= 0) {
+					return setRM("error", "请选择要修改的记录！");
+				}
+				var used = '';
+				if(isUsed == 'Y'){
+					used = '启用';
+				}else{
+					used = '禁用';
+				}
+				$.confirm("提示", "确定要将选中的记录" + used, function() {
+					var gridData = ajaxgrid.collectData(false, "checked");
+					var dataArr = [];
+					dataArr.push(gridData);
+					$.request({
+						url : $$pageContextPath + 'jt/com/group/isUsed',
+						data : dataArr,
+						params : {
+							'isUsed' : isUsed
+						},
+						success : function(response) {
+							if (response.getMessage() == "success") {
+								setRM("success", "修改成功", vm.query());
+							} else {
+								setRM("error", response.getMessage());
+							}
+						}
+					});
+				}, function() {
+				});
+			},
+			
+		}
+	});
+
+	/**查询**/
+	function Query() {
+		QueryData(ajaxgrid, 'jt/com/group/query', "dataWrap");
+	}
+	function Add(){
+		$.showModalDialog($$pageContextPath + 'jt/com/group/queryOne?', "添加", vm.query, null, 500, 150,0);
+	}
+	function  Detail(row){
+		$.showModalDialog($$pageContextPath + 'jt/com/group/queryOne?uuid='+row.uuid , "修改", vm.query, null, 500, 150,0);
+	}
+	
+	
+</script>

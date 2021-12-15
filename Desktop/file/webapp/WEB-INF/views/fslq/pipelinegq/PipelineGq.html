@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<style>
+#id{
+	 width:100%;
+	 height:20%;
+}
+
+.box-card {
+	width:32%;
+	height: 138px;
+	margin-left: 1%; 
+	margin-top: 0.1%; 
+	float: left;
+	background-size: 100% 100%;
+	text-align: center;
+	border-radius: 5px;
+	color: #FFFFFF;
+	font-size: 18px;
+	line-height: 45px;
+	font-weight: bold;
+	text-align: left;
+	box-shadow: 0px 0px 10px #bbb;
+}
+
+.text{
+	width:70%;
+	height:100%;
+	float:left;
+	text-align:center;
+}
+
+.texttitle{
+	width:30%;
+	height:100%;
+	float:left;
+	text-align:center;
+}
+
+
+</style>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="150,45,45,*" :showborder="true"  :showpadding="false">
+			 <hy-fillarea>
+					<div id="top">
+						
+						<div class="box-card"  onclick="method3()" style="cursor:pointer;background-color: #7030A0;">
+						  	<div class="texttitle">
+						  		高压线：{{xslcNum}}
+						  	</div>
+						  	<div  class="text" >
+						  		<table style="float:left">
+						  			<tr>
+						  				<td >路由设计:</td>
+						  				<td ></td>
+						  				<td >施工阶段:</td>
+						  				<td ></td>
+						  			</tr>
+						  			<tr>
+						  				<td >预算审核:</td>
+						  				<td ></td>
+						  				<td >已迁改:</td>
+						  				<td ></td>
+						  			</tr>
+						  			<tr>
+						  				<td >招标阶段:</td>
+						  				<td ></td>
+						  			</tr>
+						  		</table>
+						  	</div>
+						</div>
+						
+						<div class="box-card"  onclick="method3()" style="cursor:pointer;background-color: #ED7D31;">
+						  	<div class="texttitle">
+						  		低压线：{{xslcNum}}
+						  	</div>
+						  	<div  class="text" >
+						  		<table style="float:left">
+						  			<tr>
+						  				<td >路由设计1:</td>
+						  				<td ></td>
+						  				<td >施工阶段:</td>
+						  				<td ></td>
+						  			</tr>
+						  			<tr>
+						  				<td >预算审核:</td>
+						  				<td ></td>
+						  				<td >已迁改:</td>
+						  				<td ></td>
+						  			</tr>
+						  			<tr>
+						  				<td >招标阶段:</td>
+						  				<td ></td>
+						  			</tr>
+						  		</table>
+						  	</div>
+						</div>
+						<div class="box-card"  onclick="method3()" style="cursor:pointer;background-color: #5B9BD5;">
+						  	<div class="texttitle">
+						  		弱电：{{xslcNum}}
+						  	</div>
+						  	<div  class="text" >
+						  		<table style="float:left">
+						  			<tr>
+						  				<td >路由设计:</td>
+						  				<td >999</td>
+						  				<td >施工阶段:</td>
+						  				<td ></td>
+						  			</tr>
+						  			<tr>
+						  				<td >预算审核:</td>
+						  				<td ></td>
+						  				<td >已迁改:</td>
+						  				<td >888888</td>
+						  			</tr>
+						  			<tr>
+						  				<td >招标阶段:</td>
+						  				<td ></td>
+						  			</tr>
+						  		</table>
+						  	</div>
+						</div>
+						
+					</div>
+			 </hy-fillarea> 
+			 <hy-fillarea>
+				 <table>
+		               <tr>
+			                <td align="left" width="50px">项目:</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.projectId_LIKE" :upload="true"  dropname=""  ></hy-input></td>
+			               	<td align="right" width="80px">标段:</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.sectionId_LIKE"  clearable :upload="true"  dropname="" ></hy-select>  </td>
+			                <td align="right" width="80px">区:</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.area_LIKE"   clearable :upload="true" dropname=""  ></hy-select>  </td>
+			                <td align="right" width="80px">镇街:</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.town_LIKE"  clearable :upload="true"  dropname="" ></hy-select>  </td>
+			                <td align="right" width="80px">类型:</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.type_LIKE"   clearable :upload="true" dropname="ZDCQ.FWLX" ></hy-select></td>
+			               	<td align="right" width="80px">管线名称</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.gxmc_LIKE"  clearable :upload="true"  dropname="" ></hy-select>  </td>
+			                <td align="right" width="80px">状态</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.qgzt_LIKE"   clearable :upload="true" dropname="GXGQ.QGZT"  ></hy-select>  </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			            </tr>
+			     </table>
+			</hy-fillarea> 
+			
+			<hy-fillarea>
+				<div style="float:left">
+					<hy-button text="查看" @click="detail" :pkain="true"></hy-button>					
+					<td><hy-fileupload title="导入" id="webuploader" @autoupload="submitFile" 
+						@error="fileError" @success="uploadSuccess" :displayinfo="false" width="80">
+						</hy-fileupload></td>
+   						<td><hy-button   @click="daochu()" text="导出" ></hy-button></td> 
+	      		</div>
+			</hy-fillarea>
+			<hy-fillarea>
+				<hy-table border name="dataWrap" id="ajaxgrid" :showpage="true" :showpagebar="true" height="100%" @queryfunc="query"
+						:readonly="true" titlealign="center" style="width: 100%" > 
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>  
+<!-- 						<hy-table-column title="多选" align="center" type="selection"></hy-table-column>  -->
+						<hy-table-column name="" title="项目"   align="center" width="150"></hy-table-column>
+						<hy-table-column name="sectionId" title="标段" 	align="center" width="120"></hy-table-column>
+						<hy-table-column name="area" title="区"       align="center" width="120"></hy-table-column>
+						<hy-table-column name="town" title="镇"        align="center" width="120"></hy-table-column>
+						<hy-table-column name="" title="管线编号"   align="center" width="120"></hy-table-column>
+						<hy-table-column name="type"  title="管线类型"  type="drop" dropname="GXGQ.QGZT" align="center" width="130"></hy-table-column>
+						<hy-table-column name="gxmc"  title="管线名称"    align="center" width="100"></hy-table-column>
+						<hy-table-column name="gxcd"  title="管线长度(m)" align="center" width="130"></hy-table-column>
+						<hy-table-column name="qgzt"  title="迁改状态"  type="drop" dropname="GXGQ.QGZT"    align="center" width="150"></hy-table-column>
+						<hy-table-column name="wzzh"  title="位置桩号"  align="center" width="130"></hy-table-column>
+						<hy-table-column name="jhrq"  title="计划日期"  type="date" format="yyyy-MM-dd" align="center" width="150"></hy-table-column>
+						<hy-table-column name="wcrq"  title="完成日期"  type="date" format="yyyy-MM-dd"  align="center" width="150"></hy-table-column>
+						<hy-table-column name=""  title="创建人"    align="center" width="100"></hy-table-column>
+						<!-- <hy-table-column title="操作" width="120" align="center">
+					      <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="detail(scope.row)">保养详情</a>&nbsp;
+					      </template>
+					    </hy-table-column> -->
+				
+				</hy-table>
+			</hy-fillarea>			
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				query: function(){
+					var baseData = ajaxgrid.collectData(true);
+					var dataArr = [];
+					dataArr.push(baseData);
+					$.request({
+						url : $$pageContextPath + 'landremoval/PipelineGq/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});	
+				},
+				
+				//详情
+				detail:  function(){
+					var record = ajaxgrid.getSelectedRecord();
+					debugger;
+					$.showModalDialog($$pageContextPath + 'landremoval/PipelineGq/queryOne?editFlag=N&uuid='+record.data.uuid, "详情", vm.onsavecomplete, null, 800, 400, 0);
+				},
+				//导入
+				submitFile:function(){
+			          webuploader.submitFile({
+			          action : "upload",//后台处理的函数名
+			          server : $$pageContextPath+'aqlog/upload',//请求
+			          params:{//请求携带的参数
+			        	  prjId: prjId,
+			        	  contractId: contractId,
+			              param3:"three"
+			            }
+			        });
+		      	},
+		      	fileError : function(){
+						
+				},
+				uploadSuccess : function(WUFile){
+					setRM("success","导入成功！",vm.query());
+					
+				},
+				//
+				add:  function(){
+					$.showModalDialog($$pageContextPath + '', "添加", vm.onsavecomplete, null, 900, 700, 0);
+				},
+				onsavecomplete : function(response){
+					vm.query();
+				}
+			}
+		});
+		function nextpage(){
+			vm.query();
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hyfileupload.js}"></script>
+<link th:href="@{/vue/hyfileupload.css}" rel="stylesheet" type="text/css">
+<script th:src="@{/nqi/common.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="300,*,35" :showborder="true" :showpadding="false">
+			<hy-fillarea>
+				 <hy-table border name="dataWrap" @queryfunc="queryFiles" id="ajaxgrid" :readonly="true" height="100%"
+		                 titlealign="center" style="width: 100%">
+		                <hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+		                <hy-table-column width="100" align="center" title="操作">
+							<template scope="scope">
+								<hy-icon name="icon-closecircleo" color="red" :size="16" @click="delFile(scope.row)"></hy-icon>
+								<hy-icon name="icon-download" color="green" :size="16" @click="downFile(scope.row)"></hy-icon>
+							</template>
+						</hy-table-column>
+		                <hy-table-column title="文件"  name="oldName" align="center" />
+
+	            	</hy-table>	  
+			</hy-fillarea>
+			<hy-fillarea>
+		 		<hy-fileupload :width="400" id="webuploader"  :filenumlimit="10" :allowedextensions="allowType" @success="queryFiles"> 
+				</hy-fileupload>
+			</hy-fillarea>
+			<hy-fillarea>
+				<hy-button type="primary" icon="" text="上传" size="mini" @click="upload"></hy-button>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+</body>
+</html>
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function() {
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {
+			queryFiles : QueryFiles,
+			upload : Upload,
+			delFile : DelFile,
+			downFile : DownFile
+		}
+	});
+
+	function QueryFiles() {
+		QueryData(ajaxgrid,"com/file/queryFiles?objId="+vm.objId+"&objType="+vm.objType,"dataWrap")
+	}
+
+	function Upload() {
+		webuploader.submitFile({
+			server : $$pageContextPath + 'com/file/uploadFiles',//请求
+			params : {//请求携带的参数
+				objId : this.objId,
+				objType: this.objType
+			}
+		});
+	}
+
+	function DelFile(row) {
+		commonCmd({uuid:row.uuid},"com/file/deleteFile",function(reponse){
+			if(reponse.getMessage()=="success"){
+				setRM("success","删除成功",QueryFiles);
+			}else{
+				setRM("error",reponse.getMessage());
+			}
+		})
+	}
+
+	function DownFile(row) {
+		window.location = $$pageContextPath + 'com/file/downFile?uuid=' + row.uuid;
+	}
+</script>

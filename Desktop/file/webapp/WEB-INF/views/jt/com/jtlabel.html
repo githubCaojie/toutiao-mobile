@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea :display="(editFlag=='N')?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" :readonly="editFlag=='N'?true:false"
+					label-position="left" :labelwidth="100"  
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-forminput label="标签名称"  name="labelName" :maxlength="16"  :rules="{ required: true}"></hy-forminput> 
+					<hy-forminput label="排序号"  name="orderSn" :maxlength="16"  :rules="{ required: true}"></hy-forminput> 
+					<hy-forminput label="说明"  name="explan" :rowspan="2" :colspan="2" type="textarea" :maxlength="128" ></hy-forminput>
+					<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="128" ></hy-forminput>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {		
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/com/jtLabel/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

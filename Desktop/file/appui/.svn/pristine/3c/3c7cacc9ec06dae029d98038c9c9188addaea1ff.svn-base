@@ -1,0 +1,210 @@
+<template>
+  <div class="app-full login">
+    <img class="logo" src="../../assets/imgs/logo.png" />
+    <div class="login-wrap">
+      <app-input
+        class="input-small"
+        :border="false"
+        v-model="userName"
+        type="text"
+        placeholder="账号"
+        name="userName"
+        :left-icon="unameIcon"
+        size="large"
+      />
+      <app-input
+        class="input-small"
+        :border="false"
+        v-model="password"
+        type="password"
+        placeholder="密码"
+        name="password"
+        :left-icon="pwdIcon"
+        size="large"
+      />
+      <div class="app-fs remember">
+        <van-checkbox
+          v-model="rempwd"
+          color="white"
+          shape="square"
+          icon-size="16px"
+          ></van-checkbox>
+          <span>记住密码</span>
+      </div>
+      <van-button @click="login" class="login-btn" type="info" size="large">登录</van-button>
+    </div>
+    <div class="offline-wrap">
+      <img @click="$root.goPath('/offlinePic',{isEdit: 'N'})" src="../../assets/imgs/login/offline.png" alt=""/>
+      <div>离线拍照</div>
+    </div>
+  </div>
+</template>
+
+<script>
+import * as appBaseApi from "../../api/app-base";
+import appConstant from "../../utils/appConstant";
+import { setToken, setRefToken } from '@/utils/auth'
+export default {
+  name: "login",
+  data() {
+    return {
+      userName: "",
+      password: "",
+      unameIcon: require("../../assets/imgs/login/uname.png"),
+      pwdIcon: require("../../assets/imgs/login/pwd.png"),
+      rempwd: true,
+    };
+  },
+  mounted() {
+    let his = window.localStorage.getItem(appConstant.loginStorageId);
+    if (his) {
+      let userInfo = JSON.parse(his);
+      this.userName = userInfo.userName;
+      this.password = userInfo.password;
+    }
+  },
+  methods: {
+    login() {
+      // this.$router.push({
+      //     path: "/test1",
+      //   });return ;
+      let params = {
+        userName: this.userName,
+        password: this.password,
+        moduleId: appConstant.moduleId,
+      };
+      this.appCommon.tloading("登录中...");
+      appBaseApi.login(params).then((rdata) => {
+        let userView = rdata.parameters.userView;
+        userView.avatarUrl = "";
+        let authority = rdata.parameters.rightItems;
+        console.log(authority)
+        this.$store.commit("user/SET_USERVIEW", userView);
+        this.$store.commit("user/SET_AUTHORITY", authority);
+        let contentToken = rdata.parameters['content-token'];
+        let refToken = rdata.parameters['content-token_ref'];
+        console.log(setToken)
+        setToken(contentToken)
+        setRefToken(refToken)
+        window.localStorage.setItem(
+          appConstant.loginStorageId,
+          JSON.stringify({
+            userName: this.userName,
+            password: this.password,
+          })
+        );
+        this.$router.push({
+          path: "/appIndex",
+        });
+        // this.initJpush(userView.partyId);
+      });
+    },
+    initJpush(perPartyId) {
+      try {
+        window.JPush.init();
+        window.JPush.setDebugMode(false);
+        if (device.platform != "Android") {
+          window.JPush.setApplicationIconBadgeNumber(0);
+        }
+        window.JPush.setAlias(
+          { sequence: 1, alias: perPartyId },
+          function (result) {},
+          function (error) {
+            console.log(error);
+          }
+        );
+      } catch (exception) {
+        console.log(exception);
+      }
+      document.addEventListener(
+        "jpush.openNotification",
+        (event) => {
+          console.log(event);
+          let extras = event.extras;
+          let MSG_TYPE = extras.MSG_TYPE;
+          let path = "";
+          switch (MSG_TYPE) {
+            case "1": {
+              path = "/flowIndex";
+              break;
+            }
+            case "2": {
+              path = "/linsjcList";
+              break;
+            }
+            default: {
+              path = "/appIndex";
+            }
+          }
+          this.$router.push({
+            path: path,
+          });
+        },
+        false
+      );
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
+.login {
+  background: url("../../assets/imgs/login/login-bg.png") no-repeat;
+  background-size: cover;
+
+  .logo {
+    display: block;
+    padding-top: 150px;
+    width: 40vw;
+    margin: 0 auto;
+  }
+
+  .login-wrap {
+    width: 85vw;
+    height: 300px;
+    box-sizing: border-box;
+    border-radius: 1.5vw;
+    margin: 0 auto;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .input-small {
+    width: 85%;
+    height: 40px;
+    border-radius: 5px;
+    padding: 7px;
+    margin: 0 auto;
+    margin-top: 20px;
+    // border-radius: 20px;
+    overflow: hidden;
+  }
+  .remember {
+    margin-left: 7.5vw;
+    margin-top: 10px;
+    span {
+      color:white;
+      margin-left: 5px;
+    }
+  }
+  .login-btn {
+    border-radius: 10vw;
+    background: linear-gradient(180deg, #1B8EFD, #0AD7F6);
+    border: 0px;
+    width: 85%;
+    height: 45px;
+    margin-left: 7.5%;
+    margin-top: 20px;
+  }
+  .offline-wrap {
+    text-align: center;
+    img {
+      width: 80px;
+      height: 80px;
+    }
+    div {
+      color: white;
+      font-size: 18px;
+      margin-top: 5px;
+    }
+  }
+}
+</style>

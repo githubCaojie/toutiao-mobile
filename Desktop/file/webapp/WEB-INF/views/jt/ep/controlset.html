@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="300,100,*">
+			<hy-fillarea title="设置权限">
+				 <hy-tree id="orgTree" v-model="ControlTypeClassTree" :multiple="true" :checkstrictly="false" :rootcode="roleCode"  
+					  default-expand-all dataprovider="com.haiyisoft.jt.ep.tree.ControlUnauthTree"> 
+				</hy-tree>
+			</hy-fillarea>
+			<hy-fillarea>
+				<table>
+					<br><br><br><br><br><br><br><br><br>
+		      		<tr ><td width="100" align="center"><hy-button text="添加->>" @click="add" :pkain="true" style="width:100%"></hy-button></td></tr>
+					<tr height="10"></tr>
+		      		<tr ><td width="100" align="center"  ><hy-button text="删除<<-"  @click="remove" :pkain="true" style="width:100%"></hy-button></td></tr>
+	      		</table>
+			</hy-fillarea>
+		
+			<hy-fillarea title="该角色拥有的权限">
+				<hy-tree v-model="MyControlTypeClassTree" :multiple="true" :rootcode="roleCode" :checkstrictly="true"  @nodedblclick="setRight"
+						 id="myOrgTree" default-expand-all dataprovider="com.haiyisoft.jt.ep.tree.MyControlTree"> 
+				</hy-tree>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		 var vm = new Vue({
+			el : "#app",
+			data : {
+				ControlTypeClassTree : "",
+				MyControlTypeClassTree : ""
+			},
+			mounted : function(){
+			},
+			methods : {				
+				remove : function(){
+					var checkNodes = myOrgTree.getCheckedNodes();
+					if(checkNodes.length == 0)
+						return setRM("alert","请选择要删除的记录!");
+					$.confirm("提示","确定要删除选中的记录？",function(){
+						var rtn = "";
+						for(var i=0; i<checkNodes.length; i++){
+							rtn += checkNodes[i].code + ",";
+						}
+						$.request({
+							url :$$pageContextPath + 'ep/roles/removeQX',
+							params : {
+								roleCode : vm.roleCode,
+								removeNodes : rtn
+							},
+							success : vm.onsavecomplete
+						});
+					},function(){});
+				}, 
+				add : function(){
+					var checkNodes = orgTree.getCheckedNodes();
+					if(checkNodes.length == 0)
+						return setRM("alert","请选择要添加的记录!");
+					$.confirm("提示","确定要添加选中的记录？",function(){
+						var rtn = "";
+						for(var i=0; i<checkNodes.length; i++){
+							rtn += checkNodes[i].code + ",";
+							var parentNodes = orgTree.getParentCascade(checkNodes[i].code);
+							for(var j=0; j<parentNodes.length; j++){
+								rtn += parentNodes[j].code + ",";
+							}
+						}
+						$.request({
+							url :$$pageContextPath + 'ep/roles/addQX',
+							params : {
+								roleCode : vm.roleCode,
+								addNodes : rtn
+							},
+							success : vm.onsavecomplete
+						});
+					},function(){});
+				}, 
+				onsavecomplete : function(response){
+					setRM(function(){
+						debugger;
+						document.location.reload();
+						//myOrgTree.refreshRootNode();		
+						//orgTree.refreshRootNode();		
+					});
+				},
+				setRight : function(obj){
+					$.popWindow({
+						title:"设置内部权限",
+						url:$$pageContextPath + 'jt/right/jtRFuncRight/?editFlag=Y&objectCode='+obj.code+"&roleCode="+vm.roleCode,
+						callback: vm.setRightBack,
+						button:0,
+						css:{width:550,height:200,type:1},
+						isRunCallback : true
+					});
+				},
+				setRightBack : function(){
+					myOrgTree.refreshRootNode(myOrgTree.getParent(myOrgTree.getSelectedNode()));
+				}
+			}
+		});  
+	</script>
+</body>
+</html>

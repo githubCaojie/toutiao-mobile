@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="200,*">
+			<hy-fillarea>
+				 <hy-tree id="firstTree" @nodeclick="treeClick" 
+				  valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree"  v-model="code" ></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea>
+			<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+				<hy-fillarea>
+					<table>
+		              <tr> 
+						<td align="right" width="80px">职位名称</td>
+		                <td width="120px" align="left"><hy-input name="positionName"  :upload="true" ></hy-input></td>
+						<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+		              <tr/>
+		            </table>
+				</hy-fillarea> 
+				<hy-fillarea >
+					<hy-button text="添加" @click="add"></hy-button>	
+					<hy-button text="保存" @click="save"></hy-button>	
+					<hy-button text="删除" @click="remove"></hy-button>	
+				</hy-fillarea>
+				<hy-fillarea >
+			          <hy-table border name="dataWrap"
+							id="ajaxgrid" showpage :readonly="false" height="100%"
+							@queryfunc="query" titlealign="center" style="width: 100%">
+							<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+							<hy-table-column title="多选" align="center"  type="selection"></hy-table-column> 
+							<hy-table-column title="职务名称"  name="positionName" align="center"	width="250" :rules="{ required: true}" :maxlength="250" ></hy-table-column> 
+							<hy-table-column title="所属部门"  name="orgName" align="center" width="100" :readonly="true"></hy-table-column> 
+							<hy-table-column title="备注"  name="remark" align="center" width="300" :maxlength="255"></hy-table-column> 
+						</hy-table> 
+			      </hy-fillarea>
+			</hy-filllayout>
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				code : null
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pos/position/query',
+						data : dataArr,
+						params :{"orgId" :this.code},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					if(this.code==null){
+						setRM("alert","请选择组织机构！");
+						return;
+					}
+					$.request({
+						url : $$pageContextPath + 'pos/position/add',
+						params :{"orgId" :this.code},
+						success : function(response){
+							ajaxgrid.addRecord(response.getAjaxDataWrap("dataWrap").data);
+						}
+					});		
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'pos/position/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+					
+				},
+				save : function(){
+					if (ajaxgrid.isValid()) {
+						var gridData = ajaxgrid.collectData(true, "update");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'pos/position/save',
+							data : dataArr,
+							success : vm.onsavecomplete
+						});	
+					}
+					
+				},
+				onsavecomplete : function(response){
+					setRM("success",response.getMessage(),vm.query());
+				},
+				treeClick : function(data){
+					this.code = firstTree.getSelectedNode().code;
+					vm.query();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

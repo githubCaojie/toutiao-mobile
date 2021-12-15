@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea>
+						<table>
+			              <tr>
+			                <td align="right" width="80px">模板</td>
+			                <td width="200px" align="left"><hy-select  name="dataWrap.query.templateNo" dropname="JT.APP_TYPE" :upload="true"> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+<!-- 			               	<td><hy-button text="初始化模板" @click="syncTemp"></hy-button>	</td> -->
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+				          <hy-table border name="dataWrap" id="ajaxgrid" :showpage="false" :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="操作" width=230 align="center">
+							      <template scope="scope">
+							     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+							     	 <a href="javascript:void(0)" @click="activity(scope.row)">环节</a>&nbsp;
+							     	 <a href="javascript:void(0)" @click="publish(scope.row)"  v-show="scope.row.status=='N'">发布</a>&nbsp;
+							     	 <a href="javascript:void(0)" @click="publishUndo(scope.row)"  v-show="scope.row.status=='Y'">取消发布</a>&nbsp;
+							     	 <a href="javascript:void(0)" @click="remove(scope.row)">删除</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+								<hy-table-column title="模板"  name="templateNo" type="drop" dropname="JT.APP_TYPE"  align="center"	width="200"></hy-table-column> 
+								<hy-table-column title="版本"  name="versionNo" align="center" type="drop" width="100"></hy-table-column> 
+<!-- 								<hy-table-column title="菜单名"  name="rightItemCode" align="center" width="100"></hy-table-column>  -->
+								<hy-table-column title="状态"  name="status" type="drop" dropname="JT.PUNISH_STATUS" align="center"   width="100"></hy-table-column> 
+								<hy-table-column title="排序号"  name="orderSn" align="center"  width="80"></hy-table-column> 
+								<hy-table-column title="备注"  name="remark" align="center"  width="150"></hy-table-column> 
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var infoId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				fromId : null
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						data : dataArr,
+						url : $$pageContextPath + 'jt/app/jtAppExtForm/list',
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				publish : function(row){
+					if(row.status=='Y')
+						return setRM("alert","该记录已发布！");
+					if(!!row.fromTemplateNo)
+						return setRM("alert","该记录不能进行发布操作！");
+					$.request({
+						params : {"id" : row.id},
+						url : $$pageContextPath + 'jt/app/jtAppExtForm/publish',
+						success : function(response){
+							setRM(vm.query());
+						}
+					});	
+				},
+				publishUndo : function(row){
+					if(row.status=='N')
+						return setRM("alert","该记录未发布！");
+					if(!!row.fromTemplateNo)
+						return setRM("alert","该记录不能进行取消发布操作！");
+					$.request({
+						params : {"id" : row.id},
+						url : $$pageContextPath + 'jt/app/jtAppExtForm/publishUndo',
+						success : function(response){
+							setRM(vm.query());
+						}
+					});	
+				},
+				detail : function(row){
+					var tempFlag = editFlag;
+					if(row.status=='Y')
+						tempFlag = 'N';
+					$.showModalDialog($$pageContextPath + 'jt/app/jtAppExtForm/pageForm?id='+row.id+"&editFlag="+tempFlag, "详细", vm.query, null, 1200, 800, 0);
+				},
+				activity : function(row){
+					$.popWindow({
+						url: $$pageContextPath + 'jt/app/jtAppExtTacheform/main?editFlag=Y&formId='+row.id,
+						title: "流程环节",	
+						css:{width:1400,height:650,type:1},
+						button:0,
+						isRunCallback :false
+					});
+				},
+				syncTemp : function(){
+					$.request({
+						url : $$pageContextPath + 'jt/app/jtAppExtForm/syncTemp',
+						success : function(response){
+							setRM(vm.query());
+						}
+					});	
+				},
+				remove : function(row){
+					$.confirm("提示", "确定要删除该记录？", function() {
+						$.request({
+							url :$$pageContextPath + 'jt/app/jtAppExtForm/remove',
+							params : {"id":row.id},
+							success : function(response) {
+								setRM(vm.query());
+							}
+						});
+					}, function() {
+					});
+				},	
+				
+			}
+			
+		});
+	</script>
+</body>
+</html>

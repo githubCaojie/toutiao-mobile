@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*" :showborder="true" :showpadding="false">
+			<hy-fillarea> 
+				<hy-button text="批量更新组织节点" @click="saveOrg"></hy-button>
+				<hy-button text="批量保存更新用户" @click="savePer"></hy-button>
+				<hy-button text="保存用户与组织节点的关联关系" @click="saveOrgPerLink"></hy-button>
+				<hy-button text="批量保存更新角色" @click="saveRole"></hy-button>
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function() {
+			},
+			methods : {
+				saveOrg : function() {
+					$.confirm("确定", "确定要同步组织机构？", function() {
+						$.request({
+							url :$$pageContextPath + 'lb/interface/saveOrg',
+							data : [],
+							success : function(response) {
+								setRM(function() {
+								})
+							}
+						});
+					});
+				},
+				saveOrgPerLink : function() {
+					$.confirm("确定", "确定要同步组织人员关系？", function() {
+						$.request({
+							url :$$pageContextPath + 'lb/interface/saveOrgPerLink',
+							data : [],
+							success : function(response) {
+								setRM(function() {
+								})
+							}
+						});
+					});
+				},
+				savePer : function() {
+					$.confirm("确定", "确定要同步人员？", function() {
+						$.request({
+							url :$$pageContextPath + 'lb/interface/savePer',
+							data : [],
+							success : function(response) {
+								setRM(function() {
+								})
+							}
+						});
+					});
+				},
+				saveRole : function() {
+					$.confirm("确定", "确定要同步角色？", function() {
+						$.request({
+							url :$$pageContextPath + 'lb/interface/saveRole',
+							data : [],
+							success : function(response) {
+								setRM(function() {
+								})
+							}
+						});
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

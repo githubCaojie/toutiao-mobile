@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea>
+						<table>
+			              <tr>
+			                <td align="right" width="80px">工单号</td>
+			                <td width="200px" align="left"><hy-input  name="dataWrap.query.instanceId"  :upload="true"> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea>
+						<hy-button text="添加" @click="add"></hy-button>
+						<hy-button text="删除" @click="remove"></hy-button>
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="操作" width="60" align="center">
+							      <template scope="scope">
+							      	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>
+							      </template>
+							    </hy-table-column>
+								<hy-table-column title="工单号" name="instanceId"  align="center" width="120" ></hy-table-column>
+								<hy-table-column title="状态" name="status" type="drop" dropname="JT.APP_STATUS"  align="center" width="80" ></hy-table-column>
+								<template v-for= "(data,index) in fieldList">
+									<template   v-if="data.jtExtField.inputForm==''||data.jtExtField.inputForm=='FIELD'">
+			 						<hy-table-column :title="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id"  align="center" width="150" ></hy-table-column>
+			 						</template>
+			 						<template  v-if="data.jtExtField.inputForm=='DROP'">
+									<hy-table-column :title="data.jtExtField.fieldName" :property="'dataMap.'+data.jtExtField.id" type="drop" :items="getItemDrop(data.itemDrop)"  align="center" width="100" ></hy-table-column>
+			 						</template>
+			 						<template  v-if="data.jtExtField.inputForm=='DATE'">
+			 						<hy-table-column :title="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id" type="date" align="center" width="100" ></hy-table-column>
+			  						</template>
+			 						<template  v-if="data.jtExtField.inputForm=='YEAR'">
+			 						<hy-table-column :title="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id"  format="yyyy" type="date" align="center" width="100" ></hy-table-column>
+			  						</template>
+			 						<template  v-if="data.jtExtField.inputForm=='MONTH'">
+			 						<hy-table-column :title="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id" format="yyyy-MM"  type="date" align="center" width="100" ></hy-table-column>
+			  						</template>
+			 						<template  v-if="data.jtExtField.inputForm=='DATETIME'">
+			 						<hy-table-column :title="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id" type="datetime" align="center" width="100" ></hy-table-column>
+			  						</template>
+			 						<template  v-if="data.jtExtField.inputForm=='TREE'">
+										<hy-table-column  :title="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id"  align="center" width="100" type="droptree" :valueprovider="data.jtExtField.extCode1" ></hy-table-column> 
+			  						</template>
+			 						<template  v-if="data.jtExtField.inputForm=='INPUTBUTTON'">
+										<hy-table-column  :title="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id"  align="center" width="100" type="inputbutton" :labelprovider="data.jtExtField.extCode2" ></hy-table-column> 
+			  						</template>
+							    </template>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var infoId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				fromId : null
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				detail : function(row){
+					$.popWindow({
+						title:"工单("+row.instanceId+")",
+						url: $$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + row.instanceId+ "&openMode=4" ,
+						callback:vm.query,
+						button:0,
+						css:{width:1200,height:810,type:1},
+						isRunCallback :true
+					});
+// 					$.showModalDialog('jt/app/jtAppExtDataMain/?appBusiUuid='+row.id, "详细", vm.onsavecomplete, null, 1000, 500, 0);
+				},
+				add : function(){
+					$.popWindow({
+						title:"添加",
+						url: $$pageContextPath + 'jt/app/jtAppExtDataMain/?appTemplateNo='+vm.templateNo,
+						callback:vm.onsavecomplete,
+						button:0,
+						css:{width:1200,height:810,type:1},
+					});
+// 					$.showModalDialog('jt/app/jtAppExtDataMain/?appTemplateNo='+vm.templateNo, "添加", vm.onsavecomplete, null, 1000, 500, 0);
+				},
+				remove : function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'jt/app/jtAppExtDataMain/remove',this.query);
+				},
+				onsavecomplete : function(response){
+					vm.query() ;
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/jtAppExtDataMain/list',
+						params : {
+							"templateNo" : vm.templateNo
+						},
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},			
+				getItemDrop:function(str){
+					debugger;
+					return eval("(this."+str+")");
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

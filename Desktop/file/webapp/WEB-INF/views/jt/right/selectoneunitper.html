@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="180,*">
+			<hy-fillarea>
+				<hy-tree id="typeTree" v-model="perTypeId" :onlyselectleaf="false" @nodeclick="query"
+					valueprovider="com.haiyisoft.fslq.tree.PersonTypeTree"></hy-tree>
+			</hy-fillarea>
+			<hy-filllayout rows="queryh,*,toolh" :showborder="true"  :showpadding="false"> 
+				<hy-fillarea title="查询条件">
+					<table>
+						<tr>
+						<td align="right" width="80px">姓名</td>
+		                <td width="120px" align="left"><hy-input name="dataWrap.query.personName_LIKE" :upload="true"></hy-input> </td>
+						<td align="right" width="80px">手机号</td>
+		                <td width="120px" align="left"><hy-input name="dataWrap.query.linkmenPhone_LIKE" :upload="true"></hy-input> </td>
+		                <td align="right" width="80px">部门</td>
+		                <td width="120px" align="left"><hy-input name="orgName" :upload="true"></hy-input> </td>
+						<td width="30px"></td>
+		               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+						</tr>
+					</table> 
+				</hy-fillarea> 
+				<hy-fillarea >
+			          <hy-table border name="dataWrap"  @rowclick="selectRow"  @rowdblclick="dbSelectRow"
+							id="ajaxgrid" showpage :readonly="true" height="100%"
+							@queryfunc="query" titlealign="center" style="width: 100%">
+							<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+							<hy-table-column title="" align="center" width="60" type="singleselection"></hy-table-column> 
+							<hy-table-column name="personName" title="姓名" align="center" width="100" ></hy-table-column> 
+							<hy-table-column name="linkmenPhone" title="手机号" align="center" width="150" ></hy-table-column> 
+							<hy-table-column name="orgName" title="部门" align="center" width="250"></hy-table-column> 
+						</hy-table> 
+			      </hy-fillarea>
+			      <hy-fillarea >
+					 <hy-row>
+						<hy-col :span="9"> </hy-col>
+						<hy-col :span="3"  > <hy-button text="确定" @click="ok" ></hy-button> </hy-col>
+						<hy-col :span="3"  > <hy-button text="取消" @click="cancel" ></hy-button> </hy-col>
+					</hy-row>
+				</hy-fillarea>
+			</hy-filllayout>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+	    var carUuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				perTypeId : "",
+				orgId : "",
+				personNameId : ''
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + '/jt/right/selectPer/queryUnitPer',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				ok : function(){
+					var records =  ajaxgrid.getCheckedRecords();
+					if(records.length>0){
+						var perData = records[0].data;
+						$.close({"partyId" : perData.partyId, "orgId" : perData.orgId, "personName" : perData.personName});
+					} else {
+						$.setRM("error", "请选择人员!");
+					}
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.ok();
+				},
+				cancel : function() {
+					$.close(true);
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

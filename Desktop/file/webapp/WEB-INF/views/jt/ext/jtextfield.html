@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+	<hy-filllayout cols="300,600,*">
+		<hy-fillarea>
+		</hy-fillarea>
+		<hy-fillarea title="自定义">
+			<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false">
+				<hy-fillarea >
+		      		<div style="float:left">
+						<hy-button text="保存" @click="saveAll" :pkain="true"></hy-button>
+			      	</div>
+				</hy-fillarea> 
+				<hy-fillarea align="left">
+		        </hy-fillarea>
+		</hy-filllayout>
+		</hy-fillarea>
+		<hy-fillarea title="设置">
+			<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false">
+				<hy-fillarea align="left">
+		      		<div style="float:left">
+						<hy-button text="保存" @click="saveOne" :pkain="true"></hy-button>
+						<hy-button text="删除" @click="delOne" :pkain="true"></hy-button>
+			      		</div>
+				</hy-fillarea>
+				<hy-fillarea >
+		      	</hy-fillarea>
+		</hy-filllayout>
+		</hy-fillarea>
+	</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			eqTypeId:''
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {				
+			query : function(){
+				var gridData = ajaxgrid.collectData(true) ;
+				var dataArr = [];
+				dataArr.push(gridData) ;
+				$.request({
+					url : $$pageContextPath + 'eq/eqType/list',
+					data : dataArr,
+					params:{"typeClass":vm.typeClass,upId:this.eqTypeId},
+					success : function(response){
+						ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+					}
+				});					
+			},
+			queryModel : function(){
+				if(!ajaxgrid.getSelectedRecord())
+					return setRM("alert","请选择类型");
+				var gridData = ajaxgridModel.collectData(true) ;
+				var dataArr = [];
+				dataArr.push(gridData) ;
+				$.request({
+					url : $$pageContextPath + 'eq/eqModel/list',
+					data : dataArr,
+					params:{"typeId":ajaxgrid.getSelectedRecord().data.id},
+					success : function(response){
+						ajaxgridModel.setData(response.getAjaxDataWrap("dataWrapModel"));
+					}
+				});					
+			},			
+			show : function(row){
+				$.showModalDialog($$pageContextPath + 'eq/eqType/pageForm?editFlag=N&id='+row.id, "类型详细", vm.onsavecomplete, null, 600, 350, 0);
+			},
+			showModel : function(row){
+				$.showModalDialog($$pageContextPath + 'eq/eqModel/pageForm?editFlag=N&id='+row.id, "型号详细", vm.onsavemodelcomplete, null, 600, 350, 0);
+			},
+			extField : function(row){
+				$.showModalDialog($$pageContextPath + 'eq/jtExtField/?editFlag=Y&tableId='+row.id, "扩展属性", null, null, 600, 350, 0);
+			},
+			onsavecomplete : function(response,b,c){
+				vm.query();
+				var parent = eqTypeTree.getParent(eqTypeTree.findNodeByCode(this.eqTypeId));
+				eqTypeTree.refreshRootNode();
+			},
+			onsavemodelcomplete : function(response,b,c){
+				vm.queryModel();
+			},
+			add : function(){
+				if(!vm.eqTypeId){
+					return setRM("alert","请从左侧树选择节点")
+				}
+				$.showModalDialog($$pageContextPath + 'eq/eqType/pageForm?editFlag=Y&upId='+this.eqTypeId+"&typeClass="+this.typeClass, "添加", vm.onsavecomplete, null, 800, 450, 0);
+			},
+			addModel : function(){
+				if(!ajaxgrid.getSelectedRecord())
+					return setRM("alert","请选择类型");
+				$.showModalDialog($$pageContextPath + 'eq/eqModel/pageForm?editFlag=Y&typeId='+ajaxgrid.getSelectedRecord().data.id, "添加型号", vm.onsavemodelcomplete, null, 800, 450, 0);
+			},
+			remove :function(){
+				dataDel(ajaxgrid,$$pageContextPath + "eq/eqType/delete",vm.onsavecomplete());
+			},
+			removeModel :function(){
+				dataDel(ajaxgrid,$$pageContextPath + "eq/eqModel/delete",vm.onsavecomplete());
+			}
+		}
+	});
+	</script>
+</body>
+</html>

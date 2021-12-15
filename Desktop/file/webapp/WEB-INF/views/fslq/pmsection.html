@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true" :showpadding="false">
+			<hy-fillarea :display="editFlag=='N'?'none':'block'"> 
+				<hy-button text="保存" @click="save"></hy-button>
+			</hy-fillarea> 
+			<hy-fillarea> 
+			<hy-form id="myform" name="dataWrap" :readonly="editFlag=='N'?true:false"
+				:labelwidth="150" :cols="2" size="normal">
+				<hy-formgroup title="详细信息"> 
+					<hy-forminput label="标段编号" name="secNo" :rules="{ required: true}" :maxlength="64" ></hy-forminput>
+					<hy-forminput label="标段简称" name="secShortName" :maxlength="64"></hy-forminput>
+					<hy-forminput label="标段名称" :colspan="2" name="secName" :rules="{ required: true}" :maxlength="64"></hy-forminput>
+					<hy-formselect label="施工类型" name="workType" dropname="FSLQ.WORK_TYPE" ></hy-formselect> 
+					<hy-forminputbutton label="中标企业" name="winUnit" @click="selZbqy" v-model="zbqyId" :visible="secType=='1'||secType=='2'"
+						labelprovider="com.haiyisoft.fslq.labelprovider.GcUnitNameLabel" ></hy-forminputbutton>
+					<hy-forminputbutton label="施工单位" name="winUnit" @click="selWinUnit" v-model="winId" :visible="secType=='3'"
+						labelprovider="com.haiyisoft.fslq.labelprovider.GcUnitNameLabel" ></hy-forminputbutton>
+					<hy-forminput label="检验单位" name="jyUnit" :maxlength="64" :visible="secType=='3'"></hy-forminput>
+					<hy-forminput label="合同价" name="contractMoney" :maxlength="25" 
+						:rules="[{pattern: /^\d{0,22}$|^\d{1,22}\.\d{1,2}$/ ,message: '只能为整数部分不大于22位小数部分不大于2位的数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-forminput label="结算价" name="costMoney" :maxlength="25" 
+						:rules="[{pattern: /^\d{0,22}$|^\d{1,22}\.\d{1,2}$/ ,message: '只能为整数部分不大于22位小数部分不大于2位的数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-formdatepicker label="开工日期" name="beginDate" ></hy-formdatepicker>
+					<hy-formdatepicker label="完工日期" name="endDate" ></hy-formdatepicker>
+					<hy-forminput label="起点桩号" name="beginMile" :formatter="chgMilestone" :rules="{pattern: /^([-+]?\d{0,20})(\.\d{0,5})?$/, message: '只能为整数部分不大于20位小数部分不大于5位的数字'}"></hy-forminput>
+					<hy-forminput label="止点桩号" name="endMile" :formatter="chgMilestone" :rules="{pattern: /^([-+]?\d{0,20})(\.\d{0,5})?$/, message: '只能为整数部分不大于20位小数部分不大于5位的数字'}"></hy-forminput>
+					<hy-formselect label="状态" name="status" dropname="FSLQ.PRO_STATUS"></hy-formselect>
+					<hy-forminput label="建设单位" name="jsUnit" :maxlength="64" :visible="secType=='3'"></hy-forminput>
+					<hy-forminput label="设计单位" name="sjUnit" :maxlength="64" :visible="secType=='3'"></hy-forminput>
+					<hy-forminput label="排序号" name="orderSn" :maxlength="4" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+					<hy-formselect label="公路等级" name="roadLevel" dropname="PM.ROAD_LEVEL" :visible="secType=='3'"></hy-formselect>
+					<hy-forminput label="营业执照" name="license" :colspan="2" :maxlength="64"></hy-forminput> 
+					<hy-forminput label="标段简介" name="secDesc" :rowspan="3"  :colspan="2" type="textarea" :maxlength="2000"></hy-forminput> 
+				</hy-formgroup> 
+		   </hy-form> 
+		  </hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				winId : "",
+				zbqyId : ""
+			},
+			mounted : function() {
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+			},
+			methods : {
+				save : function() {
+					myform.validate(function(data) {
+						if (data) {
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath + 'pmSection/save',
+								data : dataArr,
+								success : function(response) {
+									setRM(function() {
+										$.close(response)
+									})
+								}
+							});
+						}
+					});
+				},
+				selWinUnit : function(){
+					$.showModalDialog($$pageContextPath + "gc/pmGcUnit/select?unitType=4", 
+							"选择施工单位", vm.selWinUnitComp, null, 1500, 800, 0);
+				},
+				selWinUnitComp : function(data){
+					this.winId = data;
+				},
+				selZbqy : function(){
+					$.showModalDialog($$pageContextPath + "gc/pmGcUnit/select?unitType=5", 
+							"选择中标企业", vm.selZbqyComp, null, 1500, 800, 0);
+				},
+				selZbqyComp : function(data){
+					this.zbqyId = data;
+				},
+				chgMilestone:function(obj){
+					return msFormatK(obj);
+				},
+			}
+		});
+	</script>
+</body>
+</html>

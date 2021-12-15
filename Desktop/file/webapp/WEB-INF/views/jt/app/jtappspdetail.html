@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:jt="http://www.w3.org/1999/xhtml">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/jt/app/appcommon.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout id="detailFrame" cols="200,*"  :showborder="true"  :showpadding="false">
+			<hy-fillarea>
+				<hy-tree id="hisTaskTree" @nodeclick="changeHisDetail" :dynamic="true" :rootcode="rootcode"
+		  			valueprovider="com.haiyisoft.jt.app.tree.HisAppTaskTree"  ></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea id="hisDetailId" :href="detailHref"></hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				detailHref : "",
+				rootcode : ""
+			},
+			mounted : function(){
+				this.rootcode = this.appInstanceId+","+this.appTaskId;
+			},
+			methods : {	
+	 			changeHisDetail : function(obj) {
+	 				this.detailHref = obj.type;
+	 			}
+			}
+			
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,1322 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<template th:substituteby="framework/pageset.html"></template>
+<title>作战指挥中心</title>
+</head>
+<style>
+.contaner{
+width:100%;
+height: 100%;
+position:relative;
+background: url(../../images/screem/bg.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+}
+.div2{
+width: 100%;
+height: 48%;
+voice-family: male;
+line-height: 45%;
+position:relative;
+}
+.div3{
+width: 100%;
+height: 49%;
+voice-family: male;
+line-height: 45%;
+position:relative;
+margin-top: 1%;
+}
+
+
+.div4 {
+
+width: 25%;
+height: 98%;
+background: url(../../images/screem/you.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 28%;
+ float:left;
+ margin-left:1%;
+  margin-top: 1%;
+
+}
+.div5 {
+width:46%;
+height: 98%;
+background: url(../../images/screem/zhong.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 38%;
+ float:left;
+ margin-left:1%;
+ margin-top: 1%;
+}
+.div6 {
+
+width: 25%;
+height: 98%;
+background: url(../../images/screem/you.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 28%;
+ float:left;
+ margin-left:1%;
+  margin-top: 1%;
+}
+
+
+.div7 {
+
+width: 25%;
+height: 98%;
+background: url(../../images/screem/you.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 28%;
+ float:left;
+ margin-left:1%;
+
+}
+.div8 {
+width:46%;
+height: 98%;
+background: url(../../images/screem/zhong.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 38%;
+ float:left;
+ margin-left:1%;
+}
+.div9 {
+
+width: 25%;
+height: 98%;
+background: url(../../images/screem/you.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 28%;
+ float:left;
+ margin-left:1%;
+}
+ .p1 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-weight: bold;
+            font-size:18px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            width: 100%;
+            height:100%;
+            text-align: center;
+        }
+        
+ #div1{
+    float: left;
+     display: inline-block;
+     width: 27%;
+     height: 100%
+     
+}
+#div2 {
+    float: left;
+     display: inline-block;
+      width: 29%;
+     height: 100%
+}
+#div3 {
+    float: right;
+     display: inline-block;
+      width: 38%;
+     height: 100%
+}
+#div4{
+    float: left;
+     display: inline-block;
+     width: 30%;
+     height: 100%
+     
+}
+#div5 {
+    float: left;
+     display: inline-block;
+      width: 22%;
+     height: 100%
+}
+#div6 {
+    float: right;
+     display: inline-block;
+      width: 38%;
+     height: 100%
+}
+</style>
+<body style="background-color: transparent;">
+	 <div class="contaner">
+	 <div class="div2">
+	 <div class="div4">
+	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">重点拆迁</p>
+	   </div>
+	  <div id="zdcq" style="width:100%;height:100%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 </div>
+	 <div class="div5">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">土地征收与移交</p>
+	   </div>
+	 <div id="tdzsyyj" style="width:100%;height:95%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 
+	 </div>
+	 <div class="div6">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">预警消息</p>
+	   </div>
+	 <div style="height:90%;width:98%; display: inline-block;text-align: center;line-height:92%;margin:1%;">
+	 <div style="background: url(../../images/bjt.png) center no-repeat;margin:0 auto;background-size:100% 100%; height:18%;width:94%; display: inline-block;text-align: center;line-height:18%;voice-family: male;margin-top: 3%;">
+	 	
+	<div id="div1" style="display: flex;justify-content: center;align-items: center; margin-left:5%"><img src="../../images/fw.png"><h 
+style="color:white; font-size:16px">&nbsp;&nbsp;房屋</h></div>
+    <div id="div2" style="display: flex;justify-content: center;align-items: center; "><h 
+style="color:white; font-size:20px;font-weight:bold" id="fw"></h></div>
+    <div id="div3" style="display: flex;justify-content: left;align-items: center;"><h 
+style="color:white; font-size:18px">较上月:&nbsp;&nbsp;<tb id="fwl"></tb></h>&nbsp;&nbsp;<img src="?"  id="img1"></div>
+	
+	 </div>
+	 
+	 	 <div style="background: url(../../images/bjt.png) center no-repeat;margin:0 auto;background-size:100% 100%; height:18%;width:94%; display: inline-block;text-align: center;line-height:18%;voice-family: male;margin-top: 5%;">
+	 	<div id="div1" style="display: flex;justify-content: center;align-items: center; margin-left:5%"><img src="../../images/gxt.png"><h 
+style="color:white; font-size:16px">&nbsp;&nbsp;管线</h></div>
+    <div id="div2" style="display: flex;justify-content: center;align-items: center; "><h 
+style="color:white; font-size:20px;font-weight:bold" id="gx">{{gx}}</h></div>
+    <div id="div3" style="display: flex;justify-content: left;align-items: center;"><h 
+style="color:white; font-size:18px">较上月:&nbsp;&nbsp;<tb id="gxl">{{gx1}}</tb></h>&nbsp;&nbsp;<img src="?"  id="img2"></div>
+	
+	 </div>
+	 
+	 	 <div style="background: url(../../images/bjt.png) center no-repeat;margin:0 auto;background-size:100% 100%; height:18%;width:94%; display: inline-block;text-align: center;line-height:18%;voice-family: male;margin-top: 5%;">
+	 	<div id="div1" style="display: flex;justify-content: center;align-items: center; margin-left:5%"><img src="../../images/zct.png"><h 
+style="color:white; font-size:16px">&nbsp;&nbsp;土地</h></div>
+    <div id="div2" style="display: flex;justify-content: center;align-items: center; "><h 
+style="color:white; font-size:20px;font-weight:bold" id="td">{{td}}</h></div>
+    <div id="div3" style="display: flex;justify-content: left;align-items: center;"><h 
+style="color:white; font-size:18px;">较上月:&nbsp;&nbsp;<tb id="tdl">{{td1}}</tb></h>&nbsp;&nbsp;<img src="?"  id="img3"></div>
+	
+	 </div>
+	 
+	 	 <div style="background: url(../../images/bjt.png) center no-repeat;margin:0 auto;background-size:100% 100%; height:18%;width:94%; display: inline-block;text-align: center;line-height:18%;voice-family: male;margin-top: 5%;">
+	 	<div id="div4" style="display: flex;justify-content: center;align-items: center; margin-left:7%">
+<img src="../../images/lsydt.png"><h style="color:white; font-size:16px">&nbsp;&nbsp;临时用地</h></div>
+    <div id="div5" style="display: flex;justify-content: center;align-items: center;margin-right:2%">
+    <h style="color:white; font-size:20px;font-weight:bold" id="yd">{{yd}}</h></div>
+    <div id="div6" style="display: flex;justify-content: left;align-items: center;">
+    <h style="color:white; font-size:18px">较上月:&nbsp;&nbsp;<tb id="ydl">{{yd1}}</tb>
+    </h>&nbsp;&nbsp;
+    <img src="?"  id="img4"></div>
+    
+	 </div>
+	 </div>
+	 </div>
+	 </div>
+	 
+	 
+	 <div class="div3">
+	 <div class="div7">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">房屋拆迁</p>
+	   </div>
+	 <div id="fwcq" style="width:100%;height:95%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 
+	 </div>
+	 <div class="div8">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">管线改迁</p>
+	   </div>
+	 <div id="gxcq" style="width:100%;height:95%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 </div>
+	 <div class="div9">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">临时用地</p>
+	   </div>
+	  <div id="lsyd" style="width:95%;height:95%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 
+	 
+	 </div>
+	 </div>
+	 </div>
+	 <script type="text/javascript" src="../../framework/js/zhzx/echarts.min.js"></script>
+
+</body>
+<script type="text/javascript">
+$(function(){
+	debugger;
+	var pageObj={};
+	var u = decodeURI(location.search); //获取url中"?"符后的字串 ('?modFlag=business&role=1')
+	    if ( u.indexOf( "?" ) != -1 ) {
+	      var str = u.substr( 1 ); //substr()方法返回从参数值开始到结束的字符串；
+	      var strs = str.split( "&" );
+	      for ( var i = 0; i < strs.length; i++ ) {
+	          pageObj[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+	      }
+	    }
+	var pid=pageObj.pid;
+	//重点拆迁
+	getChart1(pid);
+	//土地征收与移交
+	getChart2(pid);
+	//房屋拆迁
+	getChart3(pid);
+	//管线拆迁
+	getChart4(pid);
+	//临时用地
+	getChart5(pid);
+	//预警消息
+	getYjxx(pid);
+})
+
+
+function  getYjxx(pid) {
+	$.request({
+		url : $$pageContextPath+'main/demolition/yjxx?pid='+pid,
+		success : function(response){
+		//var response = {"currentDataWrap":"dataWrap","dataWraps":{},"errorMessage":"","message":"","parameters":{"yjxx":{"td":{"bj":"0","bjs":0,"by":0,"sy":0},"fw":{"bj":"0","bjs":0,"by":0,"sy":0},"gx":{"bj":"0","bjs":0,"by":0,"sy":0},"yd":{"bj":"0","bjs":0,"by":0,"sy":0}}}};
+		var t=response.parameters.yjxx;
+		$("#fw").html(t.fw.by);
+		$("#fwl").html(t.fw.bjs);
+		if(t.fw.bj=='1'){
+			var adres="../../images/sst.png";
+			document.getElementById('img1').src = adres;
+		}else if(t.fw.bj=='0'){
+			var adres="../../images/spt.png";
+			document.getElementById('img1').src = adres;
+		}else{
+			var adres="../../images/xjt.png";
+			document.getElementById('img1').src = adres;
+		}
+		
+		$("#gx").html(t.gx.by);
+		$("#gxl").html(t.gx.bjs);
+		if(t.gx.bj=='1'){
+			var adres="../../images/sst.png";
+			document.getElementById('img2').src = adres;
+		}else if(t.gx.bj=='0'){
+			var adres="../../images/spt.png";
+			document.getElementById('img2').src = adres;
+		}else{
+			var adres="../../images/xjt.png";
+			document.getElementById('img2').src = adres;
+		}
+		
+		$("#td").html(t.td.by);
+		$("#tdl").html(t.td.bjs);
+		if(t.td.bj=='1'){
+			var adres="../../images/sst.png";
+			document.getElementById('img3').src = adres;
+		}else if(t.td.bj=='0'){
+			var adres="../../images/spt.png";
+			document.getElementById('img3').src = adres;
+		}else{
+			var adres="../../images/xjt.png";
+			document.getElementById('img3').src = adres;
+		}
+		
+		$("#yd").html(t.yd.by);
+		$("#ydl").html(t.yd.bjs);
+		if(t.yd.bj=='1'){
+			var adres="../../images/sst.png";
+			document.getElementById('img4').src = adres;
+		}else if(t.yd.bj=='0'){
+			var adres="../../images/spt.png";
+			document.getElementById('img4').src = adres;
+		}else{
+			var adres="../../images/xjt.png";
+			document.getElementById('img4').src = adres;
+		}
+		}
+	});
+}
+
+
+
+
+
+function  getChart1(pid) {
+	
+	//$.request({
+	//	url : $$pageContextPath+'main/demolition/zdcq?pid='+pid,
+	//	success : function(response){
+		var response = {"currentDataWrap":"dataWrap","dataWraps":{},"errorMessage":"","message":"","parameters":{"zdcq":{"number":[1],"name":["云东海街道（管线拆迁）"]}}};
+	 var dom = document.getElementById("zdcq");
+	 var myChart = echarts.init(dom);
+	 var t=response.parameters.zdcq;
+	 var app = {};
+	 option = null;
+	 
+	// 绘制左侧面
+	 const CubeLeft = echarts.graphic.extendShape({
+	     shape: {
+	         x: 0,
+	         y: 0
+	     },
+	     buildPath: function(ctx, shape) {
+	         // 会canvas的应该都能看得懂，shape是从custom传入的
+	         const xAxisPoint = shape.xAxisPoint
+	         console.log(shape)
+	         const c0 = [shape.x + 10, shape.y]
+	         const c1 = [shape.x - 15, shape.y - 3]
+	         const c2 = [xAxisPoint[0] - 15, xAxisPoint[1] - 7]
+	         const c3 = [xAxisPoint[0] + 10, xAxisPoint[1]]
+	         ctx.moveTo(c0[0], c0[1]).lineTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).closePath()
+	     }
+	 })
+	 // 绘制右侧面
+	 const CubeRight = echarts.graphic.extendShape({
+	     shape: {
+	         x: 0,
+	         y: 0
+	     },
+	     buildPath: function(ctx, shape) {
+	         const xAxisPoint = shape.xAxisPoint
+	         const c1 = [shape.x + 10, shape.y]
+	         const c2 = [xAxisPoint[0] + 10, xAxisPoint[1]]
+	         const c3 = [xAxisPoint[0] + 25, xAxisPoint[1] - 7]
+	         const c4 = [shape.x + 25, shape.y - 7]
+	         ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
+	     }
+	 })
+	 // 绘制顶面
+	 const CubeTop = echarts.graphic.extendShape({
+	     shape: {
+	         x: 0,
+	         y: 0
+	     },
+	     buildPath: function(ctx, shape) {
+	         const c1 = [shape.x + 10, shape.y]
+	         const c2 = [shape.x + 25, shape.y - 7] //右点
+	         const c3 = [shape.x - 2, shape.y - 12]
+	         const c4 = [shape.x - 15, shape.y - 2]
+	         ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
+	     }
+	 })
+	 // 注册三个面图形
+	 echarts.graphic.registerShape('CubeLeft', CubeLeft)
+	 echarts.graphic.registerShape('CubeRight', CubeRight)
+	 echarts.graphic.registerShape('CubeTop', CubeTop)
+	 const VALUE = t.number
+	 option = {
+	     tooltip: {
+	         trigger: 'axis',
+	         axisPointer: {
+	             type: 'shadow'
+	         },
+	         formatter: function(params, ticket, callback) {
+	             const item = params[1]
+	             return item.name + ' : ' + item.value;
+	         }
+	     },
+	     grid: {
+	         left: '10%',
+	         right: '10%',
+	         top: '15%',
+	         bottom: '10%',
+	         containLabel: true
+	     },
+	     xAxis: {
+	         type: 'category',
+	         data: t.name,
+	         axisLine: {
+	             show: true,
+	             lineStyle: {
+	                 color: 'white'
+	             }
+	         },
+	         axisTick: {
+	             show: false,
+	             length: 5,
+	             alignWithLabel: true,
+	             lineStyle: {
+	                 color: '#08c7f3'
+	             }
+	         },
+	         axisLabel: {
+	             fontSize: 14,
+	             interval:0,
+                 rotate:30
+	         }
+	     },
+	     yAxis: {
+	         type: 'value',
+	         name:'处',
+	         nameTextStyle: {
+	              fontSize: 16,
+	              color: '#fff'
+	          },
+	         axisLine: {
+	             show: true,
+	             lineStyle: {
+	                 color: 'white'
+	             }
+	         },
+	         splitLine: {
+	             show: false
+	         },
+	         axisTick: {
+	             show: false
+	         },
+	         axisLabel: {
+	             fontSize: 16
+	         },
+	         boundaryGap: ['0%', '20%']
+	     },
+	     series: [{
+	         type: 'custom',
+	         renderItem: (params, api) => {
+	             const location = api.coord([api.value(0), api.value(1)])
+	             return {
+	                 type: 'group',
+	                 children: [{
+	                     type: 'CubeLeft',
+	                     shape: {
+	                         api,
+	                         xValue: api.value(0),
+	                         yValue: api.value(1),
+	                         x: location[0],
+	                         y: location[1],
+	                         xAxisPoint: api.coord([api.value(0), 0])
+	                     },
+	                     style: {
+	                         fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+	                                 offset: 0,
+	                                 color: '#08c7f3'
+	                             },
+	                             {
+	                                 offset: 1,
+	                                 color: '#00b5bc'
+	                             }
+	                         ])
+	                     }
+	                 }, {
+	                     type: 'CubeRight',
+	                     shape: {
+	                         api,
+	                         xValue: api.value(0),
+	                         yValue: api.value(1),
+	                         x: location[0],
+	                         y: location[1],
+	                         xAxisPoint: api.coord([api.value(0), 0])
+	                     },
+	                     style: {
+	                         fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+	                                 offset: 0,
+	                                 color: '#00b5bc'
+	                             },
+	                             {
+	                                 offset: 1,
+	                                 color: '#08c7f3'
+	                             }
+	                         ])
+	                     }
+	                 }, {
+	                     type: 'CubeTop',
+	                     shape: {
+	                         api,
+	                         xValue: api.value(0),
+	                         yValue: api.value(1),
+	                         x: location[0],
+	                         y: location[1],
+	                         xAxisPoint: api.coord([api.value(0), 0])
+	                     },
+	                     style: {
+	                         fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+	                                 offset: 0,
+	                                 color: '#08c7f3'
+	                             },
+	                             {
+	                                 offset: 1,
+	                                 color: '#08c7f3'
+	                             }
+	                         ])
+	                     }
+	                 }]
+	             }
+	         },
+	         data: VALUE
+	     }, {
+	         type: 'bar',
+	         label: {
+	             normal: {
+	                 show: true,
+	                 position: 'top',
+	                 fontSize: 14,
+	                 color: '#fff',
+	                 offset: [2, -25]
+	             }
+	         },
+	         itemStyle: {
+	             color: 'transparent'
+	         },
+	         tooltip: {
+
+	         },
+	         data: VALUE
+	     }]
+	 };
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }
+	//	}
+	//});
+}
+
+function  getChart2(pid) {
+	//$.request({
+	//	url : $$pageContextPath+'main/demolition/tdzsyj?pid='+pid,
+	//	success : function(response){
+	var response = {"currentDataWrap":"dataWrap","dataWraps":{},"errorMessage":"","message":"","parameters":{"tdzsyj":{"yz":[0,0,0,0,0,0],"yyjs":[0,0,0,0,0,0],"yzs":[0,0,0,0,0,0],"time":["2021-01","2021-02","2021-03","2021-04","2021-05","2021-06"],"yyj":[0,0,0,0,0,0]}}};
+	 var dom = document.getElementById("tdzsyyj");
+	 var myChart = echarts.init(dom);
+	 var t=response.parameters.tdzsyj;
+	 var app = {};
+	 option = null;
+	  option = {
+		      grid: {
+		          left: '5%',
+		          right: '5%',
+		          top: '20%',
+		          bottom: '5%',
+		          containLabel: true
+		      },
+		      tooltip: {
+		          show: true, //去除面板显示
+		          trigger: 'axis',
+		      },
+		      color: ['#3f6eff', '#46c8f3', '#f2af00', '#09ffc6'],
+		      legend: {
+		          show: true,
+		          top: '5%',
+		          icon: 'bar',
+		          itemWidth: 20,
+		          itemHeight: 3,
+		          itemGap: 35, //图例间隔距离
+		          textStyle: {
+		              color: '#fff',
+		              fontSize: '16'
+		          },
+		          data: ['应征收', '已征收', '应移交', '已移交']
+		      },
+		      xAxis: [{
+		          type: 'category',
+		          boundaryGap: false, //图形距离y轴线的距离
+		          axisLabel: {
+		              interval: 0,
+		              color: '#fff',
+		              fontSize: 16
+		          },
+		          axisLine: {
+		              show: true,
+		              lineStyle: {
+		                  color: '#00D2FF',
+		                  width: 0.2
+		              }
+		          },
+		          axisTick: {
+		              show: false,
+		          },
+		          splitLine: { //x轴分割线
+		              show: false,
+		              lineStyle: {
+		                  color: '#00D2FF'
+		              }
+		          },
+		          data: t.time,
+		      }],
+		      yAxis: [{
+		          type: 'value',
+		          name: '( ㎡)     ',
+		          nameTextStyle: {
+		              fontSize: 16,
+		              color: '#fff'
+		          },
+		          axisLabel: {
+		              formatter: '{value}',
+		              textStyle: {
+		                  color: 'white',
+		                  fontSize: 18
+		              },
+		          },
+		          splitLine: { //y轴分割线
+		              show: true,
+		              lineStyle: {
+		                  color: 'white',
+		                  width: 0.2,
+		                  type: 'solid'
+		              }
+		          },
+		          axisLine: {
+		              show: false,
+		              lineStyle: {
+		                  color: '#00D2FF',
+		                  width: 0.2
+		              }
+		          },
+		          axisTick: {
+		              show: false,
+		          },
+		      }],
+		      series: [{
+		              name: '应征收',
+		              type: 'line',
+		             
+		             
+		              itemStyle: {
+		                  normal: {
+		                      lineStyle: {
+		                          color: '#3f6eff',
+		                      },
+		                      areaStyle: {
+		                          color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+		                              offset: 0,
+		                              color: 'rgba(63,110,255,.1)'
+		                          }, {
+		                              offset: 1,
+		                              color: 'rgba(63,110,255,.6)'
+		                          }]),
+		                      }
+		                  }
+		              },
+		              data: t.yz,
+		          },
+		          {
+		              name: '已征收',
+		              type: 'line',
+		            
+		             
+		              itemStyle: {
+		                  normal: {
+		                      lineStyle: {
+		                          color: '#46c8f3',
+		                      },
+		                      areaStyle: {
+		                          color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+		                              offset: 0,
+		                              color: 'rgba(70,200,243,.1)'
+		                          }, {
+		                              offset: 1,
+		                              color: 'rgba(70,200,243,.6)'
+		                          }]),
+		                      }
+		                  }
+		              },
+		              data: t.yzs
+		          },
+		          {
+		              name: '应移交',
+		              type: 'line',
+		             
+		              itemStyle: {
+		                  normal: {
+		                      lineStyle: {
+		                          color: '#f2af00',
+		                      },
+		                      areaStyle: {
+		                          color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+		                              offset: 0,
+		                              color: 'rgba(9,255,198,.1)'
+		                          }, {
+		                              offset: 1,
+		                              color: 'rgba(9,255,198,.6)'
+		                          }]),
+		                      }
+		                  }
+		              },
+		              data: t.yyj
+		          },
+		          {
+		              name: '已移交',
+		              type: 'line',
+		            
+		              itemStyle: {
+		                  normal: {
+		                      lineStyle: {
+		                          color: '#09ffc6',
+		                      },
+		                      areaStyle: {
+		                          color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+		                              offset: 0,
+		                              color: 'rgba(242,175,0,.1)'
+		                          }, {
+		                              offset: 1,
+		                              color: 'rgba(242,175,0,.6)'
+		                          }]),
+		                      }
+		                  }
+		              },
+		              data: t.yyjs
+		          }
+		      ]
+		  };
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }
+		//}
+	//});
+}
+
+
+function  getChart3(pid) {
+	//$.request({
+	//	url : $$pageContextPath+'main/demolition/fwcq?pid='+pid,
+	//	success : function(response){
+		var response =	{"currentDataWrap":"dataWrap","dataWraps":{},"errorMessage":"","message":"","parameters":{"fwcq":{"jyp":{"wcq":0,"ycq":0},"fw":{"wcq":4,"ycq":4},"cf":{"wcq":4,"ycq":9}}}};
+	 var dom = document.getElementById("fwcq");
+	 var myChart = echarts.init(dom);
+	 var t=response.parameters.fwcq;
+	 var app = {};
+	 option = null;
+	 const mock = [{
+	        k: '房屋',
+	        v: [{
+	            k: '已拆迁',
+	            v: t.fw.ycq
+	        }, {
+	            k: '未拆迁',
+	            v: t.fw.wcq
+	        }],
+	    },
+	    {
+	        k: '厂房',
+	        v: [{
+	            k: '已拆迁',
+	            v: t.cf.ycq
+	        }, {
+	            k: '未拆迁',
+	            v: t.cf.wcq
+	        }],
+	    },
+	    {
+	        k: '简易棚',
+	        v: [{
+	            k: '已拆迁',
+	            v: t.jyp.ycq
+	        }, {
+	            k: '未拆迁',
+	            v: t.jyp.wcq
+	        }],
+	    }
+	]
+
+	// 横轴数据
+	const xAxis = mock.map(item => item.k)
+	// 系列 1 数据 (类目1)
+	const seriesData1 = mock.map(item => item.v[0].v)
+	// 系列 2 数据 (类目2)
+	const seriesData2 = mock.map(item => item.v[1].v)
+	// 最大值 (额外拉高多少根据数据数量级决定)
+	const max = Math.max(...seriesData1, ...seriesData2) +2
+	// 构造柱最大值数组
+	const maxList = []
+	for (let i = 0; i < mock.length; i += 1) {
+	    maxList.push(max)
+	}
+
+	option = {
+	    color: ['#15477B'],
+	    series: [
+	        {
+	            name: '已拆迁',
+	            data: seriesData1,
+	            type: 'bar',
+	            xAxisIndex: 1,
+	            itemStyle: {
+	            
+	                color: {
+	                    type: 'linear',
+	                    x: 0,
+	                    y: 0,
+	                    x2: 0,
+	                    y2: 1,
+	                    colorStops: [{
+	                        offset: 0,
+	                        color: '#25d6ff', // 0% 处的颜色
+	                    }, {
+	                        offset: 1,
+	                        color: '#00aace', // 100% 处的颜色
+	                    }],
+	                },
+	            },
+	            label: {//图形上的文本标签
+	                 normal: {
+	                   show: true,
+	                   position: 'top',
+	                   textStyle: {
+	                      color: '#a8aab0',
+	                       fontStyle: 'normal',
+	                      fontFamily: '微软雅黑',
+	                     fontSize: 12,   
+	                   },
+	                },
+	            },
+	            barWidth: 20,
+	        },
+	        {
+	            name: '未拆迁',
+	            data: seriesData2,
+	            type: 'bar',
+	            xAxisIndex: 1,
+	            itemStyle: {
+	         
+	                color: {
+	                    type: 'bar',
+	                    x: 0,
+	                    y: 0,
+	                    x2: 0,
+	                    y2: 1,
+	                    colorStops: [{
+	                        offset: 0,
+	                        color: '#0affc6', // 0% 处的颜色
+	                    }, {
+	                        offset: 1,
+	                        color: '#3fc2a3', // 100% 处的颜色
+	                    }],
+	                },
+	            },
+	            label: {//图形上的文本标签
+	                 normal: {
+	                   show: true,
+	                   position: 'top',
+	                   textStyle: {
+	                      color: '#a8aab0',
+	                       fontStyle: 'normal',
+	                      fontFamily: '微软雅黑',
+	                     fontSize: 12,   
+	                   },
+	                },
+	            },
+	            barWidth: 20,
+	        },
+	    ],
+	
+	    tooltip: {
+	        trigger: 'axis',
+	        axisPointer: {
+	            type: 'shadow',
+	        },
+	    },
+	    legend: {
+	        itemWidth: 10,
+	        top: 15,
+	        right: 25,
+	        textStyle: {
+	            color: '#fff',
+	        },
+	    },
+	    xAxis: [{
+	            data: maxList,
+	            axisLine: {
+	                show: false,
+	            },
+	            axisLabel: {
+	                show: false,
+	            },
+	            axisTick: {
+	                show: false,
+	            },
+	            position: 'bottom',
+	        },
+	        {
+	            data: xAxis,
+	            axisLine: {
+	                lineStyle: {
+	                    color: '#00D2FF',
+	                },
+	            },
+	            axisLabel: {
+	                color: '#fff',
+	            },
+	            axisTick: {
+	                show: false,
+	            },
+	            position: 'bottom',
+	        },
+	    ],
+	    yAxis: {
+	    	   name:'处',
+		         nameTextStyle: {
+		              fontSize: 16,
+		              color: '#fff'
+		          },
+	        axisLine: {
+	            show: false,
+	        },
+	        axisLabel: {
+	            color: '#fff',
+	        },
+	        axisTick: {
+	            show: false,
+	        },
+	        splitLine: {
+	            lineStyle: {
+	                color: '#00D2FF',
+	                opacity: 0.1,
+	            },
+	        },
+	    },
+	};
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }	
+	 //}
+	//});
+}
+
+function  getChart4(pid) {
+	//$.request({
+	//	url : $$pageContextPath+'main/demolition/gxcq?pid='+pid,
+	//	success : function(response){
+		var	response =	{"currentDataWrap":"dataWrap","dataWraps":{},"errorMessage":"","message":"","parameters":{"gxcq":{"name":["高压线","低压线","弱电","排水","燃气管","供水","通信","工业管道","其它"],"wcq":[7,0,0,0,2,4,4,1,1],"ycq":[0,0,0,0,0,0,0,0,0]}}};
+	 var dom = document.getElementById("gxcq");
+	 var myChart = echarts.init(dom);
+	 var t=response.parameters.gxcq;
+	 var app = {};
+	 option = null;
+	 var option = {
+				tooltip: { //提示框组件
+					trigger: 'axis',
+					formatter: '{b}<br />{a0}: {c0}<br />{a1}: {c1}',
+					axisPointer: {
+						type: 'shadow',
+						label: {
+							backgroundColor: '#6a7985'
+						}
+					},
+					textStyle: {
+						color: '#fff',
+						fontStyle: 'normal',
+						fontFamily: '微软雅黑',
+						fontSize: 14,
+					}
+				},
+				grid: {
+					left: '5%',
+					right: '5%',
+					bottom: '10%',
+					top:'18%',
+				//	padding:'0 0 10 0',
+					containLabel: true,
+				},
+			    legend: {//图例组件，颜色和名字
+			        right:'10%',
+					top:'3%',
+					itemGap: 16,
+					itemWidth: 18,
+					itemHeight: 10,
+			        data:[{
+			            name:'已拆迁',
+			            //icon:'image://../wwwroot/js/url2.png', //路径
+			        },
+			        {
+			            name:'未拆迁',
+			        }],
+			        textStyle: {
+						color: 'white',
+						fontStyle: 'normal',
+						fontFamily: '微软雅黑',
+						fontSize: 14,            
+			        }
+			    },
+				xAxis: [
+					{
+						type: 'category',
+					//	boundaryGap: true,//坐标轴两边留白
+						data: t.name,
+						axisLabel: { //坐标轴刻度标签的相关设置。
+					//		interval: 0,//设置为 1，表示『隔一个标签显示一个标签』
+						//	margin:15,
+							textStyle: {
+								color: 'white',
+								fontStyle: 'normal',
+								fontFamily: '微软雅黑',
+								fontSize: 14,
+							},
+							rotate:0,
+						},
+						axisTick:{//坐标轴刻度相关设置。
+							show: false,
+						},
+						axisLine:{//坐标轴轴线相关设置
+							lineStyle:{
+								color:'#fff',
+								opacity:0.2
+							}
+						},
+						splitLine: { //坐标轴在 grid 区域中的分隔线。
+							show: false,
+						}
+					}
+				],
+				yAxis: [
+					{
+						type: 'value',
+						   name:'处',
+					         nameTextStyle: {
+					              fontSize: 16,
+					              color: 'white'
+					          },
+						splitNumber: 5,
+						axisLabel: {
+							textStyle: {
+								color: 'white',
+								fontStyle: 'normal',
+								fontFamily: '微软雅黑',
+								fontSize: 15,
+							}
+						},
+						axisLine:{
+							show: false
+						},
+						axisTick:{
+							show: false
+						},
+						splitLine: {
+							show: true,
+							lineStyle: {
+								color: ['#fff'],
+								opacity:0.06
+							}
+						}
+
+					}
+				],
+			    series : [
+			        {
+			            name:'已拆迁',
+			            type:'bar',
+			            data:t.ycq,
+			            barWidth: 15,
+			            barGap:1,//柱间距离
+			             label: {//图形上的文本标签
+			                 normal: {
+			                   show: true,
+			                   position: 'top',
+			                   textStyle: {
+			                      color: '#a8aab0',
+			                       fontStyle: 'normal',
+			                      fontFamily: '微软雅黑',
+			                     fontSize: 14,   
+			                   },
+			                },
+			            },
+			          itemStyle: {
+			                normal: {
+			                    show: true,
+			                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                        offset: 0,
+			                        color: '#306cff'
+			                    }, {
+			                        offset: 1,
+			                        color: '#306cff'
+			                    }]),
+			                    barBorderRadius:0,
+			                    borderWidth: 0,
+			                }
+			            },
+			        },
+			        {
+			            name:'未拆迁',
+			            type:'bar',
+			            data:t.wcq,
+			            barWidth: 15,
+			            barGap:1,//柱间距离
+			             label: {//图形上的文本标签
+			                 normal: {
+			                   show: true,
+			                   position: 'top',
+			                   textStyle: {
+			                       color: '#a8aab0',
+			                       fontStyle: 'normal',
+			                       fontFamily: '微软雅黑',
+			                      fontSize: 12,   
+			                  },
+			                },
+			             },
+			             itemStyle: {
+			                normal: {
+			                    show: true,
+			                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                        offset: 0,
+			                        color: '#08c7f1'
+			                    }, {
+			                        offset: 1,
+			                        color: '#08c7f1'
+			                    }]),
+			                    barBorderRadius: 0,
+			                    borderWidth: 0,
+			                }
+			            },
+			        }
+			    ]
+			};
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }	
+	 //}
+	//});
+}
+
+function  getChart5(pid) {
+	//$.request({
+	//	url : $$pageContextPath+'main/demolition/lsyd?pid='+pid,
+	//	success : function(response){
+		var response = {"currentDataWrap":"dataWrap","dataWraps":{},"errorMessage":"","message":"","parameters":{"lsyd":{"syz":[26690.67],"yhs":[0],"name":["三水区"]}}};
+	 var dom = document.getElementById("lsyd");
+	 var myChart = echarts.init(dom);
+	 var t=response.parameters.lsyd;
+	 var app = {};
+	 option = null;
+	 option = {
+			    tooltip : {
+			        trigger: 'axis'
+			    },
+			    grid: {
+			        left: '1%',
+			        right: '8%',
+			        bottom: '3%',
+			        top:"10%",
+			        containLabel: true
+			    },
+			    legend: {
+			        data:['使用中', '已回收'],
+			      textStyle:{
+							color:'white'
+						},
+			    },
+			    calculable : true,
+			    xAxis : [
+			        {
+			            type : 'value',
+			            name:'㎡',
+				         nameTextStyle: {
+				              fontSize: 16,
+				              color: '#fff'
+				          },
+			            boundaryGap : [0, 0.01],
+			          axisLabel: {
+			              textStyle: {
+			                  fontSize: 16,
+			                  color: 'white'
+			              },
+			              interval:0,
+                          rotate:45
+			          },
+			           axisLine: {
+			            lineStyle: {
+			                color: '#00D2FF',
+			                opacity: 0.2
+			            }
+			        },
+			        splitLine: {
+			            lineStyle: {
+			                type: 'dashed',
+			                color: '#00D2FF',
+			                opacity: 0.2
+			            }
+			        }
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'category',
+			            data : t.name,
+			          axisLabel: {
+			              textStyle: {
+			                  fontSize: 16,
+			                  color: 'white'
+			              },
+			              interval:0,
+                          rotate:45
+			          },
+			           axisLine: {
+			            lineStyle: {
+			                color: '#00D2FF',
+			                opacity: 0.2
+			            }
+			        },
+			        }
+			    ],
+			    series : [
+			        {
+			            name:'使用中',
+			            type:'bar',
+			            barWidth:30,
+			             itemStyle: {
+			            normal: {
+			                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                    offset: 0,
+			                    color: '#55fafb'
+			                }, {
+			                    offset: 1,
+			                    color: '#00a3d2'
+			                }]),label: {
+								show: true, //开启显示
+								position: 'right', //在上方显示
+								textStyle: { //数值样式
+									color: 'white',
+									fontSize: 16
+								}
+							},
+			                barBorderRadius:0,
+			                
+			            }
+			            
+			          },
+			      
+			            data:t.syz,
+			        },
+			        {
+			            name:'已回收',
+			            type:'bar',
+			            barWidth:30,
+			            itemStyle: {
+			            normal: {
+			                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                    offset: 0,
+			                    color: '#ffc741'
+			                }, {
+			                    offset: 1,
+			                    color: '#e6702a'
+			                }]),
+			                label: {
+								show: true, //开启显示
+								position: 'right', //在上方显示
+								textStyle: { //数值样式
+									color: 'white',
+									fontSize: 16
+								}
+							},
+			            barBorderRadius: 0,
+			            }
+			          },
+			            data:t.yhs
+			        }
+			    ]
+			};
+			                    
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }	
+	 //}
+	//});
+}
+
+</script>
+</html>

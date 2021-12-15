@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>须知</title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/nqi/common.js}"></script>
+<script th:src="@{/nqi/wpinfo.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="45,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea>
+				<table>
+			       <tr>
+			     	<td align="right" width="80px">信息标题</td> <td width="120px" align="left"><hy-input name="dataWrap.query.infoTitle_LIKE"  :upload="true"  ></hy-input> </td>
+			        <td align="right" width="80">发布部门</td>
+					<td width="120" align="left"><hy-droptree name="dataWrap.query.createOrg"  :highlight-current="true"  valueprovider="com.haiyisoft.hr.org.tree.Right1OrgTree" :upload="true" /></td>		
+			        <td>
+				        <hy-button text="查询" @click="query"></hy-button>
+				        <hy-button text="审核通过" @click="pass"></hy-button>	
+				        <hy-button text="审核不通过" @click="unPass"></hy-button>		
+			        <tr/>
+			    </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				 <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="false" height="100%" @queryfunc="query" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+					<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+					<hy-table-column title="业务分类"  name="bizClassify" align="center"	width="200" type="drop" dropname="ZS.YWFL" :readonly="true"></hy-table-column> 
+					<hy-table-column title="信息标题"  name="infoTitle" align="center"	width="200" :readonly="true"></hy-table-column> 
+					<hy-table-column title="维护部门"  name="createOrg" type="drop" dropname="ORG.ORG_PARTY_NAME" align="center"  width="100" :readonly="true"></hy-table-column> 
+					<hy-table-column title="维护时间"  name="createTime"   width="150" :readonly="true" type="date"></hy-table-column> 
+					<hy-table-column title="维护人"  name="createMan"   width="100" :readonly="true" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column> 
+ 					<hy-table-column title="审核意见"  name="issuePath"   width="200" :readonly="true"></hy-table-column> 
+					<hy-table-column title="状态"  name="status" align="center" width="80" type="drop" dropname="WP.WY_STATUS"  :readonly="true"></hy-table-column> 
+					<hy-table-column  title="操作"  width="250" align="center">
+						<template scope="scope">
+						 	 <a href="javascript:void(0)" @click="addSunnary(scope.row)">审核意见</a>
+							 <a href="javascript:void(0)" @click="display(scope.row)">浏览</a>
+						</template>
+					</hy-table-column>
+				</hy-table> 
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+</body>
+</html>
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+
+		},
+		mounted : function() {
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {
+			query : function() {
+				Query('/web/notify/queryApprove?type=3&menuId=' + vm.menuId);
+			},
+			display : Display,
+			pass : Pass,
+			unPass:UnPass,
+			addSunnary:AddSunnary
+		}
+	});
+
+	function Pass() {
+		delCheckItem(ajaxgrid, "web/wpInfo/pass", "审核成功")
+	}
+	function UnPass(){
+		delCheckItem(ajaxgrid, "web/wpInfo/passNo", "回退成功")
+	}
+	function AddSunnary(row){
+		$.popWindow({
+			url:$$pageContextPath + '/com/contentDlg',
+			title: "审核意见",
+			css:{width:400,height:200},
+			button:0,
+			operator:0,
+			callback: function(result) {				
+				var record=ajaxgrid.getSelectedRecord();
+				record.data.issuePath=result;
+			},
+			isRunCallback :true
+		});
+	}
+</script>

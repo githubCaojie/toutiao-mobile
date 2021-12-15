@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,200,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" label-position="left" :labelwidth="150" :readonly="false"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-forminput label="信息标题"  name="infoTitle" :maxlength="128" :colspan="2" :rules="{ required: true}"></hy-forminput> 
+					<hy-formselect label="信息类型"  name="infoType" dropname="JT.WP_INFO_TYPE" ></hy-formselect> 
+					<hy-formselect label="是否置顶"  name="isTop" readonly dropname="UEP.YES_OR_NO"></hy-formselect> 
+<!-- 					<hy-formdatepicker name="beginDate" title="有效开始时间" :rules="[{ required: true}]"></hy-formdatepicker> -->
+<!-- 					<hy-formdatepicker name="endDate" title="有效结束时间" :rules="[{ required: true}]"></hy-formdatepicker> -->
+					<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="128" ></hy-forminput>
+				</hy-form> 
+		    </hy-fillarea>
+		    <hy-fillarea :href="richTextArea" id="richTextId" >
+		</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script type="text/javascript">
+	</script>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				richTextArea : ""
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				this.richTextArea =  $$pageContextPath + "jt/richtext/comRichText/queryOne?id="+myform.getRecord().data.id+"&saveVisible=none&height=300";
+			},
+			methods : {		
+				  save : function(){
+					$("#richTextId iframe").attr("id","richTextId_iframe");
+					myform.validate(function(data){
+						if(data){
+							window.frames["richTextId_iframe"].contentWindow.saveRichText();
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath +  'wp/wpInfo/save',
+								data : dataArr,
+								success : function(response){ 
+									setRM(function(){
+										$.close(true);
+									});
+								}
+							});	
+						}	
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

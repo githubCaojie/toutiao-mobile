@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea>
+				 <table>
+		              <tr> 
+						<td align="right">活动号</td>
+						<td width="120" align="left"><hy-input name="dataWrap.query.activityNo" :upload="true" class="reSetClass"/></td>
+						<td align="right"width="80"><hy-button text="查询" @click="query"></hy-button></td>
+						<td align="right"width="60"><hy-button text="保存" @click="save"></hy-button></td>
+						<td align="right"width="60"><hy-button text="删除" @click="remove"></hy-button></td>
+		              <tr/>
+		            </table>
+			</hy-fillarea> 
+			
+			<!-- <hy-fillarea align="left">
+	      		<div style="float:left">
+					<hy-button text="保存" @click="save" ></hy-button>
+					<hy-button text="添加" @click="add" ></hy-button>
+					<hy-button text="删除" @click="remove" ></hy-button>
+	      		</div>
+			</hy-fillarea> -->
+			
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage  height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%" :showpagebar="false" :readonly="false">
+						<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column title="活动号" name="activityNo" align="center" width="80" :readonly="true"></hy-table-column>
+						<hy-table-column title="活动名称" name=activityName align="center" width="150" :readonly="true"></hy-table-column>
+						<hy-table-column title="传递方式" name="tranType" dropname="JT.TRAIN_TYPE" type="drop" align="center"  width="150"></hy-table-column>
+						<hy-table-column title="完工条件提示信息"  name="message" align="center" width="150"></hy-table-column> 
+						<hy-table-column title="审批按钮名称" name="auditBtnName" align="center" width="100" :maxlength="32"></hy-table-column>
+						<hy-table-column title="是否填写意见" name="needOpinion" dropname="UEP.YES_OR_NO" type="drop" align="center"  width="150"></hy-table-column>
+						<hy-table-column title="审批类型" name="approveType" type="drop" dropname="JT.PERMIT_OPINION_ANR" align="center" width="130" ></hy-table-column>
+					    <hy-table-column title="显示按钮" name="btnVisible" align="center" width="200" ></hy-table-column>
+					    <hy-table-column title="备注" name="remark" align="center" width="150" ></hy-table-column>
+<!-- 					    <hy-table-column title="操作" width="80" align="center"> -->
+<!-- 					      <template scope="scope"> -->
+<!-- 					     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp; -->
+<!-- 					      </template> -->
+<!-- 					    </hy-table-column>  -->
+				</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath+'jt/app/appAccordDetail/query',
+						data : dataArr,
+						params :{templateNo:vm.templateNo},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add :　function(){
+					$.showModalDialog($$pageContextPath + 'jt/app/appAccordDetail/queryOne?editFlag=Y&templateNo='+vm.templateNo, "添加", vm.onsavecomplete, null, 700, 380, 0);
+				},
+				detail : function(){
+					var record = ajaxgrid.getSelectedRecord();
+					$.showModalDialog($$pageContextPath + 'jt/app/appAccordDetail/queryOne?editFlag=N&uuid='+record.data.uuid, "详细", vm.onsavecomplete, null, 700, 380, 0);
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath +'jt/app/appAccordDetail/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				},
+				save : function(){
+					if(ajaxgrid.isValid()){
+						var gridData = ajaxgrid.collectData(true, "all");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'jt/app/appAccordDetail/save',
+							data : dataArr,
+							success : function(response){
+								setRM(vm.query());
+							}
+						});
+					}
+					
+				},
+				onsavecomplete : function(response,b,c){
+					vm.query();
+				},
+				initAll : function(response,b,c){
+				}
+			}
+		});
+	</script>
+</body>
+</html>

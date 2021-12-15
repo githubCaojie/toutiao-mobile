@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	
+	<hy-filllayout rows="35,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea :display="editFlag=='Y'?'block':'none'">
+				<hy-button text="保存" @click="save"></hy-button>	
+				<!-- <hy-button text="上传头像" @click="uploadPic"></hy-button> -->
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" 
+					label-position="left" :labelwidth="100" :readonly="editFlag=='Y'?false:true"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="姓名"  name="personName" :rules="{ required: true}" :maxlength="20" ></hy-forminput> 
+						<hy-forminput label="身份证号"  name="idCard" :maxlength="20"  :rules="[{pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '只能为15或18位' ,trigger: 'blur,change',required: 'true'}]"></hy-forminput> 
+						<hy-formselect label="性别"  name="gender" :rules="{ required: true}" dropname="ORG.GENDER"></hy-formselect> 
+						<hy-formdroptree label="任职部门"  id="orgTree"   :rules="{ required: true}" name="orgId"
+			                   :highlight-current="true" default-expand-all size="large" 
+			                   valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree">
+						</hy-formdroptree>
+						<hy-forminputbutton name="posUuid" label="职务"  @click="selectPos" v-model="posId" 
+							labelprovider="com.haiyisoft.hr.pos.labelprovider.HrRecruitPositionLabel"> </hy-forminputbutton>
+						<hy-formselect label="民族" clearable name="nation" dropname="HR.PER_NATION" ></hy-formselect>
+						<hy-forminput label="籍贯"  name="nativePlace" :maxlength="50"  ></hy-forminput> 
+						<hy-forminput label="户口所在"  name="registeredPlace" :maxlength="30"  ></hy-forminput> 
+						<hy-formdatepicker label="出生日期" name="personBirthday"></hy-formdatepicker>
+						<hy-formdatepicker label="参加工作时间" name="jobDate"></hy-formdatepicker>
+						<hy-formdatepicker label="入职时间" name="unitDate"></hy-formdatepicker>
+						<hy-formselect label="人员状态" clearable name="partyStatus" dropname="HR.PER_STATUS_ITEM" ></hy-formselect>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		    <div id="showphoto"
+				style="position: absolute; width: 200; height: 200; z-index: 10; left: 415px; top: 0px; display: none;">
+				<img id="bigpic" style="width: 200px; height: 250px;"
+					:src="[edocService+'fileupload-api/getFileInputStream?fileUuid='+fileUuid] " >
+			</div>
+			<div id="closeDiv"
+				style="position: absolute; z-index: 20; left: 595px; top: 5px; width: 15px; height: 15px; cursor: pointer; display: none;">
+				<img src="../../images/hr/close.png" alt="关闭"
+					style="width: 15px; height: 15px;" />
+			</div>
+		</hy-filllayout>
+	</div>
+	<script type="text/javascript">
+	//头像关闭
+	$(function() {
+		$("#closeDiv").click(function() {
+			$("#showphoto").toggle();
+			$(this).toggle();
+		});
+	});
+	</script>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				edocService : edocService,
+				posId : null,
+				orgIds : null,
+				fileUuid : null,
+				perUuid : null
+				
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'per/yhperson/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;});
+								}
+							});	
+						}	
+					});
+				
+				},
+				selectOrg : function(){
+					$.showModalDialog($$pageContextPath + 'org/select/mul', "详细", vm.selectOrgComp, null, 600, 400,
+							0);
+				},
+				selectOrgComp : function(data){
+					this.orgIds = data;
+				},
+				uploadPic:function(data){
+					$.showModalDialog( $$pageContextPath + "per/perPersonPicturecut/?perUuid="+myform.getRecord().data.uuid,
+							"头像上传", vm.uploadCallback, null, 900, 450, 0);
+				},
+				uploadCallback:function(a, b, c) {
+					vm.refreshTopInfo();
+				},
+				refreshTopInfo() {
+					var perId = myform.getRecord().get("partyId");
+					var url =$$pageContextPath + 'per/perbaseinfo/top?partyId='+perId;
+					$("#topUrl_content iframe", parent.document.body).attr("src", url);
+					$.request({
+						url : $$pageContextPath + 'per/yhperson/getPerFileUuid',
+						params : {"perUuid":vm.perUuid},
+						success : function(response){
+							vm.fileUuid = response.parameters.fileUuid;
+						}
+					});	
+				},				
+				selectPos : function(){
+					var orgId = myform.getRecord().data.orgId;
+					if (typeof(orgId) == 'undefined' || orgId == null) {
+						setRM("alert","请选择部门!");
+						return;
+					}
+					$.showModalDialog($$pageContextPath + 'pos/position/select/?orgId='+orgId, "详细", vm.selectPosComp, null, 600, 400,
+							0);
+				},
+				selectPosComp : function(data){
+					this.posId = data;
+				}
+			}
+			
+		});
+		function callback(data){
+			alert(data);
+		}
+	</script>
+</body>
+</html>

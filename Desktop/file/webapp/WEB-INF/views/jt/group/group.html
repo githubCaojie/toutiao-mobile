@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*,40" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" label-position="left" :labelwidth="100" label-suffix="：" :cols="1" size="normal"> 
+					  <hy-forminput title="群组名称"  type="input" width="100%" name="groupName" placeholder="请输入内容"  ></hy-forminput>
+				</hy-form> 
+		    </hy-fillarea>
+		    <hy-fillarea >
+			    <div style="text-align:center">
+			        	<hy-button text="保存" @click="save" ></hy-button>	
+			          <hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>		
+			    </div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				flag : false,
+				
+			},
+			mounted : function() {
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+			},
+			methods : {
+				save:function(){
+					var formData = myform.collectData();
+					var dataArr = [];
+					dataArr.push(formData);
+					$.request({
+						url : $$pageContextPath + 'jt/com/group/save',
+						data : dataArr,
+						success : function(response) {
+							debugger;
+							if ("success" == response.getMessage()) {
+								setRM("success", "保存成功",function(){
+									$.close(true);
+								})
+							} else {
+								setRM("error", response.getMessage())
+							}
+						}
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*,40" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="editFlag=='Y'?false:true"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="表名"  name="tableValue" :rules="{ required: true}"  :maxlength="32"></hy-forminput> 
+						<hy-forminput label="表名称"  name="tableName" :rules="{ required: true}" :maxlength="64"></hy-forminput> 
+						<hy-forminput label="实体名"  name="entityValue" :rules="{ required: true}" :maxlength="64"></hy-forminput> 
+						<hy-formselect label="是否行表"  name="dataType" :rules="{ required: true}" dropname="JT.QR_TABLE_TYPE"></hy-formselect> 
+						<hy-forminput label="扩展表"  name="extTable"  :maxlength="32"></hy-forminput> 
+						<hy-forminput label="主表字段"  name="mainField"  :maxlength="32"></hy-forminput> 
+						<hy-forminput label="扩展表字段"  name="extField"  :maxlength="32"></hy-forminput> 
+						<hy-forminput label="默认查询条件"  name="defaultWhere"  :maxlength="64"></hy-forminput> 
+						<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="200" ></hy-forminput>
+						
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		    <hy-fillarea  :display="editFlag=='Y'?'block':'none'" >
+		    	<div style="text-align:center">
+					<hy-button text="保存" @click="save"></hy-button>	
+					<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+				</div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/jtQrTable/save',
+								data : dataArr,
+								success : function(response){
+									$.close(response);
+								}
+							});	
+						}	
+					});
+				} 
+			}
+			
+		});
+	</script>
+</body>
+</html>

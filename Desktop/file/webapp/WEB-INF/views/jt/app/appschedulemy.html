@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+    	<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				工作单号  <hy-input  id="appNoId" v-model="appNo" :upload="true" width="200"></hy-input>
+				工单类型 <hy-select dropname="JT.APP_TYPE"  v-model="appType" clearable  width="150"></hy-select>
+				工单状态 <hy-select dropname="JT.APP_STATUS"  v-model="appStatus" clearable  width="150"></hy-select>
+				 当前环节 <hy-input  id="curTaskNameId" v-model="curTaskName" :upload="true" width="150"></hy-input>
+					  <hy-radio  dataprovider="JT.APP_QUERY_TYPE" v-model="queryType" @change="retrieve" name="dataWrap.query.queryType" :upload="true"></hy-radio>
+				<hy-button text="查询" @click="retrieve" />
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="retrieve" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+						<hy-table-column title="工作单号" width="80" align="center">
+					    <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="openTaskExecInfo(scope.row)">{{scope.row.appNo}}</a>&nbsp;
+					    </template>
+					    </hy-table-column>
+						<hy-table-column title="工作单类型"  name="appType" align="center" width="100" type="drop" dropname="JT.APP_TYPE" ></hy-table-column> 
+						<hy-table-column title="申请人"  name="loginId" align="center" width="100" type="drop" dropname="UEP.ACCOUNT_NAME" ></hy-table-column> 
+						<hy-table-column title="申请时间"  name="taskReachTime" align="center" width="150" type="datetime" ></hy-table-column> 
+						<hy-table-column  title="管理单位" name="busiCode" align="center"type="drop" dropname="ORG.ORG_PARTY_NAME"	width="120"></hy-table-column> 
+						<hy-table-column  title="工单状态"  name="appStatus" dropname="JT.APP_STATUS"align="center"type="drop" 	width="120"></hy-table-column> 
+						<hy-table-column title="当前环节" name="activityName"  align="center"	width="100"></hy-table-column> 
+						<hy-table-column title="处理人"  name="personName"  align="center"	width="100"></hy-table-column> 
+						<hy-table-column title="处理角色" width="80" align="center">
+					    <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="getRolePerson(scope.row)">{{scope.row.roleName}}</a>&nbsp;
+					    </template>
+					    </hy-table-column>
+					    <hy-table-column title="处理部门" width="80" align="center">
+					    <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="getOrgPerson(scope.row)">{{scope.row.departmentName}}</a>&nbsp;
+					    </template>
+					    </hy-table-column>
+					    <hy-table-column title="工单内容"  name="content" align="center"	width="300"></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				appType : "",
+				appNo : "",
+				curTaskName : "",
+				appStatus : "",
+				content : "",
+				queryType : ""
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				retrieve : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/appschedulemy/retrieve',
+						data : dataArr,
+						params : { "appType": this.appType,
+								   "appNo" : this.appNo,
+								   "curTaskName" : this.curTaskName,
+								   "appStatus" : this.appStatus,
+								   "content" : this.content,
+								   "queryType" : this.queryType
+								   },
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				openTaskExecInfo : function(cell){
+					$.popWindow({
+						title:ajaxgrid.getColumnLabel(cell.keyId-1,"appType")+"("+cell.appNo+")",
+						url:$$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + cell.instanceId+ "&openMode=4" ,
+						callback:vm.query,
+						button:0,
+						css:{width:1200,height:800},
+					});
+				},
+				getRolePerson :function (obj){
+					var roleName = obj.roleName;
+					var roleCode = obj.roleCode ;
+					$.popWindow({
+						url:$$pageContextPath + 'jt/app/rolecodeemployee/?roleCode=' + roleCode +"&busiCode="+obj.busiCode,
+						title: "该角色下的人员列表",	
+						callback: vm.onsavecomplete,
+						arguments:response,
+						css:{width:600,height:400}, 
+						button:0,
+						isRunCallback :true
+					});
+				},
+				getOrgPerson :function (obj){
+					$.popWindow({
+						url:$$pageContextPath + 'jt/app/personquery/?groupId=' + obj.department,
+						title: "该部门下的人员列表",	
+						callback: vm.onsavecomplete,
+						arguments:response,
+						css:{width:600,height:400}, 
+						button:0,
+						isRunCallback :true
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					vm.retrieve();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

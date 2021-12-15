@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,35">
+			<hy-fillarea>
+				 <hy-table border name="dataWrap" @rowclick="selectRow"  @rowdblclick="dbSelectRow"
+					id="ajaxgrid" showpage :readonly="true" height="100%"
+					@queryfunc="query" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+					<hy-table-column title="" align="center" width="45" type="singleselection"></hy-table-column> 
+					<hy-table-column title="职务名称"  name="positionName" align="center"	width="250" :maxlength="250" ></hy-table-column> 
+				</hy-table> 
+			</hy-fillarea>
+			<hy-fillarea >
+				 <hy-row>
+					<hy-col :span="9"> </hy-col>
+					<hy-col :span="3"  > <hy-button text="确定" @click="ok()" ></hy-button> </hy-col>
+					<hy-col :span="3"  > <hy-button text="取消" onclick="$.close()" ></hy-button> </hy-col>
+				</hy-row>
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var formData = myform.collectData();
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(formData);
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pos/position/query',
+						data : dataArr,
+						params :{"orgId" :this.code},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				ok : function(){
+					 var records =  ajaxgrid.getCheckedRecords();
+					 if(records.length>0){
+						 $.close(records[0].data.posId);
+					 }
+				},
+				selectRow : function(row){
+					debugger;
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.ok();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

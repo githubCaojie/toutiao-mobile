@@ -3,10 +3,7 @@
 /*:root -> 获取根元素html*/
 
 :root {
-    --white-color: #fff;
-    --blue-color: #003A7C;
-    --the-body-font-size: 14px;
-    --the-title-font-size: 16px;
+
 }
 
 *,
@@ -23,14 +20,15 @@ body {
     /* 禁止用户鼠标在页面上选中文字/图片等 */
     -webkit-tap-highlight-color: transparent;
     /* webkit是苹果浏览器引擎，tap点击，highlight背景高亮，color颜色，颜色用数值调节 */
-    background: var(--color-background);
-    color: var(--color-text);
+    background: #ffffff;
+    color: #000000;
     /* rem vw/vh */
-    width: 100vw;font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    width: 100vw;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
 a {
-    color: var(--color-text);
+    color: #000000;
     text-decoration: none;
 }
 
@@ -67,10 +65,10 @@ img {
     display: block;
 }
 
-::-webkit-scrollbar {
-    display: none;
-}
-
 p.img {
   font-size: 0 !important;
+}
+
+.el-message-box {
+    width: 320px;
 }

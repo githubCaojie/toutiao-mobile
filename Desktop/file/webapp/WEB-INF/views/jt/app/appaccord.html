@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*,40" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="editFlag=='Y'?false:true"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="名称" name="name" :rules="{ required: true}" ></hy-forminput>
+						<hy-forminput label="模板号" name="templateNo" :maxlength="10" :rules="{ required: true}"></hy-forminput>
+						<hy-formselect label="工单类型" name="templateNo" :maxlength="64" :rules="{ required: true}" dropname="JT.APP_TYPE" :readonly="true"/>
+						<hy-forminput label="服务名" name="serviceName" :maxlength="128"></hy-forminput>
+						<hy-formcustomer></hy-formcustomer>
+						<hy-forminput label="备注" name="remark" :rowspan="2" :colspan="2" :maxlength="255" type="textarea"></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		    <hy-fillarea  :display="editFlag=='Y'?'block':'none'" >
+		    	<div style="text-align:center">
+					<hy-button text="保存" @click="save"></hy-button>	
+					<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+				</div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + '/jt/app/appAccord/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close("")});
+								}
+							});	
+						}	
+					});
+				},
+			}
+		});
+	</script>
+</body>
+</html>

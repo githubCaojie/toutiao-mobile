@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>未登录</title>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<form name="theForm" method="post" action="">
+  <table width="100%" border="0" cellspacing="10" cellpadding="0" height="80%">
+    <tr>
+      <td align="center" valign="top"> <br>
+        <table width="80%" border="0" cellspacing="1" cellpadding="0" class="bborder">
+          
+          <tr>
+            <td class="btd">
+              <table height="120" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr height="200">
+                  <td align="center"><img th:src="@{/images/framework/nosession.png}" ></td>
+                </tr>
+                <tr>
+                  <td align="center"><a th:href="${debugMode}?@{/login}:'/sysconfig/login'" target="_top">重新登录系统</a></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

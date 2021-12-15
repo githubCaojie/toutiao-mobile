@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true" :showpadding="false">
+
+			<hy-fillarea :display="editFlag=='N'?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+				<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+			</hy-fillarea>
+			
+			<hy-fillarea> 
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120"
+					:readonly="editFlag=='N'?true:false" :cols="2" size="normal">
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="工种编码"  name="tecCode" :maxlength="50"   :rules="{ required: true}"></hy-forminput> 
+						<hy-forminput label="职业资格名称"  name="tecName" :maxlength="50"   :rules="{ required: true}"></hy-forminput> 
+						<hy-formselect label="职业资格等级"  name="tecLevel" clearable :items="tecLevelDrop"  :rules="{ required: true}"></hy-formselect>
+						<hy-forminput label="职业资格证书编号"  name="tecNum" :maxlength="50"  ></hy-forminput> 
+						<hy-formdatepicker label="职业资格取得时间" name="getDate"></hy-formdatepicker>
+						<hy-forminput label="获取职业资格途径"  name="getPath" :maxlength="50"  ></hy-forminput> 
+						<hy-forminput label="批准机关	"  name="authoUnit" :maxlength="50"  ></hy-forminput> 
+						<hy-formselect label="是否特殊工种" clearable name="ifSpecial" dropname="UEP.YES_OR_NO" ></hy-formselect>
+						<hy-formselect label="是否最高	" clearable name="ifHighest" dropname="UEP.YES_OR_NO" ></hy-formselect>
+						<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="255" ></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'per/personTecInfo/save',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),function(response){
+										myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+									});
+								}
+							});	
+						}	
+					});
+				} 
+			}
+		});
+	</script>
+</body>
+
+</html>

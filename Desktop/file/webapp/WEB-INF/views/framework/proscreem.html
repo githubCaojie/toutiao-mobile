@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>项目级作战指挥中心</title>
+	<template th:substituteby="framework/pageset.html"></template>
+	<script src="../vue/zTree.js"></script> 
+	<script src="../vue/mapdata.js"></script> 
+	<script src="../vue/ztree/js/jquery.ztree.core.js"></script> 
+	<script src="../vue/ztree/js/jquery.ztree.excheck.js"></script> 
+	<link href="../vue/ztree/css/metroStyle/metroStyle.css" rel="stylesheet" />
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=b7t4tLpUInwwHBwN2aeTUNSjHtknBRXr"></script>
+<script type="text/javascript" src="http://developer.baidu.com/map/custom/stylelist.js"></script>
+</head>
+<style>
+.con{
+width:100%;
+height:100%;
+display: flex;
+align-items: center;
+}
+.contaner{
+width:1920px;
+height:1080px;
+background: url(../images/screem/bg.png) center no-repeat; 
+background-size:100% 100%; 
+margin:0 auto; 
+}
+.contaner_top_01{
+width: 100%;
+height: 10%;
+align-items:center; 
+background: none;
+margin:0 auto;
+}
+.contaner_top{
+width: 100%;
+height: 100%;
+align-items:center; 
+display:flex;
+background: url(../images/screem/btdh.png)  no-repeat; 
+background-size:100% 100%; 
+margin:0 auto;
+}
+
+
+.contaner_bt{
+width: 28%;
+height: 75%;
+margin:0 19.7%; 
+float:none;
+}
+
+.page{
+height:92%;
+width:100%;
+margin:0 auto;
+float:left;
+justify-content: space-around;
+align-items: center;
+}
+
+
+.menudiv{
+float: left;
+width: 100%;
+height: 100%;
+text-align: center;
+position:relative; 
+}
+
+.menudiv_1{
+float: left;
+width: 1%;
+text-align: center;
+height: 100%;
+position:relative;
+}
+
+#xiazai{width:30%;
+height:0px;
+ position:relative;
+ z-index: 999;
+ float: left;
+ opacity: 0.7;}
+ 
+ #xiazai1{width:30%;
+ height:0px;
+ position:relative;
+ z-index: 999;
+ float: right;
+ opacity: 0.7;}
+#xiazai-btn{
+	width:100%;  height:35px; line-height: 30px; border:1px solid #6baef2; padding:0 5px;
+}
+#xiazai-btn img{height:25px; display:block;   position:absolute; vertical-align: middle; margin-left:10px;}
+#xiazai-btn span{font-size:14px; color:#fff; vertical-align: middle;}
+#erwei{
+	width:100%; height:960px;  z-index:10; background: #0c1848;;
+	padding:5px; 
+}
+#erwei1{
+	width:100%; height:960px;  z-index:10; background: #0c1848;;
+	padding:5px; 
+}
+#androidew{width:100%; height:140px;}
+#erwei .img-ctain img{width:100%;}
+#erwei .img-ctain a{display:inline-block; width:100%; text-align:center; line-height:30px;
+	font-size:14px; text-decoration: none;}    
+</style>
+<body>
+<div  class="con" >
+	 <div class="contaner">
+	 <div  class="contaner_top_01">
+ <div class="contaner_top">
+   <p class="date_p" id="time" style="color: white;font-size: 18px;left:10px;"></p> 
+   <div class="menu_left">
+	         <div class="menudiv" onclick="changMenu('main/quality',this)" >质量实验</div>
+	         <div class="menudiv_1"><img src="../images/screem/dhjg.png"/></div>
+			 <div class="menudiv" onclick="changMenu('main/secure',this)" >安全</div>
+			 <div class="menudiv_1"><img src="../images/screem/dhjg.png" style=""/></div>
+			 <div class="menudiv" onclick="changMenu('main/progress',this)" >进度</div>
+	   </div>
+  <div class="contaner_bt"  onclick="changMenu('main/mianScreem',this)"><img src="../images/screem/bt.png" style="margin-top: 10px;"/></div>
+	    <div class="menu_right">
+	   <div class="menudiv" onclick="changMenu('main/investment',this)" >投资</div>
+	         <div class="menudiv_1"><img src="../images/screem/jgdh.png"/></div>
+			 <div class="menudiv" onclick="changMenu('main/demolition',this)" >征拆</div>
+			 <div class="menudiv_1"><img src="../images/screem/jgdh.png"/></div>
+			<div class="menudiv" onclick="changMenu('main/construction',this)" >智慧工地</div>
+	   </div>
+	  </div>
+	 </div>
+	 <div class="page">
+	 <div id="xiazai1">
+		<div id="erwei1">
+			<div class="img-ctain1">
+				
+			</div>
+		</div>
+		
+	</div> 
+	<!--  -->
+	 </div>	  
+		</div> 
+	 </div>
+</body>
+<script type="text/javascript" src="../framework/js/zhzx/echarts.min.js"></script>
+<script type="text/javascript" src="../framework/js/zhzx/echarts-liquidfill.min.js"></script>
+
+<script type="text/javascript">
+
+
+$("#xiazai-btn").bind('click', function(e) {//点击关闭按钮
+	if(document.getElementById('erwei').style.display == "none") {
+	document.getElementById('erwei').style.display = "block";
+	}else{
+		document.getElementById('erwei').style.display = "none";
+	}
+});
+
+setInterval(function () {
+	var date = new Date();//获得当前时间
+	var yy = date.getFullYear();//年份
+	var mm = date.getMonth() + 1;//获得月份
+	mm = (mm < 10 ? "0" + mm : mm);//月份小于10时，前面加个0(例如9 ->09)天，小时，分钟，秒同理
+	var dd = (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());//天
+	var hours = (date.getHours() < 10 ? "0" + date.getHours() : date.getHours());//小时
+	var minutes = (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes());//分钟
+	var seconds = (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds());//秒
+	document.getElementById("time").innerHTML = yy + '年' + mm + "月" + dd + "日 " + hours + ':' + minutes + ':' + seconds;
+	}, 1000);
+</script>
+</html>

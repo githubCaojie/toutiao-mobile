@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true" :showpadding="false"> 
+			<hy-fillarea title="查询条件">
+				 <table>
+	               <tr>
+	                <td align="right" width="80px">字段名称</td>
+	                <td width="120px" align="left"><hy-input name="dataWrap.query.fieldName_LIKE"  :upload="true" ></hy-input></td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button></td>
+	              </tr>
+            	</table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				<hy-button text="添加" @click="add"></hy-button>	
+				<hy-button text="删除" @click="remove"></hy-button>	
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" :showpage="false" :readonly="false" height="100%" 
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center"  type="selection"></hy-table-column> 
+						<hy-table-column  name="fieldName" title="字段名称" :width="150" maxlength="100" align="center"/>
+						<hy-table-column dropname="JT.EXT_FIELD_TYPE" name="fieldType" title="字段类型" :width="80" type="drop" align="center"/>
+						<hy-table-column name="dropName" title="下拉名称" :width="150" :maxlength="32" align="center"/>
+						<hy-table-column dropname="UEP.YES_OR_NO" name="useFlag" nullable="false" title="是否显示" type="drop" align="center"/>
+						<hy-table-column dropname="UEP.YES_OR_NO" name="isMust" nullable="false" title="是否必填" type="drop" align="center"/>
+						<hy-table-column dropname="UEP.YES_OR_NO" name="queryFlag" nullable="false" title="查询条件" type="drop" align="center"/>
+						<hy-table-column dropname="UEP.YES_OR_NO" name="tableShow" nullable="false" title="表格显示" type="drop" align="center"/>
+						<hy-table-column name="orderSn" title="排序序号" :width="70" :maxlength="5" align="center"/>
+						<hy-table-column name="useRows" title="占用行数" :width="70" :maxlength="2" align="center"/>
+						<hy-table-column name="useCols" title="占用列数" :width="70" :maxlength="2" align="center"/>
+						<hy-table-column name="cssStyle" title="样式" width="100" maxlength="256" align="center"/>
+						<hy-table-column name="unit" title="单位" width="100" maxlength="60" align="center"/>
+						<hy-table-column name="unitWidth" title="单位宽度" width="100" maxlength="2" align="center"/>
+						<hy-table-column name="extAttr1" title="扩展属性1" width="100" maxlength="32" align="center"/>
+						<hy-table-column name="extAttr2" title="扩展属性2" width="100" maxlength="32" align="center"/>
+						<hy-table-column name="remark" title="备注" width="100" maxlength="128" align="center"/>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'ext/extFields/query',
+						data : dataArr,
+						params:{"tableUuid":vm.tableUuid},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'ext/extFields/queryOne?uuid='+row.uuid, "详细", vm.onsavecomplete, null, 1000, 400,
+							0);
+				},
+				add : function(){
+					$.request({
+						url : $$pageContextPath + 'ext/extFields/add',
+						params : {"tableUuid":vm.tableUuid},
+						success : function(response){
+							ajaxgrid.addRecord(response.getAjaxDataWrap("dataWrap").getData(),0);
+						}
+					});					
+				},
+				save:function(){
+					var gridData = ajaxgrid.collectData(true, "update");
+					var dataArr = [];
+					dataArr.push(gridData);
+					$.request({
+						url : $$pageContextPath + 'ext/extFields/save',
+						data : dataArr,
+						success : function(response){
+							setRM("success",response.getMessage(),vm.query());
+						}
+					});
+				},				
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							ajaxgrid.delCheckedRecords();
+							var gridData = ajaxgrid.collectData(true, "update");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'ext/extFields/save',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				},
+				onsavecomplete : function(response){
+					setRM("success",response.getMessage(),vm.query());
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

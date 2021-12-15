@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="100" :readonly="true"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formselect label="人员"  name="perPartyId" dropname="ORG.PERSON_NAME"></hy-formselect> 
+					<hy-formselect label="消息类型"  name="infoType" dropName="JT.MSG_TYPE"></hy-formselect> 
+					<hy-formselect  label="状态"  name="status"   dropname="JT.MSG_STATUS" :rules="{ required: true}"></hy-formselect> 
+					<hy-forminput label="消息内容"  name="infoContent" :maxlength="64"  :colspan="2" ></hy-forminput> 
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				sendPahtData:''
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {		
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/comWarningPer/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

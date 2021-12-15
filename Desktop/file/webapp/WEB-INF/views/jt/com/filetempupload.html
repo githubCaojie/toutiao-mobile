@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hyfileupload.js}"></script>
+<link th:href="@{/vue/hyfileupload.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div id="app" view>
+			<hy-filllayout rows="*,40" :showborder="false"  :showpadding="false"> 
+				<hy-fillarea >
+					<hy-fileupload :width="400" id="webuploader" @autoupload="submitFile" @success="uploadSuccess" @error="fileError">
+							</hy-fileupload>
+			    </hy-fillarea>
+			    <hy-fillarea>
+				    <hy-row>
+						<hy-col :span="8"> </hy-col>
+						<hy-col :span="3"  > <hy-button text="确定" @click="ok" ></hy-button> </hy-col>
+						<hy-col :span="1"  > </hy-col>
+						<hy-col :span="3"  > <hy-button text="取消" onclick="$.close()" ></hy-button> </hy-col>
+					</hy-row>
+				</hy-fillarea>
+			</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var warnUuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				fileName : null
+			},
+			mounted : function(){
+			},
+			methods : {		
+				submitFile : function(){
+					webuploader.submitFile({
+				          server : $$pageContextPath+'jt/com/fileTempUpload/upload',//请求
+				          params:{//请求携带的参数
+				          }
+				        });
+					
+				},
+				fileError : function(){
+					
+				},
+				ok : function(){
+					if(vm.fileName==null||vm.fileName==""){
+						setRM("alert","请上传文件！");
+						return;
+					}
+					$.close(vm.fileName);
+				},
+				uploadSuccess : function(WUFile){
+					vm.fileName = WUFile.name;
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

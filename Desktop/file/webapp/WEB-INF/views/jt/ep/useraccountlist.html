@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*">
+			<hy-fillarea>
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true" :showpadding="false"> 
+					<hy-fillarea>
+						 <table>
+			              <tr> 
+							<td align="right" width="80px">组织机构</td>
+							<td align="left" width="120px"><hy-droptree id="firstTree" valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree" v-model="code" ></hy-droptree></td>
+							<td align="right" width="80px">人员名称</td>
+							<td align="left" width="120px"><hy-input v-model="input"></hy-input></td>
+							<td align="right" width="80px">登录账号</td>
+							<td align="left" width="120px"><hy-input name="dataWrap.query.loginCode_LIKE" :upload="true" ></hy-input></td>
+							<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+			          	 </tr>
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea align="left">
+			      		<div style="float:left">
+								<hy-button text="账号密码重置"  :pkain="true" @click="resetPass"></hy-button>
+								<hy-button text="账号作废" :pkain="true" @click="canAcc"></hy-button>
+				      		</div>
+					</hy-fillarea>
+					<hy-fillarea>
+				          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 99%">
+								<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+								<hy-table-column title="人员名称"  name="perName" align="center" width="100"></hy-table-column> 
+								<hy-table-column title="所在部门"  name="person.orgName" align="center" width="200"></hy-table-column> 
+								<hy-table-column title="登录账号"  name="loginCode" align="center" width="150"></hy-table-column> 
+								<hy-table-column title="是否使用"  name="useFlag" align="center" width="80" type="drop" dropname="UEP.YES_OR_NO"></hy-table-column> 
+								<hy-table-column title="是否锁定"  name="lockFlag" align="center" width="80" type="drop" dropname="UEP.YES_OR_NO" ></hy-table-column> 
+								<hy-table-column title="角色数目" type="custom" width="80" align="center">
+						            <template scope="scope">
+						            	<a href="javascript:void(0)" @click="pageRole(scope.row)">{{scope.row.roleNum}}</a>&nbsp;
+						            </template>
+						        </hy-table-column>
+						        <hy-table-column title="控制对象数目" type="custom" width="100" align="center">
+						            <template scope="scope">
+						            	<a href="javascript:void(0)" @click="pageControl(scope.row)">{{scope.row.controlNum}}</a>&nbsp;
+						            </template>
+						        </hy-table-column>
+							    <hy-table-column title="操作" width="200" align="center" >
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="unLock(scope.row)" v-show="scope.row.lockFlag=='Y'">解锁</a>
+							     	<a href="javascript:void(0)" @click="lock(scope.row)" v-show="scope.row.lockFlag=='N' || scope.row.lockFlag==null">锁定</a>
+							     	<a href="javascript:void(0)" @click="updateLogincode(scope.row)">修改账号</a>
+							     	<a href="javascript:void(0)" @click="updatePassword(scope.row)">修改密码</a>
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			code : null,
+			input : ""
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {				
+			query : function(){
+				var gridData = ajaxgrid.collectData(true) ;
+				var dataArr = [];
+				dataArr.push(gridData) ;
+				$.request({
+					url : $$pageContextPath + 'jt/ep/userAccount/list',
+					data : dataArr,
+					params :{
+						orgId :this.code,
+						personName : this.input
+					},
+					success : function(response){
+						ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+					}
+				});					
+			},
+			add : function(){
+				if(this.code==null){
+					setRM("alert","请选择组织机构！");
+					return;
+				}
+				$.request({
+					url : $$pageContextPath + 'pos/position/add',
+					params :{"orgId" :this.code},
+					success : function(response){
+						ajaxgrid.addRecord(response.getAjaxDataWrap("dataWrap").data);
+					}
+				});		
+			},
+			remove : function(){
+				var checked = ajaxgrid.getCheckedRecords();
+				if (checked.length <= 0) {
+					$.alert("error", "请选择要删除的记录!");
+				}else{
+					$.confirm("提示","确定要删除选中的记录？",function(){
+						var gridData = ajaxgrid.collectData(true, "checked");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'pos/position/remove',
+							data : dataArr,
+							success : function(response){
+								setRM(vm.query());
+							}
+						});
+				　　　},function(){});
+				}
+			},
+			save : function(){
+				if (ajaxgrid.isValid()) {
+					var gridData = ajaxgrid.collectData(true, "update");
+					var dataArr = [];
+					dataArr.push(gridData);
+					$.request({
+						url : $$pageContextPath + 'pos/position/save',
+						data : dataArr,
+						success : vm.onsavecomplete
+					});	
+				}
+			},
+			unLock :function (row){
+				$.request({
+					url : $$pageContextPath + 'jt/ep/userAccount/unlock',
+					params : {"loginId":row.loginId},
+					 success :vm.onsavecomplete 
+				});
+			},
+			lock :function (row){
+				$.request({
+					url : $$pageContextPath + 'jt/ep/userAccount/lock',
+					params : {"loginId":row.loginId},
+					success : vm.onsavecomplete
+				});
+			} ,
+			onsavecomplete : function(response){
+				setRM(function(){vm.query()});
+			},
+			updateLogincode : function(row){
+				$.popWindow({
+					title:"修改账号",
+					url:$$pageContextPath + 'jt/ep/userAccount/updateLoginCode?loginId='+row.loginId,
+					callback:vm.query,
+					isRunCallback : true,
+					button:0,
+					css:{width:600,height:250}
+				});
+			},
+			updatePassword : function(row){
+				$.popWindow({
+					title:"修改密码",
+					url:$$pageContextPath + 'jt/ep/userAccount/updatePassword?loginId='+row.loginId,
+					callback:vm.query,
+					isRunCallback : true,
+					button:0,
+					css:{width:500,height:300}
+				});
+			},
+			resetPass : function(){
+				var checked = ajaxgrid.getCheckedRecords();
+				if(checked.length <= 0)
+					return setRM("alert","请选择要操作的数据！");
+				$.confirm("提示","确定要重置所选用户的密码？",function(){
+					var loginIds = "";
+					for(var i=0; i<checked.length; i++){
+						loginIds += checked[i].data.loginId + ",";
+					}
+					$.request({
+						url : $$pageContextPath + 'jt/ep/userAccount/resetPass',
+						params : {
+							loginIds : loginIds
+						},
+						success : vm.onsavecomplete
+					});
+			　　　},function(){
+				});
+			},
+			canAcc : function(){
+				var checked = ajaxgrid.getCheckedRecords();
+				if(checked.length <= 0)
+					return setRM("alert","请选择要操作的数据！");
+				$.confirm("提示","作废后无法恢复，确定要将所选用户作废？",function(){
+					var loginIds = "";
+					for(var i=0; i<checked.length; i++){
+						loginIds += checked[i].data.loginId + ",";
+					}
+					$.request({
+						url : $$pageContextPath + 'jt/ep/userAccount/canAcc',
+						params : {
+							loginIds : loginIds
+						},
+						success : vm.onsavecomplete
+					});
+			　　　},function(){
+				});
+			},
+			pageRole : function(row){
+				$.popWindow({
+					title:"设置角色",
+					url:$$pageContextPath + '/jt/ep/userAccount/pageRole?editFlag=Y&loginId='+row.loginId,
+					callback: vm.query,
+					isRunCallback : true,
+					button:0,
+					css:{width:1150,height:500}
+				});
+			},
+			pageControl : function(row){
+				$.popWindow({
+					title:"设置控制对象",
+					url:$$pageContextPath + '/jt/ep/userAccount/pageControl?editFlag=Y&loginId='+row.loginId,
+					callback: vm.query,
+					isRunCallback : true,
+					button:0,
+					css:{width:800,height:500}
+				});
+			}
+		}
+	});
+	</script>
+</body>
+</html>

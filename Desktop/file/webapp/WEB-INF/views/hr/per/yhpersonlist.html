@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<table>
+	              <tr>
+	                <td align="right" width="80px">姓名</td>
+	                <td width="120px" align="left"><hy-input name="personName"  :upload="true"></hy-input>
+	                </td>
+	                <td align="right" width="80">部门</td>
+					<td width="120" align="left"><hy-droptree name="orgId" :highlight-current="true"  :rootvisible="false"
+								valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree" :upload="true" /></td>		
+	                <td align="right" width="80">单位</td>
+					<td width="120" align="left"><hy-droptree name="orgId" :highlight-current="true"  :rootvisible="false"
+								dataprovider="com.haiyisoft.hr.org.tree.OrgUnitTree" :upload="true" /></td>		
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				<hy-button text="添加" @click="add"></hy-button>	
+				<hy-button text="删除" @click="remove"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column title="操作" width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+						<hy-table-column title="姓名"  name="personName" align="center"	width="120"></hy-table-column> 
+						<hy-table-column title="任职部门"  name="orgName" align="center"	 width="160"></hy-table-column> 
+						<hy-table-column title="身份证号"  name="idCard" align="center"	width="160"></hy-table-column> 
+						<hy-table-column title="员工状态"  name="partyStatus" align="center" width="100" type="drop" dropname="ORG.EMP_STATE" ></hy-table-column> 
+						<hy-table-column title="民族"  name="nation" align="center" width="100" type="drop" dropname="HR.PER_NATION" ></hy-table-column> 
+						<hy-table-column title="籍贯"  name="nativePlace" align="center" width="280" ></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'per/yhperson/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'per/yhperson/queryOne/?partyId='+row.partyId, "详细", vm.onsavecomplete, null, 800, 500,
+							0);
+				},
+				add : function(){
+					$.showModalDialog($$pageContextPath + 'per/yhperson/add?editFlag=Y', "添加", vm.onsavecomplete, null, 800, 500,
+							0);
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'per/yhperson/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+					
+				},
+				onsavecomplete : function(response){
+					setRM("success",response.getMessage(),vm.query());
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

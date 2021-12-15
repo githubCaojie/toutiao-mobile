@@ -1,0 +1,515 @@
+.layout-div {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  overflow: hidden;
+}
+body {
+  background: #f4f6f9;
+}
+.home-container {
+  padding-top: 70px;
+}
+.home-banner-container {
+  width: 100%;
+  height: 39px;
+  top: 60px;
+  left: 0px;
+  overflow: hidden;
+  background:#4c90d9;
+}
+.personimg {
+  width: 60px;
+  height: 60px;
+}
+.banner {
+  width: 1020px;
+  margin: 0 auto;
+  padding: 0px;
+  overflow: hidden;
+}
+.banner_1 {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
+.group-li-selected {
+  cursor: pointer;
+  background: red;
+  color: white;
+}
+.group-li {
+  height: 24px;
+  line-height: 24px;
+}
+.bannerContent {
+  width: 100%;
+  margin: 0 ;
+  overflow: hidden;
+  position: relative;
+}
+.personInfoShow {
+  width: 620px;
+  float: left;
+  height: 99%;
+  overflow: hidden;
+}
+.personSet {
+  width: 250px;
+  float: left;
+}
+.personIndicator {
+  width: 360px;
+  float: right;
+  height: 100%;
+  overflow: hidden;
+}
+.strongTitle {
+  font-size: 18px;
+  color: #333333;
+}
+.setTitle {
+  color: #3372ff;
+}
+.normalTitle {
+  color: #333333;
+}
+/* .personIndicatorLeft{
+	   
+		width:2px;
+		float:left;
+		height:200px;
+	}
+	.personIndicatorRight{
+	   width:300px;
+	   float:right;
+	   height:200px;
+	} */
+.workMemo {
+  width: 380px;
+  float: right;
+  height: 100%;
+}
+.commonfuncbanner {
+  float: left;
+  width: 36px;
+  height: 38px;
+  padding-top: 12.66666667px;
+  padding-left: 12px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  cursor: pointer;
+}
+.commonfuncbanner:before {
+  font-family: "anticon" !important;
+  content: "\e639";
+  color: white;
+  font-size: 15px;
+}
+.personinfocontent {
+  background: white;
+  border-right: 2px solid #D6D6D6;
+  border-left: 2px solid #D6D6D6;
+  border-bottom: 2px solid #D6D6D6;
+  padding-top: 10px;
+  display: none;
+  z-index: 101;
+  position: absolute;
+  left: 0px;
+  top: 37px;
+  width: 1020px;
+  height: 230px;
+}
+.personinfoiframe {
+  display: none;
+  z-index: 100;
+  position: absolute;
+  left: 0px;
+  top: 38px;
+  width: 1020px;
+  height: 230px;
+}
+.addcommonfunc {
+  border: 1px solid #7a94cd;
+  width: 50px;
+  height: 20px;
+  line-height: 20px;
+}
+.deletecommonfunc {
+  width: 18px;
+  height: 18px;
+  float: right;
+  margin-right: 12px;
+  margin-top: 5px;
+  display: none;
+  background: url(../../../images/home/close.png);
+}
+.line {
+  width: 12px;
+  height: 12px;
+  float: left;
+  margin-top: 8px;
+  margin-right: 8px;
+  display: none;
+  background: url(../../../images/home/line.png);
+}
+.commonfunc-item-name {
+  width: 130px;
+  display: inline-block;
+  height: 25px;
+  line-height: 25px;
+}
+.addmouseover {
+  background-color: #7a94cd;
+}
+.nwIcon {
+  float: left;
+  width: 210px;
+  padding-left: 10px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  display: none;
+}
+.banneright {
+  /* float: right; */
+  width: 36px;
+  text-align: center;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  cursor: pointer;
+  height: 38px;
+  line-height: 36px;
+  position: absolute;
+}
+.logoffimg {
+  position: absolute;
+  border: 0px;
+  left: 0px;
+  top: 1px;
+}
+.logoff {
+   right: 10px;
+} 
+.person-group{
+  right: 70px;
+}
+.help{
+  right: 40px;
+}
+.globalNavigate {
+  float: right;
+  width: 110px;
+  text-align: center;
+  height: 38px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  display: none;
+}
+.searchinput {
+  height: 18px;
+  width: 155px;
+  border: 0px;
+  background-color: transparent;
+}
+.searchbutton {
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  cursor: pointer;
+}
+.banner-mouseover {
+  background: red;
+}
+.navigateImg {
+  /* background:url(../../../images/home/daohang.png);*/
+  height: 12px;
+  width: 12px;
+  display: inline-block;
+}
+.navigateImg:before {
+  font-family: "anticon" !important;
+  content: "\E64D";
+  color: white;
+  font-size: 15px;
+}
+.navigatefont {
+  color: white;
+  position: relative;
+  top: -2px;
+  left: 2px;
+}
+.navigateImg_click {
+  /* background:url(../../../images/home/daohang_clcik.png);*/
+  height: 12px;
+  width: 12px;
+  display: inline-block;
+}
+.navigateImg_click:before {
+  font-family: "anticon" !important;
+  content: "\E64D";
+  color: red;
+  font-size: 15px;
+}
+.navigatefont_click {
+  color: #2db7f5;
+  position: relative;
+  top: -2px;
+  left: 2px;
+}
+.navigate-click {
+  background: white;
+}
+.navigateContent {
+  padding-top: 12.66666667px;
+}
+.messageButton {
+  background: url(../../../images/home/button.png);
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+.widget-background {
+  background: url(../../../images/home/person_bg.png);
+}
+.home-left {
+  background: url(../../../images/home/person_bg.png);
+  width: 100%;
+  height: 100%;
+}
+.commonfunccontent {
+ /*  background: url(../../../images/home/common_bg.png); */
+  background:#F5F7FA; 
+  color: rgb(69, 66, 70);
+  font-size: 12px;
+  /* position: absolute;
+  left: 0px; */
+  width: 200px;
+  height: 100%;
+  overflow-x: hidden;
+}
+.commonfunccontent .content-item {
+	position: relative;
+	padding-left: 9px;
+    padding-top: 6px;
+    clear: both;
+	right: 0;
+}
+.commonfunccontent .content-item  {
+	font-size: 14px;
+}
+
+.commonfunccontent .content-item .item-title{
+	font-size: 14px;
+	line-height: 26px;
+    color: #2b2f32;
+    font-weight: bold;
+    /* margin-right: 80px; */
+}
+.commonfunccontent .content-item .right-item {
+	float: right;
+	margin-top: 2px;
+	margin-right: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #2db7f5;
+}
+.commonfunccontent .content-item ul li {
+	margin-left: 6px;
+	margin-right: 6px;
+	list-style: none;
+	cursor: pointer;
+	margin-top: 9px;
+}
+.commonfunccontent .content-item ul li:hover {
+	color: #2db7f5;
+}
+.commonfunccontent .content-item .item-image {
+	text-align: center;
+	display: block;
+	height: 50px;
+	width: 50px;
+}
+.commonfunccontent .content-item img {
+	height: 100%;
+	width: 100%;
+}
+.commonfunc-area{
+	background: #F5F7FA;
+}
+.commonfunccontent .content-item .item-text {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: center;
+	overflow: hidden;
+	font-size: 10px;
+	margin-top: 5px;
+	width: 50px;
+}
+.commonfunccontent .content-item .dot {
+    border: 1px solid #fff;
+    display: inline-block;
+    border-radius: 20px;
+    background: #d3dce6;
+    cursor: pointer;
+    height: 10px;
+	width: 10px;
+    margin: 5px;
+}
+.commonfunccontent .content-item .dot.selected {
+    border: 1px solid #689BCB;
+	background: #2db7f5;
+}
+.commonfunciframe {
+  display: none;
+  z-index: 99;
+  color: white;
+  position: absolute;
+  left: 0px;
+  top: 38px;
+  width: 194px;
+  height: 100%;
+}
+.persongroupiframe {
+  display: none;
+  z-index: 120;
+  position: absolute;
+  top: 38px;
+  width: 200px;
+  height: 100%;
+}
+.persongroupcontent {
+  display: none;
+  z-index: 121;
+  position: absolute;
+  top: 38px;
+  width: 150px;
+  background-color: #f4f6f9;
+  border-right: 2px solid white;
+  border-left: 2px solid white;
+  border-bottom: 1px solid #D6D6D6;
+}
+.persongroupinnerContent {
+  /*  height:100px;*/
+  border-top: 2px solid #2db7f5;
+}
+.selected {
+  background: url(../../../images/home/seleted_bg.png) repeat;
+  /**背景图片**/
+}
+.item-mouseover {
+  background: url(../../../images/home/menuitem-over.png) repeat;
+  /**背景图片**/
+}
+.history-item {
+  padding-left: 10px;
+  height: 30px;
+  line-height: 30px;
+  color: #333333;
+}
+.todayMemoUl {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+.memo-checkboxli {
+  float: left;
+  display: inline;
+  list-style: none;
+  margin: 0;
+}
+.seting {
+  background: url(../../../images/home/seting.png) repeat;
+  /**背景图片**/
+  width: 12px;
+  height: 13px;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+}
+.commonfuncsave {
+  background: url(../../../images/home/save.png) repeat;
+  /**背景图片**/
+  width: 12px;
+  height: 13px;
+  display: inline-block;
+}
+.memo-contentli {
+  float: left;
+  display: inline;
+  list-style: none;
+  margin: 0;
+  width: 300px;
+  white-space: nowrap;
+  padding: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.commonfunc-item {
+  height: 30px;
+  line-height: 30px;
+  padding-left: 10px;
+}
+.emptycontent {
+  height: 38px;
+  width: 260px;
+  float: right;
+  display: none;
+}
+.message-tip {
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 75px;
+  top: 0px;
+  background: url(../../../images/home/message_tip.png) repeat;
+  /**背景图片**/
+}
+.searchmenu {
+  width: 218px;
+  height: 38px;
+  padding-top: 7.6px;
+  padding-left: 20px;
+  float: right;
+  display: none;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+.searchimg {
+  width: 178px;
+  height: 24px;
+  padding-top: 4px;
+  padding-left: 4px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  background: url(../../../images/home/search.png);
+}
+.message-smallTip {
+  width: 7px;
+  height: 7px;
+  position: absolute;
+  left: 23px;
+  top: 6px;
+  background: url(../../../images/home/message_tip2.png) repeat;
+  /**背景图片**/
+}
+.clearboth {
+  clear: both;
+}
+
+.group-li-selected{
+	    cursor:pointer;
+		background-color:#bed2fd; 
+		color:#306cf1;
+ }
+.group-li{
+  height:26px;
+  line-height:26px;
+  padding-left:10px;
+}
+.group-li:hover{
+  cursor:pointer;
+  background-color:#bed2fd; 
+  color:#306cf1;
+}
+.el-popover{
+	padding: 0px !important;
+}

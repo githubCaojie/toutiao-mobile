@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>我的待办</title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hytreetable.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%" >
+							<hy-table-column title="序号" align="center" width="10%" type="index"></hy-table-column>
+							<hy-table-column title="内容" name="cost" align="center" width="80%"></hy-table-column> 
+					        <hy-table-column title="操作" width="10%" align="center">
+								<template scope="scope">
+									<a href="javascript:void(0)" @click="detail(scope.row)">待审核&nbsp;</a>
+								</template>
+							</hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {	
+				detail : function(row){
+				},
+				onsavecomplete : function(response){
+					treeTable.refreshTreeGrid();
+				}
+			
+			}
+		});
+	</script>
+</body>
+</html>

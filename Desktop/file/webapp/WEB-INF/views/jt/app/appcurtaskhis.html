@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea >
+							<table>
+				              <tr> 
+				              	<td align="right">工作单号</td>
+				              	<td width="120px" align="left"><hy-input  id="appNoId" v-model="appNo" :upload="true" width="200"></hy-input></td>
+				              	<td align="right" width="80px">工单类型 </td>
+				              	<td width="120px" align="left"><hy-select dropname="JT.APP_TYPE"  v-model="appType" clearable  width="150" @change="retrieveHis"></hy-select></td>
+				              	<td align="right" width="80px">工单内容</td>
+				              	<td width="120px" align="left"> <hy-input  id="contentId" v-model="content" :upload="true" width="200"></hy-input> </td>
+				              	<td align="right" width="80"><hy-button text="查询" @click="retrieveHis"></hy-button></td>
+				              </tr>
+				             </table>
+						</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrapHis"
+								id="ajaxgridHis" showpage :readonly="true" height="100%"
+								@queryfunc="retrieveHis" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+								<hy-table-column title="工作单号" width="80" align="center" v-if="editFlag!='N'">
+							    <template scope="scope">
+							     	 <a href="javascript:void(0)" @click="openTaskExecInfo(scope.row)">{{scope.row.appNo}}</a>&nbsp;
+							    </template>
+							    </hy-table-column>
+								<hy-table-column title="工作单类型"  name="appTypeName" align="center" width="120" ></hy-table-column> 
+								<hy-table-column  title="工单状态"  name="appStatus" dropname="JT.APP_STATUS" align="center"type="drop" 	width="120"></hy-table-column> 
+								<hy-table-column title="申请人"  name="loginId" dropname="UEP.ACCOUNT_NAME"  align="center" width="100" type="drop"  ></hy-table-column> 
+								<hy-table-column title="工单内容"  name="content" align="center"	width="350"></hy-table-column> 
+								<hy-table-column title="管理单位"  name="busiCode" align="center" width="150" type="drop" dropname="ORG.ORG_PARTY_NAME" ></hy-table-column> 
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				appType : "",
+				appNo : "",
+				content : "",
+				selectedindex : 0
+			},
+			mounted : function(){
+				ajaxgridHis.setData(response.getAjaxDataWrap("dataWrapHis"));
+			},
+			methods : {				
+				retrieveHis : function(){
+					var gridData = ajaxgridHis.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/curTask/retrieveHisQuery',
+						data : dataArr,
+						params : { "appType": this.appType,
+							   "appNo" : this.appNo,
+							   "content" : this.content},
+						success : function(response){
+							ajaxgridHis.setData(response.getAjaxDataWrap("dataWrapHis"));
+						}
+					});					
+				},
+				openTaskExecInfo : function(cell){
+					$.popWindow({
+						title: cell.appTypeName +"("+cell.appNo+")",
+						url: $$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + cell.instanceId+ "&openMode=4" ,
+						callback:vm.ajaxgridHis,
+						button:0,
+						css:{width:1200,height:800,type:1},
+					});
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="45,*" :showborder="true"  :showpadding="false"> 
+		 <hy-fillarea>
+			<hy-fillarea >
+				<table>
+					<tr>
+					<td width="40px" style="text-align: right;">部门</td>
+					<td width="200px">
+						<hy-droptree id="orgTree"  name="orgId" valueprovider="com.haiyisoft.jt.right.tree.OrgRightTree" :expandlevel="1" :dynamic="true"
+							:upload="true" :rootvisible="false" ></hy-droptree> </td>
+					<td width="30px" style="text-align: right;">姓名</td>
+					<td width="160px"><hy-input  name="personName" :upload="true"/></td>
+					<td align="center" width="120px"><hy-button text="查询" @click="query" /></td>
+					</tr>
+				</table> 
+			</hy-fillarea> 
+			</hy-fillarea>
+			<hy-fillarea>
+			<hy-filllayout cols="440,92,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+					<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+					 <hy-fillarea title="可选人员" >
+		          <hy-table border name="dataWrap" @rowdblclick="dbSelectRow"
+						id="grid1" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 98%">
+						<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+						<hy-table-column title="" align="center" width="60" type="selection"></hy-table-column> 
+						<hy-table-column name="orgId" title="部门" align="center" width="190"type="drop" dropname="ORG.ORG_PARTY_NAME" ></hy-table-column> 
+						<hy-table-column name="partyId" title="姓名" align="center" width="100"type="drop" dropname="ORG.PERSON_NAME"  ></hy-table-column> 
+					</hy-table> 
+					</hy-fillarea>
+					</hy-filllayout>
+		      </hy-fillarea>
+		      <hy-fillarea>
+		      <table style="height: 155px; margin-top: 45px;">
+				<tr><td><hy-button text="添加选中" @click="addChecked()" width="80"/></td></tr>
+				<tr><td><hy-button text="移除选中" @click="delChecked()" width="90"/></td></tr>
+				<tr><td><hy-button text="添加全部" @click="addAll()" width="90"/></td></tr>
+				<tr><td><hy-button text="移除全部" @click="delAll()" width="90"/></td></tr>
+				<tr><td><hy-button text="确定" @click="ok()" width="90"/></td></tr>
+				<tr><td><hy-button text="取消" @click="cancel()" width="90"/></td></tr>
+			</table>
+		      </hy-fillarea>
+		      <hy-fillarea >
+		      	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+		      	 <hy-fillarea title="已选人员">
+		          <hy-table border name="selectedDataWrap"  
+						id="grid2"  :readonly="true" height="100%" :showpage="false"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+						<hy-table-column title="" align="center" width="60" type="selection"></hy-table-column> 
+						<hy-table-column name="orgId" title="部门" align="center" width="190"type="drop" dropname="ORG.ORG_PARTY_NAME" ></hy-table-column> 
+						<hy-table-column name="partyId" title="姓名" align="center" width="100"type="drop" dropname="ORG.PERSON_NAME"  ></hy-table-column> 
+					</hy-table> 
+					</hy-fillarea>
+					</hy-filllayout>
+		      </hy-fillarea>
+		      </hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	    var mainUuid;
+	    var type;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				orgId : ""
+			},
+			mounted : function(){
+				grid1.setData(response.getAjaxDataWrap("dataWrap"));
+				grid2.setData(response.getAjaxDataWrap("selectedDataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = grid1.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/right/selectPer/queryMul',
+						data : dataArr,
+						params : {"busiUuid" : vm.busiUuid,"relaType":vm.relaType,"partyIdsStr":vm.partyIdsStr,"recurFlag":vm.recurFlag},
+						success : function(response){
+							grid1.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				addChecked:function () {
+					var records = grid1.getCheckedRecords();
+					grid2.addRecords(records);
+					grid1.delCheckedRecords();
+				},
+				addAll:function () {
+					var records = grid1.getAllRecords();
+					grid2.addRecords(records);
+					for(var i=0;i<records.length;i++){
+						grid1.delRecord(records[i]);
+					}
+				},
+				delChecked:function () {
+					var records = grid2.getCheckedRecords();
+					grid1.addRecords(records);
+					grid2.delCheckedRecords();
+				},
+				delAll:function () {
+					var records = grid2.getAllRecords();
+					grid1.addRecords(records);
+					for(var i=0;i<records.length;i++){
+						grid2.delRecord(records[i]);
+					}
+				},
+				ok :function () {
+					var partyIds = "";
+					var personNames = "";
+					var records = grid2.getAllRecords();
+					if (records.length > 0) {
+						 for(var i = 0;i<records.length;i++){
+							 partyIds+=','+records[i].get("partyId");
+							 personNames+=','+records[i].get("personName");
+						 }
+						 if(records.length>=1){
+							 partyIds = partyIds.substring(1);
+							 personNames = personNames.substring(1);
+						 }
+					}
+					if(!!vm.relaType){
+						$.request({
+							url : $$pageContextPath + 'jt/right/selectPer/saveMul',
+							params : {"busiUuid" : vm.busiUuid,"relaType":vm.relaType,
+									  "partyIdsStr" : partyIds},
+							success : function(response){
+								setRM(function(){$.close({"partyIds": partyIds, "personNames": personNames})})
+							}
+						});	
+					}else{
+						$.close({"partyIds": partyIds, "personNames": personNames});
+					}
+				},
+				cancel:function () {
+					$.close();
+				},
+				selectRow : function(row){
+					grid1.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					grid1.setRowChecked(row.keyId-1);
+					vm.addChecked();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

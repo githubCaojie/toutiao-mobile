@@ -5,6 +5,10 @@ module.exports = {
     "postcss-import": {},
     "postcss-url": {},
     // to edit target browsers: use "browserslist" field in package.json
-    "autoprefixer": {}
+    "autoprefixer": {},
+    // 'postcss-pxtorem': {
+    //   rootValue: 75, // 75表示750设计稿，37.5表示375设计稿
+    //   propList: ['*']
+    // }
   }
 }

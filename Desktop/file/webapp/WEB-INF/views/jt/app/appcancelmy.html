@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				工作单号  <hy-input  id="appNoId" v-model="appNo" :upload="true" width="200"></hy-input>
+				工单类型 <hy-select dropname="JT.APP_TYPE"  v-model="appType" clearable  width="150"></hy-select>
+				当前环节 <hy-input  id="curTaskNameId" v-model="curTaskName" :upload="true" width="200"></hy-input> 
+							<hy-button text="查询" @click="retrieve" />
+						</hy-fillarea>  
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="retrieve" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="工作单号" width="80" align="center">
+					    <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="openTaskExecInfo(scope.row)">{{scope.row.appNo}}</a>&nbsp;
+					    </template>
+					    </hy-table-column>
+						<hy-table-column name="appType" title="工作单类型" align="center"width="120"type="drop"
+							dropname="JT.APP_TYPE"></hy-table-column> 
+						<hy-table-column name="loginId" title="申请人"type="drop"
+							dropname="UEP.ACCOUNT_NAME"align="center" width="80"></hy-table-column> 
+						<hy-table-column name="taskReachTime" title="申请时间" align="center"width="150"
+							editor="datetime" ></hy-table-column> 
+						<hy-table-column  name="activityName" title="当前环节" align="center"width="120"></hy-table-column> 
+						<hy-table-column title="处理角色" width="80" align="center">
+					    <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="getRolePerson(scope.row)">{{scope.row.roleName}}</a>&nbsp;
+					    </template>
+					    </hy-table-column>
+						<hy-table-column  name="personName" title="处理人" align="center"width="80"
+							></hy-table-column> 
+							<hy-table-column name="content" title="信息" align="center"width="360"></hy-table-column> 
+							<hy-table-column
+					      title="操作"
+					      width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="appCancel(scope.row)">作废</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				appType : "",
+				appNo : "",
+				curTaskName : ""
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				retrieve : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/appcancelmy/retrieve',
+						data : dataArr,
+						params : { "appType": this.appType,
+								   "appNo" : this.appNo,
+								   "curTaskName" : this.curTaskName},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				openTaskExecInfo : function(cell){
+					$.popWindow({
+						title:ajaxgrid.getColumnLabel(cell.keyId-1,"appType")+"("+cell.appNo+")",
+						url:$$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + cell.instanceId+ "&openMode=4" ,
+						callback:vm.retrieve,
+						button:0,
+						css:{width:1200,height:800},
+					});
+				},
+				getRolePerson :function (obj){
+					var roleName = obj.roleName;
+					var roleCode = obj.roleCode ;
+					$.popWindow({
+						url:$$pageContextPath + 'jt/app/rolecodeemployee/?roleCode=' + roleCode +"&busiCode="+obj.busiCode,
+						title: "该角色下的人员列表",	
+						callback: vm.onsavecomplete,
+						arguments:response,
+						css:{width:600,height:400}, 
+						button:0,
+						isRunCallback :true
+					});
+				},
+				appCancel : function(row) {
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.confirm("请确认：", "确定要作废工单：" + row.appNo, function() {
+						$.confirm("再次确认：", "作废后的工单，将无法恢复数据！请再次确认需要作废工单！", function() {
+							$.popWindow({
+								url:$$pageContextPath + 'jt/app/appcancelreason/?uuid='+row.uuid,
+								title: "工单作废原因",	
+								callback: vm.onsavecomplete,
+								css:{width:700,height:330},
+								button:0,
+								isRunCallback :true
+							});
+							}, function() {
+							return false;
+						});
+					}, function() {
+						return false;
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					vm.retrieve();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

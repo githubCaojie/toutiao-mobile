@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>首页</title>
+  <link rel="stylesheet" href="./css/normalize.css"/>
+  <link rel="stylesheet" href="./css/style.css"/>
+</head>
+<body>
+  <div class="home">
+    <div class="header">
+      <a href="">
+        <img class="logo" src="./img/logosmall.png" alt="">
+      </a>
+      <div class="serach">
+        <img class="search-icon" src="./img/searchicon.png" alt="">
+        <input class="search-input" type="text" placeholder="请输入查询的内容" />
+      </div>
+    </div>
+    <div class="banner">
+      <div class="wrapper" id="wrapper">
+        <ul class="content">
+          <li>
+            <img src="./img/homebanner.png" alt="">
+            <div class="text">
+              <div class="label">
+                <i class="hot-icon"></i>
+                集团新闻要闻
+              </div>
+              <div class="text-content">
+                <div class="name">方联民会见华邦控股集团董事局主席苏如春一行</div>
+                <div class="date">2021-06-18</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <img src="./img/homebanner.png" alt="">
+            <div class="text">
+              <div class="label">
+                <i class="hot-icon"></i>
+                集团新闻要闻
+              </div>
+              <div class="text-content">
+                <div class="name">方联民会见华邦控股集团董事局主席苏如春一行</div>
+                <div class="date">2021-06-18</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <img src="./img/homebanner.png" alt="">
+            <div class="text">
+              <div class="label">
+                <i class="hot-icon"></i>
+                集团新闻要闻
+              </div>
+              <div class="text-content">
+                <div class="name">方联民会见华邦控股集团董事局主席苏如春一行</div>
+                <div class="date">2021-06-18</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="more-btn">
+        查看更多内容
+        <img src="./img/moreicon.png" alt="">
+      </div>
+    </div>
+    <div class="new">
+      <ul>
+        <li class="new-item oddimg">
+          <div class="title">
+            <span class="label">子公司动态</span>
+            中央主要新闻媒体赴平益高速集中采风
+          </div>
+          <div class="img">
+            <img src="./img/img1.png" alt="">
+          </div>
+          <div class="date">2021-05-26</div>
+        </li>
+        <li class="new-item moreimg">
+          <div class="title">
+            <span class="label">子公司动态</span>
+            中央主要新闻媒体赴平益高速集中采风
+          </div>
+          <div class="img">
+            <img src="./img/img1.png" alt="">
+            <img src="./img/img1.png" alt="">
+            <img src="./img/img1.png" alt="">
+          </div>
+          <div class="date">2021-05-26</div>
+        </li>
+        <li class="new-item nullimg">
+          <div class="title">
+            <span class="label">子公司动态</span>
+            中央主要新闻媒体赴平益高速集中采风
+          </div>
+          <div class="date">2021-05-26</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script src="./js/better-scroll.mian.js"></script>
+  <script>
+    window.onload = function() {
+      let bs = BetterScroll.createBScroll('.wrapper', {
+        scrollX: true,
+        scrollY: false,
+        snap: {  // 滑动切换的一些配置
+          speed: 800,  // 滑动切换的速度
+          easing: {  // 滑动切换的动画效果
+            style: 'ease-in'
+          }
+        }
+      })
+    }
+  </script>
+</body>
+</html>

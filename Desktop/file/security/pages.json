@@ -1,0 +1,152 @@
+{
+	 // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
+		{
+			// 海报
+			"path": "pages/posters/posters"
+		},
+		{
+			// 登录
+			"path": "pages/login/login"
+		},
+		{
+			// 首页
+			"path": "pages/home/homeIndex"
+		},
+		{
+			// 我的待办
+			"path": "pages/home/homeTodoList"
+		},
+		{
+			// 菜单
+			"path": "pages/menu/menuIndex"
+		},
+		{
+			// 我的
+			"path": "pages/my/myIndex"
+		},
+		{
+			// 我的
+			"path": "pages/my/myIndex"
+		},
+		{
+			// 验收
+			"path": "pages/acceptance/acceptanceIndex"
+		},
+		{
+			// 验收详情
+			"path": "pages/acceptance/acceptanceDetails"
+		},
+		{
+			// 我的整改
+			"path": "pages/change/changeIndex"
+		},
+		{
+			// 待整改
+			"path": "pages/change/changeAfter"
+		},
+		{
+			// 超时待整改
+			"path": "pages/change/changeAfterSpuer"
+		},
+		{
+			// 已整改
+			"path": "pages/change/changeAlready"
+		},
+		{
+			// 我的检查
+			"path": "pages/check/checkIndex"
+		},
+		{
+			// 执行
+			"path": "pages/check/checkPerform"
+		},
+		{
+			// 新增执行排查记录
+			"path": "pages/check/checkPerformAddList"
+		},
+		{
+			// 排查记录和记录的该隐患信息
+			"path": "pages/check/checkPerformList"
+		},
+		{
+			// 新增隐患
+			"path": "pages/check/checkPerfromAddListTrouble"
+		},
+		{
+			// 计划
+			"path": "pages/plan/planIndex"
+		},
+		{
+			// 新增计划
+			"path": "pages/plan/planAdd"
+		},
+		{
+			// 检索计划
+			"path": "pages/plan/planSearch"
+		},
+		{
+			// 查看计划
+			"path": "pages/plan/planSee"
+		},
+		{
+			// 选择计划排查人
+			"path": "pages/plan/planSelectPeople"
+		},
+		{
+			// 我的接收
+			"path": "pages/receive/receiveIndex"
+		},
+		{
+			// 接收详情
+			"path": "pages/receive/receiveDetails"
+		},
+		{
+			// 我的上报
+			"path": "pages/report/reportIndex"
+		},
+		{
+			// 隐患列表
+			"path": "pages/trouble/troubleIndex"
+		}
+	],
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "湘交科安全管理系统",
+		"navigationBarBackgroundColor": "#105ec7",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#bfbfbf",
+		"selectedColor": "#1296db",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"iconWidth": "26px",
+		"fontSize": "13px",
+		"spacing": "5px",
+		"height": "60px",
+		"list": [
+			{
+				"pagePath": "pages/home/homeIndex",
+				"iconPath": "static/image/menu/home.png",
+				"selectedIconPath": "static/image/menu/home_select.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/menu/menuIndex",
+				"iconPath": "static/image/menu/menu.png",
+				"selectedIconPath": "static/image/menu/menu_select.png",
+				"text": "菜单"
+			},
+			{
+				"pagePath": "pages/my/myIndex",
+				"iconPath": "static/image/menu/my.png",
+				"selectedIconPath": "static/image/menu/my_select.png",
+				"text": "我的"
+			}
+		]
+	}
+}

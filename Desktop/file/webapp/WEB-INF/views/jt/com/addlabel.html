@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,*,toolh" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<table>
+	              <tr>
+	                <td align="right" width="80px">标签名称</td>
+	                <td width="120px" align="left"><hy-input name="dataWrap.query.labelName_LIKE"  :upload="true"  ></hy-input> </td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column title="标签名称"  name="labelName"align="center"	width="100"></hy-table-column> 
+						<hy-table-column title="说明"  name="explan" align="center"	width="300"></hy-table-column> 
+						<hy-table-column title="排序号"  name="orderSn" align="center"	width="100"></hy-table-column> 
+						<hy-table-column  title="操作"  width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+	         <hy-fillarea >
+				 <hy-row>
+					<hy-col :span="9"> </hy-col>
+					<hy-col :span="3"  > <hy-button text="确定" @click="ok()" ></hy-button> </hy-col>
+					<hy-col :span="3"  > <hy-button text="取消" onclick="$.close()" ></hy-button> </hy-col>
+				</hy-row>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var infoId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				slTreeCode :"",
+				labelType : null,
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+				var tagIds = response.getParameter("tagIds");
+				var all = ajaxgrid.getAllRecords();
+				for(var i=0;i<all.length;i++){
+					var id = all[i].data.id;
+					if(tagIds.indexOf(id)!=-1 ){
+						ajaxgrid.setRowChecked(all[i]);
+					}
+				}
+			},
+			methods : {		
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/com/jtLabel/query',
+						data : dataArr,
+						params : {"labelClass":vm.labelClass,"labelType":vm.labelType},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'jt/com/jtLabel/queryOne?editFlag=N&uuid='+row.id, "详细", vm.onsavecomplete, null, 800, 400, 0);
+				},
+				ok : function(){
+					var checkeds = ajaxgrid.getCheckedRecords();
+					var rtn = "";
+					for(var i = 0;i<checkeds.length;i++){
+						rtn += ","+checkeds[i].data.id;
+					}
+					if(rtn.indexOf(",") == 0)
+						rtn = rtn .substring("1");
+					 $.close({"ids" : rtn});
+			  }
+			}
+		});
+	</script>
+</body>
+</html>

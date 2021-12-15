@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true" :showpadding="false">
+		<hy-fillarea> <hy-button text="保存" @click="save" v-show="show"></hy-button>
+		</hy-fillarea> <hy-fillarea> <hy-form id="myform" name="dataWrap"
+			:labelwidth="100" :readonly="false" :cols="1" size="normal">
+		<hy-formgroup title="区域详细信息"> 
+			<hy-forminput label="区域名称" name="areaName" :rules="{ required: true}" :maxlength="64" ></hy-forminput>
+			<hy-forminput label="唯一编码" name="businessCode" :rules="{ required: true}" ></hy-forminput>
+			 <hy-formselect label="是否基层行政区域" name="isChild" :rules="{ required: true}" dropname="UEP.YES_OR_NO" ></hy-formselect> 
+			<!-- 是否基层行政区域<select name="isChild">
+			<option value="0">否</option>
+			<option value="1">是</option>
+			</select> -->  
+			<hy-formdroptree name="parentId" title="上级区域" :rootvisible="false" :rules="{ required: true}" 
+	             :highlight-current="true" default-expand-all size="large" :readonly="true"
+	             valueprovider="com.haiyisoft.fslq.landremoval.tree.RegionCityTree" >
+	        </hy-formdroptree>
+			<!-- <hy-forminputbutton name="partyId" label="所属组织" id="busiTree" v-model="orgUuid" @click="selectOrg"
+				labelprovider="com.haiyisoft.hr.org.labelprovider.OrgNameLabel"/> 
+			<hy-forminput label="排序号" name="orderCode" ></hy-forminput>
+	 	<hy-formselect label="使用标志" name="useFlag" type="drop" dropname="UEP.YES_OR_NO"/> 
+			<hy-forminput label="说明" name="roleDescribe" :rowspan="2" type="textarea" :maxlength="64"></hy-forminput> -->
+		</hy-formgroup> 
+	   </hy-form> 
+	  </hy-fillarea> 
+	</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm2 = new Vue({
+			el : "#app",
+			data : {
+				orgUuid : "",
+				show : true
+			},
+			mounted : function() {
+				this.show=(response.errorMessage=='Y')?true:false;
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+			},
+			methods : {
+				save : function() {
+					myform.validate(function(data) {
+						if (data) {
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'landremoval/regioncity/save',
+								data : dataArr,
+								success : function(response) {
+									setRM(function() {
+										$.close(response)
+									})
+								}
+							});
+						}
+					});
+
+				},
+				selectOrg : function() {
+					$.showModalDialog($$pageContextPath
+							+ 'jt/right/selectOrg/oneOrg', "选择部门",
+							vm2.selectOrgComp, null, 600, 400, 0);
+				},
+				
+			}
+
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="查询条件" >
+						<table>
+			              <tr>
+			                <td align="right" width="80px">消息类型</td>
+			                <td width="120px" align="left"><hy-select v-model="value1" name="dataWrap.query.msgType" dropName="JT.MSG_TYPE" :upload="true" clearable ></hy-select> </td>
+			                <td align="right" width="80px">消息内容</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.infoContent_LIKE"  :upload="true"  ></hy-input> </td>
+			                <td align="right" width="80px">是否已读</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.readFlag" dropName="UEP.YES_OR_NO" :upload="true"  ></hy-select> </td>
+			                <td align="right" width="80px">消息时间</td>
+			                <td width="120px" align="left"><hy-datepicker name="beginTime" type="date" :upload="true" ></hy-datepicker> </td>
+			                <td align="right" width="20px">~</td>
+			                <td width="120px" align="left"><hy-datepicker name="endTime" type="date" :upload="true" ></hy-datepicker> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+						<hy-button text="设置为已读" @click="setRead"></hy-button>	
+						<hy-button text="设置为未读" @click="setReadUndo"></hy-button>	
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="消息类型" type="drop" dropname="JT.MSG_TYPE" name="msgType"align="center"	width="140"></hy-table-column> 
+								<hy-table-column title="消息内容"  name="infoContent" align="center"	width="400"></hy-table-column> 
+								<hy-table-column title="是否已读"  name="readFlag" align="center" type="drop" dropname="UEP.YES_OR_NO"	width="100"></hy-table-column> 
+								<hy-table-column title="消息时间"  name="addTime" align="center" type="date" editor="datetime" width="150"></hy-table-column> 
+								<hy-table-column  title="操作"  width="80" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">查看</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				value1:''
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				detail : function(row){
+					$.request({
+						url : $$pageContextPath + 'jt/msgPer/setRead',
+						params:{"uuid":row.id},
+						success : function(response){
+							if(row.openUrl == null|| row.openUrl == '') {
+								$.popWindow({
+									url:$$pageContextPath + 'jt/msgPer/pageGet?uuid='+row.id,
+									title: "详细",
+									callback:  vm.query,
+									css:{width:800,height:550},
+									button:0,
+									isRunCallback :true
+								});
+							} else {
+								var url = $$pageContextPath + row.openUrl;
+								$.popWindow({
+									url:url,
+									title: "详细",
+									callback:  vm.query,
+									css:{width:1000,height:700},
+									button:0,
+									isRunCallback :true
+								});
+							}
+						}
+					});					
+				},
+				setRead : function(){
+					if(ajaxgrid.getCheckedRecords().length ==0)
+						return setRM("alert","请选择记录")
+					var gridData = ajaxgrid.collectData(true,"checked") ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/msgPer/setRead',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				setReadUndo : function(){
+					if(ajaxgrid.getCheckedRecords().length ==0)
+						return setRM("alert","请选择记录")
+					var gridData = ajaxgrid.collectData(true,"checked") ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/msgPer/setReadUndo',
+						data : dataArr,
+						success : function(response){
+// 							setRM(vm.query);
+						}
+					});					
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/msgPer/list',
+						params:{"msgClass":vm.msgClass,sendForm:vm.sendForm},
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

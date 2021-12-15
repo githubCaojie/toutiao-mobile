@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="40%,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea title="项目">
+				<hy-tree id="myTree" valueprovider="com.haiyisoft.fslq.tree.PmBdTree" @nodeclick="query"
+					 :expandlevel="3" :rootvisible="false"></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="工程部位">
+						 <table>
+			              <tr> 
+							<td align="right" width="80px">工程名称</td>
+							<td align="left" width="120px"><hy-input name="dataWrap.query.xmmc_LIKE"  :upload="true" ></hy-input></td>
+							<td align="right" width="80">工程状态</td>
+							<td width="80"align="left"><hy-select name="dataWrap.query.status"  :upload="true" dropname="FSLQ.PRO_STATUS" :clearable="true"></hy-select></td>
+							<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+		           		  </tr>
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea align="left">
+			      		<div style="float:left">
+							<hy-button text="添加" @click="add" :pkain="true"></hy-button>
+							<hy-button text="删除" @click="remove" :pkain="true" ></hy-button>
+			      		</div>
+					</hy-fillarea>
+					<hy-fillarea>
+				          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 99%">
+								<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+								<hy-table-column title="项目名称"  name="xmmc" align="center"	width="150"></hy-table-column> 
+								<hy-table-column title="计划完成日期"  name="jhTime" align="center" width="100" type="date" ></hy-table-column> 
+								<hy-table-column title="实际完成日期"  name="sjTime" align="center" width="100" type="date" ></hy-table-column> 
+								<hy-table-column title="状态" name="status" type="drop" dropname="FSLQ.PRO_STATUS" width="80" align="center"></hy-table-column>
+							    <hy-table-column title="排序号"  name="num" align="center"	width="150"></hy-table-column> 
+							    <hy-table-column title="操作" width="230" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				query : function(response, b, c){
+					debugger;
+					var treeBean = myTree.getSelectedNode();
+					if(!treeBean){
+						return setRM("alert","请选择项目！");
+					}
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'gcSection/list',
+						data : dataArr,  
+						params :{
+							"ContractId":treeBean.code,
+							"parent":treeBean.parent,
+						},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+			    detail : function(row){
+					$.popWindow({
+						title:"详细",
+						url: $$pageContextPath + 'gcSection/pageform?id='+row.uuid,
+						callback:vm.query,
+						button:0,
+						css:{width:900,height:480},
+					});
+				},
+
+				add : function(){
+					var treeBean = myTree.getSelectedNode();
+					debugger;
+					console.log(treeBean);
+					var chilid = treeBean.haschild;
+					if(chilid != "0"){
+						return setRM("alert","请选择标段！");
+					}
+					$.popWindow({
+						title:"添加",
+						url:  $$pageContextPath + 'gcSection/pageform?prjId='+treeBean.code+"&parent="+treeBean.parent,
+						callback: vm.onsavecomplete,
+						button:0,
+						css:{width:1000,height:480},
+					});
+				},
+				
+				remove : function(response,b,c){
+					dataDel(ajaxgrid,$$pageContextPath + 'gcSection/del',vm.query);
+				}, 
+				onsavecomplete : function(response){
+					setRM(vm.query());
+				},
+			}
+		});
+	</script>
+</body>
+</html>

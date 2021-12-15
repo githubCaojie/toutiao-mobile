@@ -1,0 +1,26 @@
+/*
+导航栏
+*/
+.van-nav-bar {
+  padding-top: 24px;
+  background-color: $nav-bg;
+  z-index: 2100;
+  position: relative;
+
+  .van-icon {
+    color: white;
+  }
+  .van-nav-bar__title {
+    color: white;
+  }
+  
+}
+.app-virtualbtn {
+  .van-tabbar {
+    position: absolute !important;
+  }
+  .van-popup--bottom {
+    bottom: 30px;
+  }
+}
+

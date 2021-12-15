@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+       	<hy-filllayout rows="*,40" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-checkbox v-model="rights"  dataprovider="JT.ITEM_RIGHT"></hy-checkbox>
+		    </hy-fillarea>
+			<hy-fillarea >
+				<div style="text-align:center">
+					<hy-button text="保存" @click="save"></hy-button>
+					<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+				</div>	
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var upPartyId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+			},
+			methods : {	
+				save : function(){
+					console.log(vm.rights);
+					$.request({
+						url : $$pageContextPath + 'jt/right/jtRFuncRight/save',
+						params:{"objectCode":vm.objectCode,roleCode:vm.roleCode,"rightCodes":vm.rights},
+						success : function(response){
+							setRM(function(){$.close('')});
+						}
+					});	
+				}
+			}
+		});
+	</script>
+</body>
+</html>

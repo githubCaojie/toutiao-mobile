@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<template th:substituteby="framework/pageset.html"></template>
+<meta charset="UTF-8">
+<title></title>
+<style>
+</style>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*" :showborder="true">
+			<hy-fillarea id="printFile" :href="printArea">
+				<div style="height:50px;line-height:50px;width:100%;box-sizing: border-box;position:absolute;top:0px;left:0px;background:white;z-index:1000;">
+					 <section style="display:inline-block;width:50%">
+					 	<span id="jtTitle" style="font-size:16px;"></span>
+					 </section>
+					 <section style="display:inline-block;width:48%;text-align:right" id="buttons">
+						 <div onclick="javascript: vm.printJeport();" style="cursor:pointer;display:inline-block;height: 30px;line-height: 30px;width: 90px;text-align: center;color: white; font-size: 14px;background-color:#3DBBF1;" >
+						 	打印
+					 	 </div>
+					 	 <a onclick="javascript:vm.downLoad(this);" style="display:inline-block;height: 30px;line-height: 30px;width: 90px;text-align: center;color: white; font-size: 14px;background-color:#3DBBF1;text-decoration:none;" download >
+						 	下载
+					 	 </a>
+				 	</section>
+				 </div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<canvas id="the-canvas"></canvas>
+	<iframe id="hidden_frame1" style='display: none'></iframe>
+	<script th:src="@{/framework/js/jquery-1.7.js}"></script>
+	<script type="text/javascript">
+	</script>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			
+			el : "#app",
+			data : {
+				printArea : "",
+				fileName : ""
+			},
+			mounted : function(){
+				 $.ajax({
+						type : "post",
+						url : this.dataUrl +"&exportType=pdf",
+						context : document.body,
+						success : function(response) {
+							vm.fileName = response;
+							var JtTitle=(function(){
+								var str='';
+								var isEmpty=function isEmpty(obj){
+								    if(obj == "undefined" || obj == "null" || obj == ""){
+								        return true;
+								    }else{
+								        return false;
+								    }
+								}
+								if(!isEmpty(this.moduleName)){
+									str+=vm.moduleName;
+								}
+								if(!isEmpty(vm.dataId)){
+									if (!str) {
+										str+=vm.dataId;
+									} else {
+										str+='-'+vm.dataId;
+									}
+								}
+								if(!isEmpty(vm.jeportName)){
+									if (!str) {
+										str+=vm.jeportName;
+									} else {
+										str+='-'+vm.jeportName;
+									}
+								}
+								return str;
+							})();
+							//设置标题
+							$("#jtTitle").html(JtTitle);
+							//设置pdf地址
+							vm.printArea= "../../../PDF/" + vm.fileName + ".pdf";
+							//当vm.exportFlag="Y"时展示导出excel按钮
+							if(!!vm.exportFlag&&vm.exportFlag=='Y'){
+								$("#buttons").append(` <a onclick="javascript:vm.downLoadExcel(this);" style="display:inline-block;height: 30px;line-height: 30px;width: 90px;text-align: center;color: white; font-size: 14px;background-color:#3DBBF1;text-decoration:none;" download >
+								 	导出excel
+								 	</a>`);
+							}
+					}
+				});	
+			},
+			methods : {	
+				printJeport : function(){
+					$("#printFile").contents().find("iframe")[0].contentWindow.print();
+				},
+				downLoad : function(element){
+					var a = document.createElement('a')  
+				    var event = new MouseEvent('click')  
+				    a.download =  (!!vm.dataId?"("+vm.dataId+")":"")+vm.jeportName;
+				    a.href = "../../../PDF/" + vm.fileName + ".pdf"  
+				    a.dispatchEvent(event); 
+				},
+				downLoadExcel : function(){
+					var fileName = encodeURI(encodeURI((!!vm.dataId?"("+vm.dataId+")":"")+vm.jeportName));
+					$("#hidden_frame1").attr( "src", vm.dataUrl + "&fileName=" + fileName + "&exportFlag="+ vm.exportFlag+"&exportType=excel");
+				}
+			}
+			
+		});
+// 		//打印
+// 		function printJeport(){
+// 			$("#printFile").contents().find("iframe")[0].contentWindow.print();
+// 		}
+// 		//下载
+// 		function downLoad(element){
+// 		    var a = document.createElement('a')  
+// 		    var event = new MouseEvent('click')  
+// 		    a.download =  (!!vm.dataId?"("+vm.dataId+")":"")+vm.jeportName;
+// 		    a.href = "../../../PDF/" + fileName + ".pdf"  
+// 		    a.dispatchEvent(event); 
+// 		}
+// 		//导出excel
+// 		function downLoadExcel(element){
+// 			var fileName = encodeURI(encodeURI((!!vm.dataId?"("+vm.dataId+")":"")+vm.jeportName));
+// 			$("#hidden_frame1").attr( "src", vm.dataUrl + "&fileName=" + fileName + "&exportFlag="+ vm.exportFlag+"&exportType=excel");
+// 		}
+	</script>
+</body>
+</html>

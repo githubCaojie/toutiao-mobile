@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="35,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea :display="editFlag!='N'?'block':'none'">
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="100" :readonly="editFlag!='N'?false:true"
+					label-suffix="：" :cols="1" size="normal"> 
+						<hy-forminput label="下拉代码" name="paramTypeCode" :maxlength="32" :rules="{ required: true}" ></hy-forminput>
+						<hy-forminput label="下拉名称" name="paramTypeName" :maxlength="64" :rules="{ required: true}" ></hy-forminput>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var upOrgPartyId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData())
+			},
+			methods : {	 
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/com/sysParamManager/saveDrop',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

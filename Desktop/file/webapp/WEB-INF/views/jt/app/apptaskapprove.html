@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:jt="http://www.w3.org/1999/xhtml">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/jt/app/appcommon.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea :display="(editFlag=='Y'||confirmTask=='O')?'block':'none'">
+				<template th:substituteby="jt/app/appbutton.html"></template>
+				<hy-button :text="auditBtnName" @click="send" :visible="confirmTask=='O'?false:true"></hy-button>
+				<hy-button text="退回发起人" @click="returnFirst" :visible="confirmTask=='O'?false:true"></hy-button>
+			</hy-fillarea>
+			<hy-fillarea title="审批内容" :href="detailHref" id="subPageId">
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				detailHref : ""
+			},
+			mounted : function(){
+			},
+			methods : {				
+				send : function(){
+					if (!!vm.auditEditFlag && vm.auditEditFlag=='Y') {
+						if (!!document.getElementById("subPageId_iframe") && document.getElementById("subPageId_iframe").contentWindow && typeof document.getElementById("subPageId_iframe").contentWindow.save === "function") {
+		 					document.getElementById("subPageId_iframe").contentWindow.save(function() {
+		 						eval(vm.sendFunc);
+		 					});
+		 				}
+					} else {
+						eval(vm.sendFunc);
+					}
+	 			},
+	 			returnFirst : function() {
+	 				returnFirst();
+	 			},
+	 			save : function(){
+	 				if (!!document.getElementById("subPageId_iframe") && document.getElementById("subPageId_iframe").contentWindow && typeof document.getElementById("subPageId_iframe").contentWindow.save === "function") {
+	 					document.getElementById("subPageId_iframe").contentWindow.save();
+	 				}
+	 			}
+			}
+		});
+	</script>
+</body>
+</html>

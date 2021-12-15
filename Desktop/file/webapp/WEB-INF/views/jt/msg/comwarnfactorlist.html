@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-button text="添加" @click="add"></hy-button>	
+				<hy-button text="删除" @click="remove"></hy-button>	
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" :showpage="false" :readonly="false" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column name="warnName" title="预警名称" align="center" :readonly="true"	width="180"></hy-table-column> 
+						<hy-table-column name="factorValue1" :title="column1"  align="center"	width="100"></hy-table-column> 
+						<hy-table-column name="factorValue2" :title="column2"  align="center"	width="100"></hy-table-column> 
+						<hy-table-column name="factorValue3" :title="column3" align="center"	width="100"></hy-table-column> 
+						<hy-table-column name="factorValue4" :title="column4"  align="center"	width="100"></hy-table-column> 
+						<hy-table-column name="factorValue5" :title="column5"  align="center"	width="100"></hy-table-column> 
+						<hy-table-column name="busiCode" title="管理单位" align="center" width="140"type="drop" dropname="JT_RIGHT1"  :readonly="true"></hy-table-column> 
+						<hy-table-column
+					      title="操作"
+					      width="80" align="center">
+					      <template scope="scope">
+<!-- 					       <a href="javascript:void(0)"  @click="warnperson(scope.row)">提醒人员</a>&nbsp; -->
+					        <a href="javascript:void(0)"  @click="setAccepter(scope.row)">接收实体</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				column1 : "1",
+				column2 : "2",
+				column3 : "3",
+				column4 : "4",
+				column5 : "5"
+
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+				if(this.column1==null||this.column1==""){
+					this.column1 = "无条件";
+					ajaxgrid.hiddenColumn(3,true);
+				}
+				if(this.column2==null||this.column2==""){
+					this.column2 = "无条件";
+					ajaxgrid.hiddenColumn(4,true);
+				}
+				if(this.column3==null||this.column3==""){
+					this.column3 = "无条件";
+					ajaxgrid.hiddenColumn(5,true);
+				}
+				if(this.column4==null||this.column4==""){
+					this.column4 = "无条件";
+					ajaxgrid.hiddenColumn(6,true);
+				}
+				if(this.column5==null||this.column5==""){
+					this.column5 = "无条件";
+					ajaxgrid.hiddenColumn(7,true);
+				}
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/comWarnFactor/query',
+						data : dataArr,
+						params : {"warnId" : vm.warnId},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					$.showModalDialog("../../jt/right/selectOrg/oneBusi", "选择要添加设置的管理区域", vm.addSet, null, 300, 400, 0);
+			    },
+				addSet : function(str){
+					$.request({
+						url : $$pageContextPath + 'jt/comWarnFactor/add',
+						params:{"busiCode":str.partyId,
+								"warnId" : vm.warnId},
+						success:vm.addComplete //回调函数　
+					});
+				},
+				addComplete : function(response){
+					var rec = response.getAjaxDataWrap("dataWrap").getDataList() ;
+			    	for(var i = 0;i<rec.length;i++){
+			    		ajaxgrid.addRecord(rec[i]) ;
+			        }
+				},
+				setAccepter : function(row){
+					var warnId = row.id;
+			        var busiCode = row.busiCode;
+			        if(warnId==""||warnId==undefined){
+						$.alert("请先保存预警条件!");
+						return ;
+			        }
+			    	$.showModalDialog($$pageContextPath + "jt/comAccepter/addAccepter?editFlag=Y&warnId="+warnId, "添加接收实体",
+			    			null, null, 850, 350, 0);
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					for(var i=0;i<checked.length;i++){
+						var busiCode = checked[i].data.busiCode;
+						if(busiCode==null||busiCode==undefined){
+							$.alert("管理区域为空的记录是默认的，不能删除!");
+							return ;
+						}
+					}
+					if (checked.length <= 0) {
+						$.alert("提示", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'jt/comWarnFactor/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query);
+								}
+							});
+					　　　},function(){});
+					}
+					
+				},
+				save : function(){
+					if (ajaxgrid.isValid()) {
+						var gridData = ajaxgrid.collectData(true, "update");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'jt/comWarnFactor/save',
+							data : dataArr,
+							success : vm.onsavecomplete
+						});
+					}
+				},
+				onsavecomplete : function(response){
+					setRM("success",response.getMessage(),vm.query());
+				},
+				warnperson: function(row){
+					$.popWindow({
+						url:$$pageContextPath + 'yj/warn/person/queryOne?id='+row.warnId,
+						title: "提醒人员",	
+						callback: vm.onsavecomplete,
+						css:{width:600,height:600},
+						button:0,
+						isRunCallback :false
+					});
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<style type="text/css">
+.headpictable {
+	background-color: #E8F4FC;
+}
+
+.selectedClass {
+	background-color: #4CA6DA;
+}
+</style>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,35">
+			<hy-fillarea>
+				<table class="parent_table" width="98%" >
+					<tr>
+						<td><p><strong style="margin-left: 20px;">当前环节：{{nowStdName}}</strong></p></td>
+						<td>员工姓名：</td>
+						<td><hy-input v-model="perName" id="personNameId"></hy-input> </td>
+						<td width="60" align="right">部门：</td>
+						<td>
+							<hy-droptree id="orgPartyId" v-model="orgId":upload="true" width="130"	 
+                  	 		valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree"></hy-droptree> </td>
+						<td><hy-button  id="quetyBtnId"text="查询" @click="query()"/></td>
+					</tr>
+				</table>
+					<table v-for="(nextInfo, index) in nextInfoLs"   class="parent_table" :id="['parent_table_'+index]" width="98%" style="border: 1px solid #CCCCCC; margin-left: 2px; margin-top: 5px;">
+						<tr height="30">
+							<td><strong style="margin-left: 13px;">环节：{{nextInfo.activityName}}</strong></td>
+						</tr>
+						<tr>
+							<td>
+								<table class="headpic" :id="['head_table_'+index]" :singleFlag="isSigleSelect" style="cursor: pointer">
+								<tr height="90" v-for="(login,i) in nextInfo.loginLs"  v-if="i==0||i%3==0"> 
+									<td v-for="n in (nextInfo.loginLs.length-i >=4?4:nextInfo.loginLs.length-i)"> 
+										<table :title="nextInfo.loginLs[i+n-1].perName" :tableIndex="index" checkedValue="0">
+											<tr>
+												<td width="70" align="left" style="padding: 5px;">
+													<img :attrValue="nextInfo.loginLs[i+n-1].loginId" :src="nextInfo.loginLs[i+n-1].photoPic" onerror="this.src='../../../images/hr/000.jpg'" :alt="nextInfo.loginLs[i+n-1].perName " width="60" height="80" />
+												</td>
+												<td width="210" valign="top" style="padding-top: 10px;">
+													<span style="line-height:18px;"><strong>姓名：</strong>{{ nextInfo.loginLs[i+n-1].perName }}</span><br/>
+													<span style="margin-top:5px;"><strong>部门：</strong>{{ nextInfo.loginLs[i+n-1].orgName }}</span><br/>
+													<span style="margin-top:5px;"><strong>职务：</strong>{{nextInfo.loginLs[i+n-1].roleName }}</span><br/>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								</table>
+							</td>
+						</tr>
+						<input type="hidden" :id="['activity_no_input_'+index]" :value="nextInfo.activityNo"/>
+					</table> 
+			</hy-fillarea>
+			<hy-fillarea >
+				<div style="text-align:center">
+					<hy-button text="确定" @click="mysend" ></hy-button>
+	      		</div>
+			</hy-fillarea>
+		</hy-filllayout>
+		<input type="hidden" id="curent_table"/>
+		
+	</div>
+	<script th:inline="javascript">
+		$(function(){
+			$(".headpic table").mouseover(function(){
+				$(this).addClass("headpictable");
+			}).mouseout(function(){
+				$(this).removeClass("headpictable");
+			}).click(function(){
+				var idx =$(this).attr("tableIndex"), flag = $("#head_table_"+idx).attr("singleFlag"),oriindex = $("#curent_table").val();
+				if($(".parent_table").size()>1){
+					if(idx!=oriindex){
+						$("#parent_table_"+oriindex).css("border","1px solid #CCCCCC");
+						$("#parent_table_"+idx).css("border","2px solid red");
+						$("#head_table_"+oriindex).find("table").each(function(){
+							$(this).removeClass("selectedClass");
+							$(this).attr("checkedValue","0");
+						});
+					}
+				}
+				$("#curent_table").val(idx);
+				if(flag=="Y"){
+					$("#head_table_"+idx).find("table").each(function(){
+						$(this).removeClass("selectedClass");
+						$(this).attr("checkedValue","0");
+					});
+				}
+				if($(this).attr("checkedValue")==0){
+					$(this).addClass("selectedClass");
+					$(this).attr("checkedValue","1");
+				}else{
+					$(this).removeClass("selectedClass");
+					$(this).attr("checkedValue","0");
+				}
+			});
+		})
+		
+	var perType,appInstanceId,appTaskId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				perName : "",
+				nowStdName : "",
+				orgId : "",
+				nextInfoLs : [] 
+			},
+			mounted : function(){
+				this.nowStdName = response.getParameter("nowStdName");
+				this.nextInfoLs = response.getParameter("nextInfoLs");
+				perType = response.getParameter("perType");
+				appInstanceId = response.getParameter("appInstanceId");
+				appTaskId = response.getParameter("appTaskId");
+				if(response.getParameter("personName")!=null)
+					this.perName = response.getParameter("personName");
+				if(response.getParameter("orgId")!=null)
+					this.orgId = response.getParameter("orgId");
+			},
+			methods : {				
+				mysend :function (){
+					var index = $("#curent_table").val(),loginIds = "";
+					$("#head_table_"+index).find("table").each(function(){
+						if($(this).attr("checkedValue")=="1"){
+							loginIds += $(this).find("img").attr("attrValue")+",";
+						}
+					});
+					if(loginIds==""){
+						setRM("alert","请选择下一环节人员！");
+						return false;
+					}
+					$.confirm("提示", "您是否决定执行传递？",function(){
+						$.close({
+							"loginIds" : loginIds,
+							"nextActId" : $("#activity_no_input_"+index).val()
+						});
+					}, function() {
+					});
+				},
+				query : function(){
+					window.location=encodeURI($$pageContextPath +"jt/app/appSelectPerSend/?perType="+perType+"&appInstanceId="
+							+ appInstanceId+"&appTaskId="+ appTaskId+"&personName="+vm.perName+"&orgId="+vm.orgId);
+				}
+			}
+			
+		});
+		function fireButtonThis(){
+			if (this.event.keyCode == 13)  
+		        return false ;  
+		}
+	</script>
+</body>
+</html>

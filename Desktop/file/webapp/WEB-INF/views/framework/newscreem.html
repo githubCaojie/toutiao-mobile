@@ -1,0 +1,4487 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>企业级作战指挥中心</title>
+	<template th:substituteby="framework/pageset.html"></template>
+	<script src="../vue/zTree.js"></script>
+	<script src="../vue/ztree/js/jquery.ztree.core.js"></script>
+	<script src="../vue/ztree/js/jquery.ztree.excheck.js"></script>
+	<link href="../vue/ztree/css/metroStyle/metroStyle.css" rel="stylesheet" />
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=b7t4tLpUInwwHBwN2aeTUNSjHtknBRXr"></script>
+<script type="text/javascript" src="http://developer.baidu.com/map/custom/stylelist.js"></script>
+</head>
+<style>
+.con{
+width:100%;
+height: 100%;
+display: flex;
+justify-content: space-around;
+align-items: center;
+}
+.contaner{
+width:1920px;
+height:1080px;
+background: url(../images/screem/bg.png) center no-repeat;
+background-size:100% 100%;
+margin:0 auto;
+position: absolute;
+}
+.contaner_top_01{
+width: 100%;
+height: 10%;
+align-items:center;
+background: none;
+margin:0 auto;
+}
+.contaner_top{
+width: 100%;
+height: 100%;
+align-items:center;
+display:flex;
+background: url(../images/screem/btdh.png)  no-repeat;
+background-size:100% 100%;
+margin:0 auto;
+}
+
+ #pageIframe{
+height:100%;
+width:100%;
+background: transparent;
+
+}
+option {
+    background-color: #1b51a2;
+}
+
+.contaner_bt{
+width: 28%;
+height: 75%;
+margin:0 17%;
+float:none;
+}
+
+.selectedMenu{
+float:none;
+background-image: url(../images/screem/dh.png);
+background-size:100% 100%;
+}
+
+.menu_left{
+width:28%;
+font-size:18px;
+
+font-weight:bolder;
+color:white;
+display: flex;
+justify-content: space-around;
+align-items: center;
+margin-left:5%;
+top:45px;
+float:left;
+height: 50%;
+background-size:100% 100%;
+}
+
+.menu_right{
+width:28%;
+font-size:18px;
+font-weight:bolder;
+color:white;
+display: flex;
+justify-content: space-around;
+align-items: center;
+margin-right:5%;
+top:45px;
+float: right;
+height: 50%;
+}
+
+.menu>span{
+cursor:pointer;
+}
+.page{
+height:90%;
+width:100%;
+margin:0 auto;
+background: transparent;
+}
+
+.menudiv{
+float: left;
+width: 100%;
+height: 100%;
+text-align: center;
+margin:0 auto;
+}
+
+.menudiv_1{
+float: left;
+width: 1%;
+text-align: center;
+height: 100%;
+margin:0 auto;
+}
+
+
+.left_contaner{
+margin-left:10px;
+width:27%;
+height:100%;
+float:left;
+}
+.center_contaner{
+width:45%;
+height: 100%;
+float:left;
+justify-content: space-around;
+align-items: center;
+}
+.right_contaner{
+width:27%;
+height:100%;
+float:left;
+}
+.introduction{
+width:98%;
+height: calc(40% - 30px);
+}
+.img1{
+width: 100%;
+height: 100%;
+background: url(../images/screem/zsbg.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction2{
+margin-top:20px;
+width:98%;
+height: calc(32% - 30px);
+}
+.img2{
+width: 100%;
+height: 100%;
+background: url(../images/screem/zxbf.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction3{
+margin-top:20px;
+width:98%;
+height: calc(32% - 30px);
+}
+.img3{
+width: 100%;
+height: 100%;
+background: url(../images/screem/zxbf.png)no-repeat;
+background-size: 100% 100%;
+}
+
+
+.introduction6{
+width:98%;
+height:15%;
+}
+.img6{
+width: 100%;
+height: 100%;
+background: url(../images/screem/ys.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction7{
+margin-top:20px;
+width:98%;
+height:calc(43% - 26px);
+}
+.img7{
+width: 100%;
+height: 100%;
+background: url(../images/screem/yxbg.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction8{
+margin-top:20px;
+width:98%;
+height:calc(42% - 26px);
+}
+.img8{
+width: 100%;
+height: 100%;
+background: url(../images/screem/yxbg.png)no-repeat;
+background-size: 100% 100%;
+}
+
+ .p1 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-weight: bold;
+            font-size:16px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            width: 100%;
+            height:100%;
+            text-align: center;
+        }
+
+
+ .p2 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-size:13px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            float:left;
+            margin-left:8px;
+            margin-top: 9px;
+        }
+
+ .p3 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-size:12px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            float:left;
+            margin-left:10px;
+            margin-top:12px;
+        }
+
+
+
+ .select-wrapper{
+    color:white;
+    left:20px;
+    position:relative;
+}
+.select-box{
+    width:380px;
+    height:45px;
+    border:1px solid #077eff;
+    background-color: transparent;
+}
+.select-box:hover{
+    border-color:#077eff;
+}
+.select-content{
+   width:380px;
+    float: left;
+    height: 28px;
+    font-size:18px;
+    line-height: 28px;
+    padding:10px   5px;
+     white-space:nowrap;
+    text-overflow:ellipsis;
+    z-index: 10;
+}
+.select-icon{
+    margin-top:5px;
+    position:absolute;
+    right:0px;
+    width:30px;
+    height:30px;
+    z-index: 30;
+}
+.select-options{
+    display: none;
+    min-width:200px;
+    border:1px solid #077eff;
+    background-color: #0a2d76;
+    position:absolute;
+    padding:5px;
+    top:50px;
+    left:0;
+    z-index: 10;
+    opacity: 0.9;
+}
+
+ .tb {
+    font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+   font-size:20px;
+   font-weight:bold;
+   font-style: normal;
+   float:left;
+    margin-left:10px;
+   margin-top:7px;
+    }
+
+    .t {
+    font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+   font-size:14px;
+   font-weight:bold;
+   font-style: normal;
+   float:left;
+    margin-left:5px;
+   margin-top:13px;
+    }
+
+#xiazai{width:140px;
+ position:relative;
+ z-index: 999;
+  float: left;
+  opacity: 0.5;}
+#xiazai-btn{
+	width:100%;  height:35px; line-height: 30px; border:1px solid #6baef2; padding:0 5px;
+}
+#xiazai-btn img{height:25px; display:block;   position:absolute; vertical-align: middle; margin-left:10px;}
+#xiazai-btn span{font-size:14px; color:#fff; vertical-align: middle;}
+#erwei{
+	width:100%; height:auto; top:37px; left:-140px; z-index:10; background:#fff;
+	padding:5px;
+}
+#androidew{width:100%; height:140px;}
+#erwei .img-ctain img{width:100%;}
+#erwei .img-ctain a{display:inline-block; width:100%; text-align:center; line-height:30px;
+	font-size:14px; text-decoration: none;}
+
+#table8{
+	width:15%; height:50%; z-index:999;background: url(../images/screem/ys.png)no-repeat;
+background-size: 100% 100%;
+	padding:5px; float: right;position:absolute; top:11%;right:28%;
+	 display: none;
+}
+
+#table9{
+	width:15%; height:50%; z-index:999;background: url(../images/screem/ys.png)no-repeat;
+background-size: 100% 100%;
+	padding:5px; float: right;position:absolute; top:11%;right:28%;
+	 display: none;
+}
+</style>
+<body>
+<div  class="con" >
+	 <div class="contaner">
+	 <div  class="contaner_top_01">
+ <div class="contaner_top">
+ <div class="select-wrapper">
+         <div class="select-box" onclick="showTree()" >
+                 <div class="select-content"  ></div>
+                 <div class="select-icon "><img src="../images/screem/jia.png" style="margin-top: 10px;" /></div>
+         </div>
+         <div class="select-options">
+                <div id="selectTree" class="ztree"></div>
+          </div>
+
+</div>
+  <div class="contaner_bt"  onclick="changMenu('main/mianScreem',this)"><img src="../images/screem/bt.png" style="margin-top: 10px;"/></div>
+	<p class="date_p" id="tqzt" style="color: white;font-size: 18px;left:10px;margin-right: 30px;width: 130px"></p>
+	<p class="date_p" id="time" style="color: white;font-size: 18px; margin-left:-30px;width: 230px"></p>
+	  </div>
+	 </div>
+	 <div class="page">
+	 <div class="left_contaner">
+	  <div class="introduction"><div class="img1" style="">
+	   <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">项目投资情况</p>
+	   </div>
+	   <div style="height:43%;width:97%; display: inline-block;margin-top:5px;padding:0;">
+	   <div style="width:60%;height:100%;display:inline-block;vertical-align: middle;text-align:center;">
+    <div style="height:10%;width:100%; display: inline-block;text-align: left;line-height:10%;margin-top:5px;margin-left:15px">
+    <img src="../images/screem/xbttb.png"style="width: 13px;height: 13px;float:left;margin-top: 2px">
+   <h class="p2">项目总体投资</h>
+	   </div>
+
+	    <div style="height:25%;width:80%; display: inline-block;margin-top:25px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%; ">
+	    <img src="../images/screem/xmztz.png"style="float:left;margin-left:15px;margin-top: 5px">
+	      <h class="p3">总投资</h>
+	      <tb class="tb" style="color: #2f6cff;" id="xmztz"></tb>
+	      <h class="t" style="color: #2f6cff;">万元</h>
+	    </div>
+
+	     <div style="height:25%;width:80%; display: inline-block;margin-top:10px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%;">
+	      <img src="../images/screem/xmwce.png"style="float:left;margin-left:15px;margin-top: 5px">
+	       <h class="p3">完成额</h>
+	       <tb class="tb" style="color: #3fc1a3;" id="xmwce"></tb>
+	      <h class="t" style="color: #3fc1a3;">万元</h>
+	     </div>
+    </div>
+
+    <div style="width:39%;height:100%;display:inline-block;vertical-align: middle;text-align: center;">
+   <div id="xmtzwcd" style="height: 75%;width: 75%;margin-top:15%;margin-left:5%"></div>
+   <div style="height: 39%;text-align: left ;margin-left:18%;margin-top:5px; color: white;font-size: 12px">项目投资完成度</div>
+    </div>
+	</div>
+
+        <div style="height:43%;width:97%; display: inline-block;margin-top:5px;padding:0;">
+        	   <div style="width:60%;height:100%;display:inline-block;text-align: center;vertical-align: middle;">
+    <div style="height:10%;width:100%; display: inline-block;text-align: left;line-height:10%;margin-top:5px;margin-left:15px">
+    <img src="../images/screem/xbttb.png"style="width: 13px;height: 13px;float:left;margin-top: 2px">
+   <h class="p2">年度总投资</h>
+	   </div>
+
+	    <div style="height:25%;width:80%; display: inline-block;margin-top:25px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%; ">
+	     <img src="../images/screem/ndztz.png"style="float:left;margin-left:15px;margin-top: 5px">
+	      <h class="p3">总投资</h>
+	      <tb class="tb" style="color: #f8b000;" id="ndztz"></tb>
+	      <h class="t" style="color: #f8b000;">万元</h>
+	    </div>
+
+	     <div style="height:25%;width:80%; display: inline-block;margin-top:10px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%;">
+	      <img src="../images/screem/ndwce.png"style="float:left;margin-left:15px;margin-top: 5px">
+	      <h class="p3">完成额</h>
+	      <tb class="tb" style="color: #e66f2a;" id="ndwce"></tb>
+	      <h class="t" style="color: #e66f2a;">万元</h>
+	     </div>
+    </div>
+    <div style="width:39%;height:100%;display:inline-block;vertical-align: middle;text-align: center;">
+   <div id="ndtzwcd" style="height: 75%;width: 75%;margin-top:10%;margin-left:5%"></div>
+   <div style="height: 39%;text-align: left ;margin-left:18%;margin-top:5px; color: white;font-size: 12px">年度投资完成度</div>
+    </div>
+        </div>
+	  </div></div>
+	 <div class="introduction2">
+	 <div class="img2">
+	     <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">年度产值完成情况</p>
+	   </div>
+	   <div id="ndczwc" style="width:100%;height:100%;margin-top: 18px;margin-left: 10px"> </div>
+	 </div>
+	 </div>
+	 <div class="introduction3"><div class="img3">
+	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">监理到场及时率</p>
+	   </div>
+	   <div id="jldcl" style="width:95%;height:100%;margin-top: 2px;margin-left: 10px"> </div>
+
+	 </div></div>
+	 </div>
+	   <div class="center_contaner">
+<!-- 	   	<div id="xiazai">
+		<div id="xiazai-btn">
+			<img src="images/login/android.png"/>
+			<span>下载客户端</span>
+		</div>
+		<div id="erwei">
+			<div class="img-ctain">
+				<div id="androidew">
+
+				</div>
+				<a id="androidA">手机下载</a>
+			</div>
+		</div>
+
+	</div> -->
+	     <div id="echar" style="width:100%;height:calc(100% - 30px);"> </div>
+	 </div>
+	    <div class="right_contaner">
+	  <div class="introduction6"><div class="img6">
+	   <div style="height:60%;width:47%; display: inline-block;margin-top:6%;margin-left:10px; background-image:url(../images/screem/ysbg.png); background-repeat: no-repeat;background-size: 100% 100%;vertical-align: middle; ">
+	    <div style="height:60%;width:25%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;text-align: center; ">
+	     <img src="../images/screem/zjxm.png"style="float:left;margin-left:20px;" onclick="showImg('table8')" >
+	     </div>
+	     <div style="height:60%;width:60%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;">
+	    <div style="height:58%;margin-left: 8%">
+	    <tb style="color: white; font-size:26px;font-weight:bold;font-style: normal;" id="zjxm"></tb>
+	    </div>
+   		<div style="height: 39%;text-align: left ;margin-left:10%;margin-top:5px; color: #2ab7fe;font-size: 16px">在建项目</div>
+   		</div>
+	   </div>
+	      <div style="height:60%;width:47%; display: inline-block;margin-top:6%;margin-left:5px;background-image:url(../images/screem/ysbg.png); background-repeat: no-repeat;background-size: 100% 100%; vertical-align: middle;">
+	   	<div style="height:60%;width:25%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;text-align: center; ">
+	     <img src="../images/screem/jgxm.png"style="float:left;margin-left:20px;" onclick="showImg1('table9')">
+	     </div>
+	     <div style="height:60%;width:60%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;">
+	    <div style="height:58%;margin-left: 8%">
+	    <tb style="color: white; font-size:26px;font-weight:bold;font-style: normal;"id="jgxm"></tb>
+	    </div>
+   		<div style="height: 39%;text-align: left ;margin-left:10%;margin-top:5px; color:#05dab8;font-size: 16px" >竣工项目</div>
+   		</div>
+	   </div>
+	  </div></div>
+	  <div class="introduction7"><div class="img7">
+	       <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">征拆</p>
+	   </div>
+
+	       <div style="height:90%;width:96%;display: inline-block;text-align: center;line-height:90%;margin-left: 1.5%;margin-top: 5px;vertical-align: middle;">
+	       <div style="height:100%;width:48%; display: inline-block;text-align: center;line-height:90%;margin-top:5%;vertical-align: middle;">
+	       <div id="fwgx" style="width:100%;height:100%;"> </div>
+	       </div>
+	       <div style="height:96%;width:48%; display: inline-block;text-align: center;line-height:90%;vertical-align: middle;">
+	        <div id="tdzc" style="width:100%;height:48%;"> </div>
+	         <div id="lsydzc" style="width:100%;height:49%;"> </div>
+	       </div>
+	   </div>
+	  </div></div>
+	  <div class="introduction8"><div class="img8">
+	         <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">安全生产排名</p>
+	   </div>
+	  <div style="height:10%;margin-top:3%; width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;" >
+	  <div style="text-align:center; height:100%;width:30%;margin-left:1.5%;display: inline-block; vertical-align: middle;background-image:url(../images/screem/aqzlpm.png); background-repeat: no-repeat;background-size: 100% 100%;" >
+	  <div style="display: inline-block; vertical-align: middle;margin-top:6%;font-size:14px;color: white;" id="b1" onclick="aqxj()">安全巡检到岗率</div>
+	  </div>
+	   <div style="text-align:center;height:100%;width:30%;margin-left:1.5%;display: inline-block; vertical-align: middle;background-image:url(../images/screem/aqzlpm.png); background-repeat: no-repeat;background-size: 100% 100%;" >
+	  <div style="display: inline-block;margin-right:1%; vertical-align: middle;margin-top:6%;font-size:14px;color: white;" id="b2" onclick="aqyh()">安全隐患整改率</div>
+	  </div>
+	  </div>
+	  <div style="height:9.5%;width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;margin-top: 1%;background:#012e67;">
+	  <tb style="margin-left:4%;margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:20%;">TOP1</tb>
+	  <tb style="margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:50%;" id="p1"></tb>
+	  <tb  style="text-align:center;margin-left:2%;margin-top:1%;font-size:20px;float: left;display: inline-block;color: #d0db10;  vertical-align: middle;width:20%;font-weight: bold;" id="s1"></tb>
+
+	  </div>
+	 <div style="height:9.5%;width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;margin-top: 0.6%;" >
+	 <tb style="margin-left:4%;margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:20%;">TOP2</tb>
+	  <tb style="margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:50%;" id="p2"></tb>
+	  <tb  style="text-align:center;margin-left:2%;margin-top:1%;font-size:20px;float: left;display: inline-block;color: #d0db10;  vertical-align: middle;width:20%;font-weight: bold;" id="s2"></tb>
+	 </div>
+	 <div style="height:9.5%;width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;margin-top: 0.6%;background:#012e67;" >
+	 <tb style="margin-left:4%;margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:20%;">TOP3</tb>
+	  <tb style="margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:50%;" id="p3"></tb>
+	  <tb  style="text-align:center;margin-left:2%;margin-top:1%;font-size:20px;float: left;display: inline-block;color: #d0db10;  vertical-align: middle;width:20%;font-weight: bold;" id="s3"></tb>
+	 </div>
+	 <div style="height:9.5%;width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;margin-top: 0.6%;" >
+	 <tb style="margin-left:4%;margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:20%;">TOP4</tb>
+	  <tb style="margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:50%;" id="p4"></tb>
+	  <tb  style="text-align:center;margin-left:2%;margin-top:1%;font-size:20px;float: left;display: inline-block;color: #d0db10;  vertical-align: middle;width:20%;font-weight: bold;" id="s4"></tb>
+	 </div>
+
+	 <div style="height:9.5%;width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;margin-top: 0.6%;background:#012e67;" >
+	 <tb style="margin-left:4%;margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:20%;">TOP5</tb>
+	  <tb style="margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:50%;" id="p5"></tb>
+	  <tb  style="text-align:center;margin-left:2%;margin-top:1%;font-size:20px;float: left;display: inline-block;color: #d0db10;  vertical-align: middle;width:20%;font-weight: bold;" id="s5"></tb>
+	 </div>
+
+	 <div style="height:9.5%;width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;margin-top: 0.6%;" >
+	 <tb style="margin-left:4%;margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:20%;">TOP6</tb>
+	  <tb style="margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:50%;" id="p6"></tb>
+	  <tb  style="text-align:center;margin-left:2%;margin-top:1%;font-size:20px;float: left;display: inline-block;color: #d0db10;  vertical-align: middle;width:20%;font-weight: bold;" id="s6"></tb>
+	 </div>
+
+	 <div style="height:9.5%;width: 96%;margin-left:1.5%;display: inline-block; vertical-align: middle;margin-top: 0.6%;background:#012e67;" >
+	 <tb style="margin-left:4%;margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:20%;">TOP7</tb>
+	  <tb style="margin-top:2%;font-size:14px;float: left;display: inline-block;color: white; vertical-align: middle;width:50%;" id="p7"></tb>
+	  <tb  style="text-align:center;margin-left:2%;margin-top:1%;font-size:20px;float: left;display: inline-block;color: #d0db10;  vertical-align: middle;width:20%;font-weight: bold;" id="s7"></tb>
+	 </div>
+	  </div></div>
+	 </div>
+
+		</div>
+		<div id="table8">
+  <table style="font-size: 14;color: #08c7f1;text-align: center;">
+   <thead>
+    <tr>
+      <th style="width: 160px;" >项目名称</th>
+      <th style="width: 160px;">计划开工时间</th>
+    </tr>
+   </thead>
+   <tbody id='tbody'>
+
+   </tbody>
+  </table>
+		</div>
+
+			<div id="table9">
+  <table style="font-size: 14;text-align: center;">
+   <thead>
+    <tr>
+      <th style="width: 160px;color: #08c7f1;" >项目名称</th>
+      <th style="width: 160px;color: #08c7f1;">实际开工时间</th>
+      <th style="width: 160px;color: #08c7f1;">实际完工时间</th>
+    </tr>
+   </thead>
+   <tbody id='tbodyjg'>
+
+   </tbody>
+  </table>
+		</div>
+	 </div>
+	 </div>
+</body>
+<script type="text/javascript" src="../framework/js/zhzx/echarts.min.js"></script>
+<script type="text/javascript" src="../framework/js/zhzx/echarts-liquidfill.min.js"></script>
+<script src="https://pv.sohu.com/cityjson?ie=utf-8" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+
+//取个变量名,将方法写入到HTML文档中
+//定义"改变颜色"的函数
+var txt1=document.getElementById("b1");
+var txt2=document.getElementById("b2");
+function aqxj(){
+
+    txt1.style.color="#00fdfd";
+    txt2.style.color="white";
+    $.request({
+		url : $$pageContextPath+'mainScreen/scre/aqxj',
+		success : function(response){
+
+			var aqxj = response.parameters.aqxj;
+			var p1=aqxj.aqxjlist.gs[0];
+			var p2=aqxj.aqxjlist.gs[1];
+			var p3=aqxj.aqxjlist.gs[2];
+			var p4=aqxj.aqxjlist.gs[3];
+			var p5=aqxj.aqxjlist.gs[4];
+			var p6=aqxj.aqxjlist.gs[5];
+			var p7=aqxj.aqxjlist.gs[6];
+
+			$("#p1").html(p1);
+			$("#p2").html(p2);
+			$("#p3").html(p3);
+			$("#p4").html(p4);
+			$("#p5").html(p5);
+			$("#p6").html(p6);
+			$("#p7").html(p7);
+
+			var s1=aqxj.aqxjlist.ss[0];
+			var s2=aqxj.aqxjlist.ss[1];
+			var s3=aqxj.aqxjlist.ss[2];
+			var s4=aqxj.aqxjlist.ss[3];
+			var s5=aqxj.aqxjlist.ss[4];
+			var s6=aqxj.aqxjlist.ss[5];
+			var s7=aqxj.aqxjlist.ss[6];
+
+			$("#s1").html(s1);
+			$("#s2").html(s2);
+			$("#s3").html(s3);
+			$("#s4").html(s4);
+			$("#s5").html(s5);
+			$("#s6").html(s6);
+			$("#s7").html(s7);
+
+
+		}
+	});
+}
+
+function aqyh(){
+
+    txt2.style.color="#00fdfd";
+    txt1.style.color="white";
+    $.request({
+		url : $$pageContextPath+'mainScreen/scre/aqyh',
+		success : function(response){
+			var aqyh = response.parameters.aqyh;
+			var p1=aqyh.aqxjlist.gs[0];
+			var p2=aqyh.aqxjlist.gs[1];
+			var p3=aqyh.aqxjlist.gs[2];
+			var p4=aqyh.aqxjlist.gs[3];
+			var p5=aqyh.aqxjlist.gs[4];
+			var p6=aqyh.aqxjlist.gs[5];
+			var p7=aqyh.aqxjlist.gs[6];
+
+			$("#p1").html(p1);
+			$("#p2").html(p2);
+			$("#p3").html(p3);
+			$("#p4").html(p4);
+			$("#p5").html(p5);
+			$("#p6").html(p6);
+			$("#p7").html(p7);
+
+			var s1=aqyh.aqxjlist.ss[0];
+			var s2=aqyh.aqxjlist.ss[1];
+			var s3=aqyh.aqxjlist.ss[2];
+			var s4=aqyh.aqxjlist.ss[3];
+			var s5=aqyh.aqxjlist.ss[4];
+			var s6=aqyh.aqxjlist.ss[5];
+			var s7=aqyh.aqxjlist.ss[6];
+
+			$("#s1").html(s1);
+			$("#s2").html(s2);
+			$("#s3").html(s3);
+			$("#s4").html(s4);
+			$("#s5").html(s5);
+			$("#s6").html(s6);
+			$("#s7").html(s7);
+		}
+	});
+}
+</script>
+
+<script  type="text/javascript">
+var prj="";
+$(function(){
+	getTreeData();
+
+		 setInterval(function () {
+				var date = new Date();//获得当前时间
+				var yy = date.getFullYear();//年份
+				var mm = date.getMonth() + 1;//获得月份
+				mm = (mm < 10 ? "0" + mm : mm);//月份小于10时，前面加个0(例如9 ->09)天，小时，分钟，秒同理
+				var dd = (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());//天
+				var hours = (date.getHours() < 10 ? "0" + date.getHours() : date.getHours());//小时
+				var minutes = (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes());//分钟
+				var seconds = (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds());//秒
+				document.getElementById("time").innerHTML = yy + '年' + mm + "月" + dd + "日 " + hours + ':' + minutes + ':' + seconds;
+				}, 1000);
+		 getWeather();
+
+	})
+
+ 	function getWeather() {
+  jQuery.support.cors = true;
+  $.ajax({
+    url: "http://wthrcdn.etouch.cn/weather_mini",
+    type: "GET",
+    dataType: 'json',
+    data: {city: (returnCitySN.cname).split('省')[1]}, //(returnCitySN.cname).split('省')[1]：获取所在的市
+
+    success: function (res) {
+      //var res=JSON.parse(res);
+      var city = res.data.city;//所在城市
+      var maxTemperature = res.data.forecast[0].high;//最高温度
+      var minTemperature = res.data.forecast[0].low;//最低温度
+      var weather = minTemperature.split(' ')[1] + '~' + maxTemperature.split(' ')[1];
+      var type = res.data.forecast[0].type;//天气状态
+      var tq=city+"&nbsp;"+type;
+      document.getElementById("tqzt").innerHTML =tq;
+    },
+    error: function (err) {
+      console.log(err)
+    }
+  });
+}
+
+
+var  mapEchart = echarts.init(document.getElementById('echar'));
+var myZoom;
+var geoCoordMap = {};
+var locValue = [];
+var geoCoordMap1 = {};
+var locValue1 = [];
+ var geoJson={
+			"type": "FeatureCollection",
+			"features": [{
+				"type": "Feature",
+				"properties": {
+					"adcode": 440604,
+					"name": "禅城区",
+					"center": [113.112414, 23.019643],
+					"centroid": [113.06366, 22.997916],
+					"childrenNum": 0,
+					"level": "district",
+					"parent": {
+						"adcode": 440600
+					},
+					"subFeatureIndex": 0,
+					"acroutes": [100000, 440000, 440600]
+				},
+				"geometry": {
+					"type": "MultiPolygon",
+					"coordinates": [
+						[
+							[
+								[113.044025, 22.922258],
+								[113.028925, 22.92195],
+								[113.024273, 22.922827],
+								[113.019701, 22.924906],
+								[113.01522, 22.928002],
+								[113.012944, 22.932207],
+								[113.009394, 22.936608],
+								[113.002897, 22.948571],
+								[113.001273, 22.954519],
+								[112.997092, 22.963813],
+								[112.98861, 22.974655],
+								[112.98097, 22.977833],
+								[112.978945, 22.980807],
+								[112.979987, 22.987173],
+								[112.985883, 22.9949],
+								[112.98877, 23.003912],
+								[112.986494, 23.010911],
+								[112.986845, 23.029361],
+								[112.992711, 23.025392],
+								[112.997624, 23.025885],
+								[113.00029, 23.028765],
+								[113.006727, 23.031849],
+								[113.014347, 23.031933],
+								[113.01919, 23.030908],
+								[113.026389, 23.028364],
+								[113.029056, 23.026221],
+								[113.0309, 23.030787],
+								[113.033437, 23.034365],
+								[113.035041, 23.034905],
+								[113.044386, 23.03265],
+								[113.049208, 23.035166],
+								[113.052336, 23.039573],
+								[113.053068, 23.041939],
+								[113.052507, 23.047911],
+								[113.05374, 23.050734],
+								[113.05749, 23.051712],
+								[113.070043, 23.05093],
+								[113.073121, 23.050212],
+								[113.08035, 23.049672],
+								[113.082816, 23.050688],
+								[113.082485, 23.055606],
+								[113.089614, 23.053743],
+								[113.093965, 23.055262],
+								[113.102588, 23.05515],
+								[113.105054, 23.058261],
+								[113.105977, 23.061708],
+								[113.108604, 23.061997],
+								[113.113998, 23.059743],
+								[113.119713, 23.062193],
+								[113.124505, 23.050408],
+								[113.124806, 23.047045],
+								[113.126079, 23.045629],
+								[113.131223, 23.046598],
+								[113.133659, 23.04506],
+								[113.131754, 23.043439],
+								[113.132366, 23.042079],
+								[113.135223, 23.041446],
+								[113.136045, 23.044269],
+								[113.138502, 23.042824],
+								[113.13775, 23.039275],
+								[113.133749, 23.03688],
+								[113.135303, 23.033368],
+								[113.138502, 23.030423],
+								[113.139905, 23.025149],
+								[113.148438, 23.019745],
+								[113.150092, 23.019829],
+								[113.154945, 23.02377],
+								[113.156348, 23.02132],
+								[113.15306, 23.017247],
+								[113.152157, 23.01256],
+								[113.142171, 23.011703],
+								[113.139354, 23.008124],
+								[113.139945, 23.006456],
+								[113.14538, 23.005198],
+								[113.147144, 23.000799],
+								[113.149711, 22.998376],
+								[113.14928, 22.996568],
+								[113.151796, 22.994545],
+								[113.156027, 22.9964],
+								[113.157531, 22.998199],
+								[113.158464, 22.996409],
+								[113.164219, 22.99571],
+								[113.167598, 22.996102],
+								[113.168299, 22.994266],
+								[113.166304, 22.99119],
+								[113.165753, 22.983976],
+								[113.163186, 22.982671],
+								[113.157882, 22.985393],
+								[113.149851, 22.986865],
+								[113.144938, 22.985821],
+								[113.13797, 22.981357],
+								[113.133148, 22.976286],
+								[113.131102, 22.975028],
+								[113.122209, 22.97389],
+								[113.114318, 22.97238],
+								[113.10712, 22.973312],
+								[113.104082, 22.976202],
+								[113.102076, 22.976911],
+								[113.08829, 22.977041],
+								[113.079377, 22.979884],
+								[113.07669, 22.980303],
+								[113.062363, 22.979306],
+								[113.058122, 22.979287],
+								[113.057841, 22.977666],
+								[113.055806, 22.978327],
+								[113.0535, 22.975093],
+								[113.051715, 22.975606],
+								[113.051905, 22.973452],
+								[113.050472, 22.970581],
+								[113.051966, 22.968838],
+								[113.052948, 22.961129],
+								[113.054402, 22.959637],
+								[113.057851, 22.959954],
+								[113.058713, 22.954211],
+								[113.060829, 22.951731],
+								[113.063456, 22.950482],
+								[113.066574, 22.952412],
+								[113.067105, 22.948664],
+								[113.063947, 22.946408],
+								[113.067737, 22.936207],
+								[113.063085, 22.933205],
+								[113.05766, 22.933289],
+								[113.057219, 22.931331],
+								[113.052256, 22.933447],
+								[113.048978, 22.932347],
+								[113.046752, 22.92996],
+								[113.04599, 22.927573],
+								[113.043744, 22.926417],
+								[113.044025, 22.922258]
+							]
+						]
+					]
+				}
+			}, {
+				"type": "Feature",
+				"properties": {
+					"adcode": 440605,
+					"name": "南海区",
+					"center": [113.145577, 23.031562],
+					"centroid": [113.035558, 23.069376],
+					"childrenNum": 0,
+					"level": "district",
+					"parent": {
+						"adcode": 440600
+					},
+					"subFeatureIndex": 1,
+					"acroutes": [100000, 440000, 440600]
+				},
+				"geometry": {
+					"type": "MultiPolygon",
+					"coordinates": [
+						[
+							[
+								[113.044025, 22.922258],
+								[113.048146, 22.922351],
+								[113.052056, 22.920822],
+								[113.054983, 22.918462],
+								[113.051113, 22.914518],
+								[113.053199, 22.913277],
+								[113.055234, 22.914173],
+								[113.056718, 22.911655],
+								[113.055084, 22.91048],
+								[113.057209, 22.907551],
+								[113.055013, 22.902776],
+								[113.052738, 22.901601],
+								[113.050622, 22.897889],
+								[113.047143, 22.897712],
+								[113.04599, 22.895343],
+								[113.048166, 22.892852],
+								[113.046732, 22.890959],
+								[113.05002, 22.8872],
+								[113.048657, 22.884122],
+								[113.045408, 22.882807],
+								[113.04212, 22.884327],
+								[113.037618, 22.882751],
+								[113.036465, 22.883693],
+								[113.031993, 22.882508],
+								[113.031482, 22.883656],
+								[113.026469, 22.883954],
+								[113.024855, 22.8811],
+								[113.022609, 22.880372],
+								[113.018769, 22.883003],
+								[113.013786, 22.884402],
+								[113.013164, 22.883422],
+								[113.017064, 22.882266],
+								[113.016593, 22.878423],
+								[113.013345, 22.875167],
+								[113.011941, 22.875176],
+								[113.009063, 22.870167],
+								[113.0116, 22.867741],
+								[113.010407, 22.865904],
+								[113.014939, 22.860129],
+								[113.017335, 22.859205],
+								[113.017275, 22.853589],
+								[113.02307, 22.851499],
+								[113.02324, 22.848775],
+								[113.025075, 22.848775],
+								[113.024674, 22.845863],
+								[113.027451, 22.843186],
+								[113.026439, 22.841655],
+								[113.031562, 22.839789],
+								[113.033176, 22.840788],
+								[113.036064, 22.839453],
+								[113.035853, 22.837326],
+								[113.037628, 22.836878],
+								[113.038069, 22.834751],
+								[113.043122, 22.836253],
+								[113.048136, 22.831391],
+								[113.046922, 22.828312],
+								[113.053349, 22.822592],
+								[113.058603, 22.82205],
+								[113.062804, 22.820342],
+								[113.067797, 22.813969],
+								[113.066062, 22.812671],
+								[113.062633, 22.804953],
+								[113.061561, 22.798364],
+								[113.059555, 22.80122],
+								[113.049529, 22.807753],
+								[113.043313, 22.80766],
+								[113.035492, 22.805616],
+								[113.031091, 22.803432],
+								[113.025206, 22.802312],
+								[113.003218, 22.802125],
+								[112.99643, 22.800996],
+								[112.98861, 22.800436],
+								[112.980358, 22.802741],
+								[112.975255, 22.807893],
+								[112.972678, 22.811458],
+								[112.964006, 22.826968],
+								[112.942299, 22.841609],
+								[112.93128, 22.850762],
+								[112.92343, 22.856294],
+								[112.918106, 22.85441],
+								[112.909894, 22.85316],
+								[112.907578, 22.851228],
+								[112.905904, 22.851424],
+								[112.907247, 22.848877],
+								[112.905262, 22.845593],
+								[112.902906, 22.84522],
+								[112.90052, 22.841375],
+								[112.898364, 22.841329],
+								[112.899206, 22.844277],
+								[112.897692, 22.847347],
+								[112.895046, 22.844865],
+								[112.89302, 22.846769],
+								[112.88897, 22.845742],
+								[112.88898, 22.848345],
+								[112.886022, 22.848961],
+								[112.883315, 22.846899],
+								[112.882593, 22.8487],
+								[112.883716, 22.852189],
+								[112.876286, 22.846087],
+								[112.874091, 22.845509],
+								[112.87363, 22.848196],
+								[112.867885, 22.835432],
+								[112.860275, 22.833789],
+								[112.85866, 22.834312],
+								[112.854861, 22.838977],
+								[112.851502, 22.839957],
+								[112.846649, 22.837475],
+								[112.843872, 22.838707],
+								[112.841796, 22.842504],
+								[112.838127, 22.844678],
+								[112.840312, 22.848989],
+								[112.83952, 22.851042],
+								[112.842478, 22.851574],
+								[112.849035, 22.855959],
+								[112.857267, 22.866351],
+								[112.860485, 22.869523],
+								[112.861929, 22.872033],
+								[112.860164, 22.873964],
+								[112.864145, 22.88221],
+								[112.869368, 22.885157],
+								[112.871604, 22.885316],
+								[112.874011, 22.882947],
+								[112.879515, 22.879337],
+								[112.888448, 22.879383],
+								[112.895797, 22.877471],
+								[112.902274, 22.873768],
+								[112.906385, 22.870428],
+								[112.909874, 22.862564],
+								[112.912441, 22.859625],
+								[112.916612, 22.856593],
+								[112.918617, 22.856033],
+								[112.922948, 22.85845],
+								[112.917173, 22.867079],
+								[112.914747, 22.878544],
+								[112.912521, 22.887545],
+								[112.897652, 22.903131],
+								[112.889681, 22.91089],
+								[112.883325, 22.915963],
+								[112.875545, 22.924887],
+								[112.873088, 22.929708],
+								[112.869499, 22.941401],
+								[112.870261, 22.955843],
+								[112.88153, 22.958518],
+								[112.885801, 22.960672],
+								[112.885831, 22.957922],
+								[112.890684, 22.960019],
+								[112.89307, 22.959451],
+								[112.893903, 22.96207],
+								[112.901172, 22.965864],
+								[112.900249, 22.971504],
+								[112.903768, 22.973527],
+								[112.898835, 22.974319],
+								[112.902254, 22.975531],
+								[112.905132, 22.97404],
+								[112.906826, 22.976239],
+								[112.90458, 22.977768],
+								[112.907247, 22.977983],
+								[112.906495, 22.980742],
+								[112.903999, 22.982997],
+								[112.906495, 22.983734],
+								[112.90425, 22.985831],
+								[112.906175, 22.989373],
+								[112.903849, 22.99215],
+								[112.90428, 22.996941],
+								[112.903036, 22.998012],
+								[112.89313, 22.997966],
+								[112.890704, 23.002328],
+								[112.886774, 23.004928],
+								[112.882082, 23.0049],
+								[112.879776, 23.00955],
+								[112.879715, 23.014946],
+								[112.881139, 23.020332],
+								[112.880157, 23.027125],
+								[112.876788, 23.030647],
+								[112.870572, 23.042433],
+								[112.872998, 23.045591],
+								[112.87398, 23.051563],
+								[112.871965, 23.057004],
+								[112.874241, 23.065919],
+								[112.875274, 23.072374],
+								[112.8737, 23.07827],
+								[112.870501, 23.085749],
+								[112.868606, 23.088925],
+								[112.864285, 23.093945],
+								[112.8623, 23.098276],
+								[112.86239, 23.100418],
+								[112.868717, 23.098257],
+								[112.873489, 23.099356],
+								[112.874813, 23.101694],
+								[112.877891, 23.103491],
+								[112.87754, 23.10717],
+								[112.875895, 23.112543],
+								[112.877981, 23.115085],
+								[112.882533, 23.116221],
+								[112.897121, 23.115643],
+								[112.899497, 23.114489],
+								[112.907107, 23.114545],
+								[112.909142, 23.113194],
+								[112.91225, 23.109358],
+								[112.914627, 23.108883],
+								[112.911709, 23.11353],
+								[112.906786, 23.117534],
+								[112.899527, 23.126501],
+								[112.895457, 23.133791],
+								[112.894213, 23.140206],
+								[112.901954, 23.14729],
+								[112.906325, 23.146127],
+								[112.906997, 23.14271],
+								[112.910356, 23.143278],
+								[112.914577, 23.145643],
+								[112.914316, 23.150614],
+								[112.923099, 23.152196],
+								[112.926558, 23.155399],
+								[112.928102, 23.158033],
+								[112.933105, 23.159076],
+								[112.929576, 23.166653],
+								[112.930448, 23.17463],
+								[112.932042, 23.180494],
+								[112.935672, 23.184989],
+								[112.93898, 23.190424],
+								[112.946721, 23.196734],
+								[112.949558, 23.200605],
+								[112.95034, 23.210432],
+								[112.946821, 23.214861],
+								[112.941928, 23.217457],
+								[112.944755, 23.222388],
+								[112.958983, 23.225328],
+								[112.964798, 23.22584],
+								[112.96936, 23.229134],
+								[112.968257, 23.234353],
+								[112.968407, 23.237563],
+								[112.975476, 23.231767],
+								[112.976408, 23.2217],
+								[112.979246, 23.216452],
+								[112.99229, 23.214182],
+								[113.00011, 23.216005],
+								[113.005063, 23.216368],
+								[113.011099, 23.217522],
+								[113.014217, 23.216573],
+								[113.015029, 23.21447],
+								[113.019872, 23.211725],
+								[113.023601, 23.20817],
+								[113.03452, 23.209427],
+								[113.033106, 23.21407],
+								[113.033106, 23.219262],
+								[113.032074, 23.225459],
+								[113.042621, 23.222937],
+								[113.049589, 23.224044],
+								[113.056818, 23.228278],
+								[113.057279, 23.231627],
+								[113.053359, 23.235832],
+								[113.047775, 23.242903],
+								[113.046982, 23.250149],
+								[113.05351, 23.253443],
+								[113.05758, 23.251098],
+								[113.063185, 23.252038],
+								[113.070233, 23.248791],
+								[113.079778, 23.250103],
+								[113.081653, 23.252968],
+								[113.081904, 23.26174],
+								[113.079026, 23.267479],
+								[113.076971, 23.270148],
+								[113.075347, 23.276259],
+								[113.071426, 23.281988],
+								[113.072269, 23.284276],
+								[113.081493, 23.284955],
+								[113.082606, 23.286257],
+								[113.086175, 23.285289],
+								[113.089002, 23.286573],
+								[113.090556, 23.289949],
+								[113.093043, 23.291102],
+								[113.097835, 23.291269],
+								[113.105556, 23.289744],
+								[113.110238, 23.295984],
+								[113.108413, 23.301526],
+								[113.105756, 23.302735],
+								[113.113216, 23.309858],
+								[113.114188, 23.306668],
+								[113.124696, 23.307635],
+								[113.127984, 23.314553],
+								[113.134742, 23.307998],
+								[113.140978, 23.303786],
+								[113.146212, 23.303032],
+								[113.150824, 23.297983],
+								[113.150002, 23.294933],
+								[113.150583, 23.289976],
+								[113.153461, 23.287094],
+								[113.16089, 23.286666],
+								[113.162745, 23.285317],
+								[113.163347, 23.280928],
+								[113.16457, 23.279012],
+								[113.173443, 23.277049],
+								[113.177754, 23.271301],
+								[113.181394, 23.256977],
+								[113.181995, 23.251443],
+								[113.181133, 23.245721],
+								[113.179188, 23.237535],
+								[113.176541, 23.236586],
+								[113.17606, 23.230967],
+								[113.178055, 23.228138],
+								[113.177473, 23.220881],
+								[113.184361, 23.215261],
+								[113.191099, 23.214963],
+								[113.193566, 23.210943],
+								[113.196232, 23.208068],
+								[113.202238, 23.203806],
+								[113.204905, 23.201163],
+								[113.208996, 23.192183],
+								[113.208966, 23.186655],
+								[113.208033, 23.183453],
+								[113.209447, 23.177106],
+								[113.207071, 23.173522],
+								[113.197897, 23.169622],
+								[113.192713, 23.165182],
+								[113.18773, 23.159104],
+								[113.186888, 23.15552],
+								[113.186858, 23.148249],
+								[113.188502, 23.145186],
+								[113.192011, 23.143455],
+								[113.203381, 23.143408],
+								[113.211512, 23.142626],
+								[113.212675, 23.141099],
+								[113.211603, 23.128884],
+								[113.209718, 23.121845],
+								[113.203712, 23.121873],
+								[113.203291, 23.119778],
+								[113.205246, 23.109507],
+								[113.20679, 23.107654],
+								[113.208144, 23.099682],
+								[113.213849, 23.099803],
+								[113.215804, 23.100669],
+								[113.216355, 23.096767],
+								[113.213097, 23.095668],
+								[113.213267, 23.092688],
+								[113.212074, 23.090984],
+								[113.212505, 23.08832],
+								[113.209587, 23.086904],
+								[113.208815, 23.083551],
+								[113.19523, 23.084101],
+								[113.193656, 23.083887],
+								[113.183409, 23.07786],
+								[113.177403, 23.077553],
+								[113.178857, 23.074759],
+								[113.177574, 23.06957],
+								[113.180612, 23.063171],
+								[113.184843, 23.05965],
+								[113.188181, 23.058234],
+								[113.195761, 23.056175],
+								[113.203341, 23.050604],
+								[113.209226, 23.044483],
+								[113.211693, 23.043318],
+								[113.22574, 23.041865],
+								[113.23367, 23.042852],
+								[113.245351, 23.043374],
+								[113.254926, 23.044837],
+								[113.256129, 23.043914],
+								[113.254846, 23.038501],
+								[113.256961, 23.030815],
+								[113.258726, 23.022056],
+								[113.263127, 23.021133],
+								[113.258385, 23.014004],
+								[113.253933, 23.012169],
+								[113.250013, 23.009037],
+								[113.249462, 23.004201],
+								[113.250324, 22.999774],
+								[113.251808, 22.99846],
+								[113.25669, 22.997789],
+								[113.257894, 22.994862],
+								[113.251788, 22.990211],
+								[113.251016, 22.988198],
+								[113.251607, 22.982624],
+								[113.249742, 22.977945],
+								[113.245812, 22.977647],
+								[113.243045, 22.978728],
+								[113.240578, 22.982093],
+								[113.236748, 22.980443],
+								[113.234723, 22.982149],
+								[113.231645, 22.981049],
+								[113.228838, 22.98707],
+								[113.230652, 22.985831],
+								[113.228888, 22.990528],
+								[113.222972, 22.993418],
+								[113.223283, 22.996559],
+								[113.22219, 22.998544],
+								[113.22197, 23.003427],
+								[113.220125, 23.005142],
+								[113.21455, 23.006326],
+								[113.209928, 23.004341],
+								[113.20279, 23.005217],
+								[113.200173, 23.008143],
+								[113.189054, 23.003903],
+								[113.185344, 23.000231],
+								[113.18379, 22.994797],
+								[113.179769, 22.992877],
+								[113.178647, 22.990911],
+								[113.176711, 22.991656],
+								[113.17631, 22.989326],
+								[113.1725, 22.989363],
+								[113.171668, 22.991647],
+								[113.168299, 22.994266],
+								[113.167598, 22.996102],
+								[113.164219, 22.99571],
+								[113.158464, 22.996409],
+								[113.157531, 22.998199],
+								[113.156027, 22.9964],
+								[113.151796, 22.994545],
+								[113.14928, 22.996568],
+								[113.149711, 22.998376],
+								[113.147144, 23.000799],
+								[113.14538, 23.005198],
+								[113.139945, 23.006456],
+								[113.139354, 23.008124],
+								[113.142171, 23.011703],
+								[113.152157, 23.01256],
+								[113.15306, 23.017247],
+								[113.156348, 23.02132],
+								[113.154945, 23.02377],
+								[113.150092, 23.019829],
+								[113.148438, 23.019745],
+								[113.139905, 23.025149],
+								[113.138502, 23.030423],
+								[113.135303, 23.033368],
+								[113.133749, 23.03688],
+								[113.13775, 23.039275],
+								[113.138502, 23.042824],
+								[113.136045, 23.044269],
+								[113.135223, 23.041446],
+								[113.132366, 23.042079],
+								[113.131754, 23.043439],
+								[113.133659, 23.04506],
+								[113.131223, 23.046598],
+								[113.126079, 23.045629],
+								[113.124806, 23.047045],
+								[113.124505, 23.050408],
+								[113.119713, 23.062193],
+								[113.113998, 23.059743],
+								[113.108604, 23.061997],
+								[113.105977, 23.061708],
+								[113.105054, 23.058261],
+								[113.102588, 23.05515],
+								[113.093965, 23.055262],
+								[113.089614, 23.053743],
+								[113.082485, 23.055606],
+								[113.082816, 23.050688],
+								[113.08035, 23.049672],
+								[113.073121, 23.050212],
+								[113.070043, 23.05093],
+								[113.05749, 23.051712],
+								[113.05374, 23.050734],
+								[113.052507, 23.047911],
+								[113.053068, 23.041939],
+								[113.052336, 23.039573],
+								[113.049208, 23.035166],
+								[113.044386, 23.03265],
+								[113.035041, 23.034905],
+								[113.033437, 23.034365],
+								[113.0309, 23.030787],
+								[113.029056, 23.026221],
+								[113.026389, 23.028364],
+								[113.01919, 23.030908],
+								[113.014347, 23.031933],
+								[113.006727, 23.031849],
+								[113.00029, 23.028765],
+								[112.997624, 23.025885],
+								[112.992711, 23.025392],
+								[112.986845, 23.029361],
+								[112.986494, 23.010911],
+								[112.98877, 23.003912],
+								[112.985883, 22.9949],
+								[112.979987, 22.987173],
+								[112.978945, 22.980807],
+								[112.98097, 22.977833],
+								[112.98861, 22.974655],
+								[112.997092, 22.963813],
+								[113.001273, 22.954519],
+								[113.002897, 22.948571],
+								[113.009394, 22.936608],
+								[113.012944, 22.932207],
+								[113.01522, 22.928002],
+								[113.019701, 22.924906],
+								[113.024273, 22.922827],
+								[113.028925, 22.92195],
+								[113.044025, 22.922258]
+							]
+						]
+					]
+				}
+			}, {
+				"type": "Feature",
+				"properties": {
+					"adcode": 440606,
+					"name": "顺德区",
+					"center": [113.281826, 22.75851],
+					"centroid": [113.183864, 22.841371],
+					"childrenNum": 0,
+					"level": "district",
+					"parent": {
+						"adcode": 440600
+					},
+					"subFeatureIndex": 2,
+					"acroutes": [100000, 440000, 440600]
+				},
+				"geometry": {
+					"type": "MultiPolygon",
+					"coordinates": [
+						[
+							[
+								[113.061561, 22.798364],
+								[113.062633, 22.804953],
+								[113.066062, 22.812671],
+								[113.067797, 22.813969],
+								[113.062804, 22.820342],
+								[113.058603, 22.82205],
+								[113.053349, 22.822592],
+								[113.046922, 22.828312],
+								[113.048136, 22.831391],
+								[113.043122, 22.836253],
+								[113.038069, 22.834751],
+								[113.037628, 22.836878],
+								[113.035853, 22.837326],
+								[113.036064, 22.839453],
+								[113.033176, 22.840788],
+								[113.031562, 22.839789],
+								[113.026439, 22.841655],
+								[113.027451, 22.843186],
+								[113.024674, 22.845863],
+								[113.025075, 22.848775],
+								[113.02324, 22.848775],
+								[113.02307, 22.851499],
+								[113.017275, 22.853589],
+								[113.017335, 22.859205],
+								[113.014939, 22.860129],
+								[113.010407, 22.865904],
+								[113.0116, 22.867741],
+								[113.009063, 22.870167],
+								[113.011941, 22.875176],
+								[113.013345, 22.875167],
+								[113.016593, 22.878423],
+								[113.017064, 22.882266],
+								[113.013164, 22.883422],
+								[113.013786, 22.884402],
+								[113.018769, 22.883003],
+								[113.022609, 22.880372],
+								[113.024855, 22.8811],
+								[113.026469, 22.883954],
+								[113.031482, 22.883656],
+								[113.031993, 22.882508],
+								[113.036465, 22.883693],
+								[113.037618, 22.882751],
+								[113.04212, 22.884327],
+								[113.045408, 22.882807],
+								[113.048657, 22.884122],
+								[113.05002, 22.8872],
+								[113.046732, 22.890959],
+								[113.048166, 22.892852],
+								[113.04599, 22.895343],
+								[113.047143, 22.897712],
+								[113.050622, 22.897889],
+								[113.052738, 22.901601],
+								[113.055013, 22.902776],
+								[113.057209, 22.907551],
+								[113.055084, 22.91048],
+								[113.056718, 22.911655],
+								[113.055234, 22.914173],
+								[113.053199, 22.913277],
+								[113.051113, 22.914518],
+								[113.054983, 22.918462],
+								[113.052056, 22.920822],
+								[113.048146, 22.922351],
+								[113.044025, 22.922258],
+								[113.043744, 22.926417],
+								[113.04599, 22.927573],
+								[113.046752, 22.92996],
+								[113.048978, 22.932347],
+								[113.052256, 22.933447],
+								[113.057219, 22.931331],
+								[113.05766, 22.933289],
+								[113.063085, 22.933205],
+								[113.067737, 22.936207],
+								[113.063947, 22.946408],
+								[113.067105, 22.948664],
+								[113.066574, 22.952412],
+								[113.063456, 22.950482],
+								[113.060829, 22.951731],
+								[113.058713, 22.954211],
+								[113.057851, 22.959954],
+								[113.054402, 22.959637],
+								[113.052948, 22.961129],
+								[113.051966, 22.968838],
+								[113.050472, 22.970581],
+								[113.051905, 22.973452],
+								[113.051715, 22.975606],
+								[113.0535, 22.975093],
+								[113.055806, 22.978327],
+								[113.057841, 22.977666],
+								[113.058122, 22.979287],
+								[113.062363, 22.979306],
+								[113.07669, 22.980303],
+								[113.079377, 22.979884],
+								[113.08829, 22.977041],
+								[113.102076, 22.976911],
+								[113.104082, 22.976202],
+								[113.10712, 22.973312],
+								[113.114318, 22.97238],
+								[113.122209, 22.97389],
+								[113.131102, 22.975028],
+								[113.133148, 22.976286],
+								[113.13797, 22.981357],
+								[113.144938, 22.985821],
+								[113.149851, 22.986865],
+								[113.157882, 22.985393],
+								[113.163186, 22.982671],
+								[113.165753, 22.983976],
+								[113.166304, 22.99119],
+								[113.168299, 22.994266],
+								[113.171668, 22.991647],
+								[113.1725, 22.989363],
+								[113.17631, 22.989326],
+								[113.176711, 22.991656],
+								[113.178647, 22.990911],
+								[113.179769, 22.992877],
+								[113.18379, 22.994797],
+								[113.185344, 23.000231],
+								[113.189054, 23.003903],
+								[113.200173, 23.008143],
+								[113.20279, 23.005217],
+								[113.209928, 23.004341],
+								[113.21455, 23.006326],
+								[113.220125, 23.005142],
+								[113.22197, 23.003427],
+								[113.22219, 22.998544],
+								[113.223283, 22.996559],
+								[113.222972, 22.993418],
+								[113.228888, 22.990528],
+								[113.230652, 22.985831],
+								[113.228838, 22.98707],
+								[113.231645, 22.981049],
+								[113.234723, 22.982149],
+								[113.236748, 22.980443],
+								[113.240578, 22.982093],
+								[113.243045, 22.978728],
+								[113.245812, 22.977647],
+								[113.249742, 22.977945],
+								[113.249933, 22.973285],
+								[113.251888, 22.970339],
+								[113.257232, 22.965743],
+								[113.26409, 22.962117],
+								[113.267589, 22.958807],
+								[113.267048, 22.954948],
+								[113.272913, 22.957483],
+								[113.276412, 22.954276],
+								[113.281636, 22.95271],
+								[113.287792, 22.949074],
+								[113.291542, 22.944916],
+								[113.296384, 22.937895],
+								[113.298199, 22.934035],
+								[113.290188, 22.930846],
+								[113.288664, 22.928552],
+								[113.285004, 22.92941],
+								[113.282398, 22.927386],
+								[113.283611, 22.923787],
+								[113.285075, 22.913734],
+								[113.284303, 22.910787],
+								[113.284553, 22.906777],
+								[113.285957, 22.901433],
+								[113.278638, 22.901088],
+								[113.277415, 22.900118],
+								[113.277034, 22.894709],
+								[113.278838, 22.891565],
+								[113.282217, 22.890092],
+								[113.300826, 22.876771],
+								[113.301307, 22.874952],
+								[113.298109, 22.873105],
+								[113.301337, 22.866109],
+								[113.296324, 22.862508],
+								[113.297417, 22.860213],
+								[113.296815, 22.857834],
+								[113.299843, 22.859047],
+								[113.301016, 22.855595],
+								[113.305618, 22.851032],
+								[113.309659, 22.851191],
+								[113.310792, 22.834452],
+								[113.312095, 22.830393],
+								[113.314411, 22.8282],
+								[113.318171, 22.826259],
+								[113.32937, 22.823273],
+								[113.332248, 22.821686],
+								[113.335968, 22.817944],
+								[113.344971, 22.820212],
+								[113.346074, 22.818812],
+								[113.350415, 22.818075],
+								[113.352561, 22.818775],
+								[113.352521, 22.821658],
+								[113.364262, 22.823497],
+								[113.368031, 22.821593],
+								[113.373385, 22.822694],
+								[113.375571, 22.822228],
+								[113.381186, 22.818635],
+								[113.385256, 22.815256],
+								[113.387201, 22.812597],
+								[113.393428, 22.809843],
+								[113.391904, 22.807296],
+								[113.388745, 22.804897],
+								[113.383031, 22.799297],
+								[113.376062, 22.795993],
+								[113.374689, 22.794555],
+								[113.371851, 22.79688],
+								[113.363369, 22.793547],
+								[113.360271, 22.792959],
+								[113.357875, 22.793921],
+								[113.356541, 22.792969],
+								[113.357714, 22.787032],
+								[113.361494, 22.777016],
+								[113.365154, 22.7726],
+								[113.361033, 22.768567],
+								[113.358737, 22.76488],
+								[113.345994, 22.760137],
+								[113.341803, 22.757682],
+								[113.339798, 22.755478],
+								[113.330293, 22.750511],
+								[113.328257, 22.7463],
+								[113.32912, 22.741267],
+								[113.321019, 22.739138],
+								[113.30618, 22.736533],
+								[113.301437, 22.736271],
+								[113.295943, 22.737224],
+								[113.291241, 22.738951],
+								[113.284874, 22.738877],
+								[113.281265, 22.737541],
+								[113.278277, 22.735142],
+								[113.270567, 22.726476],
+								[113.266546, 22.725467],
+								[113.263919, 22.726672],
+								[113.260891, 22.730332],
+								[113.257884, 22.735786],
+								[113.254074, 22.740838],
+								[113.248068, 22.744853],
+								[113.243035, 22.745357],
+								[113.239125, 22.743714],
+								[113.236317, 22.740772],
+								[113.234382, 22.734002],
+								[113.231765, 22.728194],
+								[113.22223, 22.712262],
+								[113.217458, 22.706378],
+								[113.209547, 22.698747],
+								[113.204233, 22.697327],
+								[113.204975, 22.694048],
+								[113.204374, 22.689471],
+								[113.201657, 22.686557],
+								[113.19926, 22.68254],
+								[113.199832, 22.677879],
+								[113.201045, 22.675954],
+								[113.194508, 22.675412],
+								[113.189385, 22.67388],
+								[113.180802, 22.679084],
+								[113.179669, 22.678822],
+								[113.174145, 22.684894],
+								[113.173182, 22.684502],
+								[113.176511, 22.679112],
+								[113.171999, 22.680672],
+								[113.166324, 22.674936],
+								[113.164078, 22.675581],
+								[113.161401, 22.673703],
+								[113.154544, 22.679532],
+								[113.15305, 22.678598],
+								[113.1495, 22.681737],
+								[113.141329, 22.685847],
+								[113.134531, 22.690023],
+								[113.128887, 22.692358],
+								[113.121146, 22.694796],
+								[113.117717, 22.698233],
+								[113.113326, 22.701605],
+								[113.109255, 22.700886],
+								[113.106368, 22.698962],
+								[113.102107, 22.698532],
+								[113.099219, 22.700409],
+								[113.090336, 22.711683],
+								[113.087218, 22.717884],
+								[113.082475, 22.745581],
+								[113.079267, 22.760707],
+								[113.075286, 22.777977],
+								[113.066634, 22.790084],
+								[113.061561, 22.798364]
+							]
+						]
+					]
+				}
+			}, {
+				"type": "Feature",
+				"properties": {
+					"adcode": 440607,
+					"name": "三水区",
+					"center": [112.899414, 23.16504],
+					"centroid": [112.89853, 23.288235],
+					"childrenNum": 0,
+					"level": "district",
+					"parent": {
+						"adcode": 440600
+					},
+					"subFeatureIndex": 3,
+					"acroutes": [100000, 440000, 440600]
+				},
+				"geometry": {
+					"type": "MultiPolygon",
+					"coordinates": [
+						[
+							[
+								[113.046982, 23.250149],
+								[113.047775, 23.242903],
+								[113.053359, 23.235832],
+								[113.057279, 23.231627],
+								[113.056818, 23.228278],
+								[113.049589, 23.224044],
+								[113.042621, 23.222937],
+								[113.032074, 23.225459],
+								[113.033106, 23.219262],
+								[113.033106, 23.21407],
+								[113.03452, 23.209427],
+								[113.023601, 23.20817],
+								[113.019872, 23.211725],
+								[113.015029, 23.21447],
+								[113.014217, 23.216573],
+								[113.011099, 23.217522],
+								[113.005063, 23.216368],
+								[113.00011, 23.216005],
+								[112.99229, 23.214182],
+								[112.979246, 23.216452],
+								[112.976408, 23.2217],
+								[112.975476, 23.231767],
+								[112.968407, 23.237563],
+								[112.968257, 23.234353],
+								[112.96936, 23.229134],
+								[112.964798, 23.22584],
+								[112.958983, 23.225328],
+								[112.944755, 23.222388],
+								[112.941928, 23.217457],
+								[112.946821, 23.214861],
+								[112.95034, 23.210432],
+								[112.949558, 23.200605],
+								[112.946721, 23.196734],
+								[112.93898, 23.190424],
+								[112.935672, 23.184989],
+								[112.932042, 23.180494],
+								[112.930448, 23.17463],
+								[112.929576, 23.166653],
+								[112.933105, 23.159076],
+								[112.928102, 23.158033],
+								[112.926558, 23.155399],
+								[112.923099, 23.152196],
+								[112.914316, 23.150614],
+								[112.914577, 23.145643],
+								[112.910356, 23.143278],
+								[112.906997, 23.14271],
+								[112.906325, 23.146127],
+								[112.901954, 23.14729],
+								[112.894213, 23.140206],
+								[112.895457, 23.133791],
+								[112.899527, 23.126501],
+								[112.906786, 23.117534],
+								[112.911709, 23.11353],
+								[112.914627, 23.108883],
+								[112.91225, 23.109358],
+								[112.909142, 23.113194],
+								[112.907107, 23.114545],
+								[112.899497, 23.114489],
+								[112.897121, 23.115643],
+								[112.882533, 23.116221],
+								[112.877981, 23.115085],
+								[112.875895, 23.112543],
+								[112.87754, 23.10717],
+								[112.877891, 23.103491],
+								[112.874813, 23.101694],
+								[112.873489, 23.099356],
+								[112.868717, 23.098257],
+								[112.86239, 23.100418],
+								[112.8623, 23.098276],
+								[112.864285, 23.093945],
+								[112.868606, 23.088925],
+								[112.870501, 23.085749],
+								[112.8737, 23.07827],
+								[112.875274, 23.072374],
+								[112.874241, 23.065919],
+								[112.871965, 23.057004],
+								[112.87398, 23.051563],
+								[112.872998, 23.045591],
+								[112.870572, 23.042433],
+								[112.876788, 23.030647],
+								[112.880157, 23.027125],
+								[112.881139, 23.020332],
+								[112.879715, 23.014946],
+								[112.879776, 23.00955],
+								[112.882082, 23.0049],
+								[112.886774, 23.004928],
+								[112.890704, 23.002328],
+								[112.89313, 22.997966],
+								[112.903036, 22.998012],
+								[112.90428, 22.996941],
+								[112.903849, 22.99215],
+								[112.906175, 22.989373],
+								[112.90425, 22.985831],
+								[112.906495, 22.983734],
+								[112.903999, 22.982997],
+								[112.906495, 22.980742],
+								[112.907247, 22.977983],
+								[112.90458, 22.977768],
+								[112.906826, 22.976239],
+								[112.905132, 22.97404],
+								[112.902254, 22.975531],
+								[112.898835, 22.974319],
+								[112.903768, 22.973527],
+								[112.900249, 22.971504],
+								[112.901172, 22.965864],
+								[112.893903, 22.96207],
+								[112.89307, 22.959451],
+								[112.890684, 22.960019],
+								[112.885831, 22.957922],
+								[112.885801, 22.960672],
+								[112.88153, 22.958518],
+								[112.870261, 22.955843],
+								[112.86999, 22.96249],
+								[112.868005, 22.968689],
+								[112.86239, 22.977367],
+								[112.856425, 22.985747],
+								[112.845115, 22.996997],
+								[112.839881, 23.000995],
+								[112.834076, 23.014759],
+								[112.832873, 23.02145],
+								[112.823629, 23.041343],
+								[112.819227, 23.052066],
+								[112.818325, 23.062742],
+								[112.818736, 23.072616],
+								[112.811968, 23.083393],
+								[112.808469, 23.08683],
+								[112.805381, 23.091421],
+								[112.801692, 23.101554],
+								[112.799646, 23.109963],
+								[112.798483, 23.138623],
+								[112.797661, 23.143594],
+								[112.793961, 23.150083],
+								[112.78571, 23.15794],
+								[112.775814, 23.166746],
+								[112.774781, 23.169799],
+								[112.775543, 23.178762],
+								[112.77436, 23.185947],
+								[112.771974, 23.191671],
+								[112.772906, 23.19974],
+								[112.766901, 23.200214],
+								[112.764434, 23.202931],
+								[112.766219, 23.206607],
+								[112.766309, 23.213549],
+								[112.772826, 23.215689],
+								[112.773678, 23.217783],
+								[112.769979, 23.218462],
+								[112.769437, 23.223337],
+								[112.772375, 23.225468],
+								[112.777398, 23.224966],
+								[112.781509, 23.22584],
+								[112.785339, 23.223337],
+								[112.781068, 23.218536],
+								[112.781138, 23.216964],
+								[112.784396, 23.211362],
+								[112.784316, 23.206663],
+								[112.786331, 23.205937],
+								[112.795014, 23.20979],
+								[112.794042, 23.210804],
+								[112.795175, 23.2134],
+								[112.794633, 23.220099],
+								[112.796869, 23.223095],
+								[112.795285, 23.226305],
+								[112.798182, 23.228548],
+								[112.799807, 23.228222],
+								[112.8009, 23.224575],
+								[112.803607, 23.221988],
+								[112.801932, 23.219132],
+								[112.805632, 23.215335],
+								[112.806574, 23.212376],
+								[112.803336, 23.20952],
+								[112.802063, 23.207324],
+								[112.802253, 23.204141],
+								[112.800889, 23.2004],
+								[112.810896, 23.200363],
+								[112.813843, 23.213279],
+								[112.815016, 23.217122],
+								[112.826928, 23.215093],
+								[112.831951, 23.21567],
+								[112.840633, 23.223058],
+								[112.842969, 23.224463],
+								[112.846298, 23.229878],
+								[112.847682, 23.228883],
+								[112.848484, 23.233134],
+								[112.84698, 23.232176],
+								[112.844925, 23.235935],
+								[112.847231, 23.238623],
+								[112.84331, 23.239247],
+								[112.842799, 23.237898],
+								[112.840443, 23.239758],
+								[112.831449, 23.24387],
+								[112.827609, 23.24428],
+								[112.820631, 23.237516],
+								[112.820471, 23.239777],
+								[112.823589, 23.245684],
+								[112.83169, 23.254819],
+								[112.836061, 23.256782],
+								[112.845005, 23.263321],
+								[112.845636, 23.268948],
+								[112.847932, 23.275059],
+								[112.852976, 23.279086],
+								[112.857507, 23.287224],
+								[112.8625, 23.291399],
+								[112.866892, 23.293287],
+								[112.868616, 23.299666],
+								[112.869198, 23.30545],
+								[112.871324, 23.315594],
+								[112.875174, 23.323358],
+								[112.880909, 23.336597],
+								[112.883275, 23.347324],
+								[112.879274, 23.349797],
+								[112.872176, 23.35041],
+								[112.863904, 23.349118],
+								[112.859693, 23.364538],
+								[112.847692, 23.378015],
+								[112.838418, 23.387364],
+								[112.830687, 23.38952],
+								[112.814094, 23.391787],
+								[112.805923, 23.387503],
+								[112.807196, 23.381574],
+								[112.807417, 23.376091],
+								[112.810084, 23.371342],
+								[112.806564, 23.367438],
+								[112.800338, 23.368925],
+								[112.793851, 23.369009],
+								[112.787244, 23.371184],
+								[112.78566, 23.373944],
+								[112.78589, 23.378526],
+								[112.78572, 23.394175],
+								[112.788477, 23.397492],
+								[112.787805, 23.403179],
+								[112.790031, 23.40527],
+								[112.794132, 23.407565],
+								[112.795505, 23.413056],
+								[112.795756, 23.424706],
+								[112.796388, 23.429091],
+								[112.801982, 23.432705],
+								[112.803647, 23.435752],
+								[112.802684, 23.444214],
+								[112.80474, 23.449666],
+								[112.809522, 23.458174],
+								[112.811427, 23.459818],
+								[112.811798, 23.46254],
+								[112.819187, 23.463738],
+								[112.831058, 23.468121],
+								[112.834217, 23.47231],
+								[112.834036, 23.476554],
+								[112.838127, 23.484716],
+								[112.841867, 23.487186],
+								[112.844844, 23.486063],
+								[112.845737, 23.487149],
+								[112.844774, 23.494308],
+								[112.845285, 23.502943],
+								[112.848724, 23.516341],
+								[112.849537, 23.524621],
+								[112.850429, 23.527583],
+								[112.849085, 23.529291],
+								[112.840744, 23.536058],
+								[112.837936, 23.535649],
+								[112.83161, 23.537589],
+								[112.830727, 23.548356],
+								[112.827649, 23.55102],
+								[112.825975, 23.559447],
+								[112.827168, 23.567039],
+								[112.836613, 23.565368],
+								[112.842929, 23.567521],
+								[112.848534, 23.566918],
+								[112.857959, 23.572013],
+								[112.862881, 23.573451],
+								[112.865057, 23.57128],
+								[112.869679, 23.570305],
+								[112.871674, 23.57089],
+								[112.872126, 23.566751],
+								[112.876818, 23.565396],
+								[112.879495, 23.562918],
+								[112.893381, 23.552672],
+								[112.894143, 23.553777],
+								[112.892108, 23.555753],
+								[112.897532, 23.561081],
+								[112.897121, 23.565257],
+								[112.900309, 23.566714],
+								[112.902836, 23.564422],
+								[112.908581, 23.560765],
+								[112.915369, 23.552329],
+								[112.913674, 23.546036],
+								[112.911168, 23.541655],
+								[112.893261, 23.526413],
+								[112.887716, 23.517417],
+								[112.888027, 23.512998],
+								[112.894213, 23.510547],
+								[112.895256, 23.502962],
+								[112.8969, 23.499332],
+								[112.900821, 23.493593],
+								[112.903287, 23.488626],
+								[112.905362, 23.486323],
+								[112.908451, 23.485209],
+								[112.913724, 23.488626],
+								[112.916742, 23.488301],
+								[112.920442, 23.485543],
+								[112.922898, 23.484781],
+								[112.924813, 23.486304],
+								[112.928433, 23.483481],
+								[112.929325, 23.479377],
+								[112.925726, 23.472375],
+								[112.927921, 23.470592],
+								[112.930608, 23.474111],
+								[112.933516, 23.471994],
+								[112.933486, 23.470675],
+								[112.928423, 23.46605],
+								[112.930207, 23.463097],
+								[112.935441, 23.463041],
+								[112.942249, 23.460181],
+								[112.946169, 23.456335],
+								[112.951222, 23.454078],
+								[112.952456, 23.451283],
+								[112.957659, 23.447567],
+								[112.960687, 23.447688],
+								[112.963414, 23.449267],
+								[112.96584, 23.452174],
+								[112.967595, 23.456986],
+								[112.966282, 23.460664],
+								[112.970302, 23.463255],
+								[112.975125, 23.463496],
+								[112.975746, 23.459085],
+								[112.972979, 23.450047],
+								[112.96957, 23.446276],
+								[112.9656, 23.446611],
+								[112.9619, 23.444446],
+								[112.960376, 23.437879],
+								[112.958551, 23.432621],
+								[112.958511, 23.429695],
+								[112.960206, 23.426007],
+								[112.963394, 23.426415],
+								[112.967936, 23.43238],
+								[112.970182, 23.433819],
+								[112.974172, 23.43407],
+								[112.976107, 23.436105],
+								[112.978624, 23.441576],
+								[112.985131, 23.443341],
+								[112.986424, 23.444353],
+								[112.989111, 23.443304],
+								[112.98869, 23.440034],
+								[112.982795, 23.43446],
+								[112.982684, 23.431441],
+								[112.985582, 23.428961],
+								[112.98867, 23.419801],
+								[112.990886, 23.417339],
+								[112.992701, 23.417404],
+								[112.995468, 23.41103],
+								[112.998456, 23.409841],
+								[112.998145, 23.408354],
+								[113.001093, 23.406329],
+								[113.00022, 23.405251],
+								[112.995899, 23.405428],
+								[112.993984, 23.40238],
+								[112.990565, 23.402649],
+								[112.989703, 23.400568],
+								[112.986825, 23.399184],
+								[112.986083, 23.39582],
+								[112.988239, 23.393283],
+								[112.988349, 23.390114],
+								[112.985171, 23.389715],
+								[112.983296, 23.386787],
+								[112.986194, 23.385533],
+								[112.985833, 23.383572],
+								[112.982163, 23.382578],
+								[112.980659, 23.380282],
+								[112.98478, 23.377234],
+								[112.980439, 23.373805],
+								[112.981511, 23.371453],
+								[112.983156, 23.371435],
+								[112.985753, 23.369046],
+								[112.986775, 23.365607],
+								[112.986535, 23.357586],
+								[112.989853, 23.354733],
+								[112.996922, 23.355495],
+								[113.00025, 23.355114],
+								[113.005865, 23.352437],
+								[113.010236, 23.354156],
+								[113.012583, 23.352595],
+								[113.012843, 23.348737],
+								[113.01529, 23.342267],
+								[113.018308, 23.341356],
+								[113.019471, 23.344126],
+								[113.023642, 23.346432],
+								[113.026379, 23.349183],
+								[113.027482, 23.351656],
+								[113.032705, 23.356248],
+								[113.034801, 23.357391],
+								[113.040816, 23.356062],
+								[113.043403, 23.351117],
+								[113.034199, 23.33959],
+								[113.029356, 23.335825],
+								[113.027572, 23.333501],
+								[113.025045, 23.327272],
+								[113.023471, 23.324901],
+								[113.024895, 23.323274],
+								[113.030078, 23.320002],
+								[113.031211, 23.321749],
+								[113.037558, 23.320067],
+								[113.038611, 23.316245],
+								[113.036074, 23.315381],
+								[113.035061, 23.313065],
+								[113.032495, 23.300884],
+								[113.032635, 23.297667],
+								[113.035011, 23.297676],
+								[113.038029, 23.292831],
+								[113.038671, 23.290627],
+								[113.036455, 23.289986],
+								[113.042551, 23.283448],
+								[113.045809, 23.281504],
+								[113.048266, 23.281569],
+								[113.051424, 23.278389],
+								[113.051905, 23.276435],
+								[113.051394, 23.26946],
+								[113.053068, 23.268232],
+								[113.052717, 23.263423],
+								[113.050923, 23.263302],
+								[113.050742, 23.259498],
+								[113.044897, 23.252215],
+								[113.046982, 23.250149]
+							]
+						]
+					]
+				}
+			}, {
+				"type": "Feature",
+				"properties": {
+					"adcode": 440608,
+					"name": "高明区",
+					"center": [112.882123, 22.893855],
+					"centroid": [112.676586, 22.817883],
+					"childrenNum": 0,
+					"level": "district",
+					"parent": {
+						"adcode": 440600
+					},
+					"subFeatureIndex": 4,
+					"acroutes": [100000, 440000, 440600]
+				},
+				"geometry": {
+					"type": "MultiPolygon",
+					"coordinates": [
+						[
+							[
+								[112.846649, 22.837475],
+								[112.844554, 22.835301],
+								[112.850439, 22.830402],
+								[112.851612, 22.823534],
+								[112.852905, 22.822274],
+								[112.853417, 22.816815],
+								[112.852755, 22.815676],
+								[112.852945, 22.809629],
+								[112.848805, 22.808994],
+								[112.84305, 22.810674],
+								[112.842037, 22.808985],
+								[112.834146, 22.803329],
+								[112.832061, 22.803824],
+								[112.819659, 22.80317],
+								[112.819398, 22.801742],
+								[112.8164, 22.799362],
+								[112.817282, 22.797962],
+								[112.816109, 22.794061],
+								[112.812079, 22.791709],
+								[112.814375, 22.788628],
+								[112.817884, 22.787919],
+								[112.822356, 22.78454],
+								[112.822586, 22.779247],
+								[112.819889, 22.777968],
+								[112.818104, 22.774663],
+								[112.819288, 22.768175],
+								[112.817994, 22.765421],
+								[112.815317, 22.764245],
+								[112.811507, 22.765337],
+								[112.810254, 22.762238],
+								[112.807206, 22.759689],
+								[112.805983, 22.756169],
+								[112.803837, 22.754582],
+								[112.803917, 22.752145],
+								[112.806334, 22.752294],
+								[112.810384, 22.750492],
+								[112.810916, 22.748177],
+								[112.808519, 22.74362],
+								[112.809131, 22.737159],
+								[112.807076, 22.735842],
+								[112.807066, 22.731248],
+								[112.807928, 22.728792],
+								[112.806173, 22.726634],
+								[112.803115, 22.725196],
+								[112.803005, 22.723599],
+								[112.800589, 22.722413],
+								[112.798463, 22.723011],
+								[112.795505, 22.721489],
+								[112.791645, 22.720807],
+								[112.786422, 22.718837],
+								[112.782431, 22.718827],
+								[112.77829, 22.715222],
+								[112.775463, 22.708442],
+								[112.773468, 22.707312],
+								[112.771934, 22.704491],
+								[112.769738, 22.703959],
+								[112.769467, 22.701259],
+								[112.762559, 22.70011],
+								[112.761176, 22.697271],
+								[112.755762, 22.692423],
+								[112.744512, 22.696748],
+								[112.744733, 22.695571],
+								[112.742046, 22.693609],
+								[112.741314, 22.691386],
+								[112.737333, 22.691975],
+								[112.734165, 22.696225],
+								[112.734065, 22.698242],
+								[112.730816, 22.698607],
+								[112.727428, 22.693395],
+								[112.727347, 22.695067],
+								[112.724951, 22.697626],
+								[112.722043, 22.696412],
+								[112.721572, 22.694441],
+								[112.718003, 22.691695],
+								[112.715436, 22.692685],
+								[112.714213, 22.696047],
+								[112.712228, 22.69714],
+								[112.711807, 22.70167],
+								[112.70936, 22.703333],
+								[112.710182, 22.704771],
+								[112.708418, 22.707433],
+								[112.708267, 22.7103],
+								[112.706713, 22.709422],
+								[112.702643, 22.709609],
+								[112.703325, 22.706845],
+								[112.702643, 22.703482],
+								[112.700367, 22.701353],
+								[112.699966, 22.698457],
+								[112.696918, 22.695235],
+								[112.695354, 22.695636],
+								[112.695384, 22.698532],
+								[112.692296, 22.703099],
+								[112.694722, 22.703398],
+								[112.692406, 22.705248],
+								[112.698482, 22.70847],
+								[112.695655, 22.708545],
+								[112.698893, 22.713849],
+								[112.694692, 22.712084],
+								[112.694301, 22.713112],
+								[112.689067, 22.711982],
+								[112.69004, 22.718622],
+								[112.692707, 22.719005],
+								[112.692105, 22.717473],
+								[112.694983, 22.714428],
+								[112.697098, 22.716053],
+								[112.700587, 22.714569],
+								[112.700678, 22.716175],
+								[112.704758, 22.716987],
+								[112.706673, 22.718286],
+								[112.706904, 22.721834],
+								[112.710573, 22.725],
+								[112.708999, 22.729548],
+								[112.702643, 22.727643],
+								[112.698873, 22.732322],
+								[112.699344, 22.736262],
+								[112.701349, 22.734619],
+								[112.703465, 22.739549],
+								[112.706503, 22.739045],
+								[112.707836, 22.744068],
+								[112.7053, 22.749372],
+								[112.702984, 22.75095],
+								[112.703525, 22.755525],
+								[112.702613, 22.75658],
+								[112.696477, 22.759054],
+								[112.69387, 22.756374],
+								[112.691173, 22.7563],
+								[112.691103, 22.760053],
+								[112.689047, 22.754442],
+								[112.689238, 22.750483],
+								[112.687293, 22.750698],
+								[112.684696, 22.748307],
+								[112.680475, 22.747066],
+								[112.681628, 22.743452],
+								[112.685147, 22.741762],
+								[112.68625, 22.740109],
+								[112.683473, 22.735795],
+								[112.687884, 22.737121],
+								[112.691494, 22.736328],
+								[112.691825, 22.734553],
+								[112.694131, 22.736019],
+								[112.694361, 22.732891],
+								[112.696647, 22.732527],
+								[112.698041, 22.729819],
+								[112.699164, 22.730921],
+								[112.701119, 22.728409],
+								[112.695474, 22.728446],
+								[112.690361, 22.726392],
+								[112.687734, 22.730697],
+								[112.685368, 22.733134],
+								[112.680946, 22.733218],
+								[112.680244, 22.730753],
+								[112.675883, 22.727475],
+								[112.679943, 22.725458],
+								[112.68253, 22.721255],
+								[112.680084, 22.71399],
+								[112.677617, 22.714597],
+								[112.675913, 22.713112],
+								[112.679272, 22.718398],
+								[112.675432, 22.71526],
+								[112.671762, 22.720443],
+								[112.670449, 22.719556],
+								[112.669456, 22.721937],
+								[112.665636, 22.724216],
+								[112.665115, 22.722647],
+								[112.667832, 22.72162],
+								[112.670007, 22.717566],
+								[112.672995, 22.716296],
+								[112.672063, 22.713495],
+								[112.668594, 22.714092],
+								[112.664643, 22.713028],
+								[112.66332, 22.717604],
+								[112.661606, 22.717707],
+								[112.660974, 22.724347],
+								[112.660132, 22.727354],
+								[112.654286, 22.724365],
+								[112.652221, 22.72402],
+								[112.650166, 22.726168],
+								[112.646235, 22.726709],
+								[112.645363, 22.720704],
+								[112.64416, 22.71963],
+								[112.642075, 22.713495],
+								[112.641062, 22.712887],
+								[112.633241, 22.715316],
+								[112.631607, 22.714653],
+								[112.631617, 22.711515],
+								[112.630133, 22.71073],
+								[112.627827, 22.711954],
+								[112.62513, 22.711066],
+								[112.623055, 22.708685],
+								[112.623065, 22.705434],
+								[112.620939, 22.701129],
+								[112.617761, 22.703109],
+								[112.616678, 22.707993],
+								[112.612387, 22.707545],
+								[112.611745, 22.708666],
+								[112.608527, 22.706303],
+								[112.604186, 22.706219],
+								[112.60223, 22.704435],
+								[112.597929, 22.702698],
+								[112.595022, 22.700503],
+								[112.587522, 22.698242],
+								[112.587281, 22.696365],
+								[112.591502, 22.693096],
+								[112.595202, 22.692376],
+								[112.600235, 22.68878],
+								[112.599654, 22.685315],
+								[112.595974, 22.680793],
+								[112.593678, 22.680308],
+								[112.591041, 22.682026],
+								[112.588294, 22.681755],
+								[112.584705, 22.677804],
+								[112.582369, 22.671208],
+								[112.581907, 22.666817],
+								[112.583592, 22.664351],
+								[112.581957, 22.660689],
+								[112.577325, 22.656391],
+								[112.574327, 22.657166],
+								[112.57137, 22.652784],
+								[112.568572, 22.650859],
+								[112.564301, 22.649561],
+								[112.563018, 22.648168],
+								[112.56011, 22.649467],
+								[112.554115, 22.648047],
+								[112.5523, 22.645692],
+								[112.550225, 22.645431],
+								[112.546495, 22.642254],
+								[112.542625, 22.644702],
+								[112.539847, 22.64487],
+								[112.536288, 22.648636],
+								[112.538644, 22.649654],
+								[112.536759, 22.651457],
+								[112.539847, 22.65612],
+								[112.540218, 22.661866],
+								[112.538734, 22.667948],
+								[112.53712, 22.668938],
+								[112.539065, 22.672227],
+								[112.537942, 22.675459],
+								[112.535586, 22.677673],
+								[112.537301, 22.679084],
+								[112.539466, 22.678336],
+								[112.542695, 22.679784],
+								[112.546836, 22.678607],
+								[112.551087, 22.681671],
+								[112.551548, 22.683306],
+								[112.554235, 22.682054],
+								[112.555729, 22.683502],
+								[112.555649, 22.686576],
+								[112.56004, 22.695851],
+								[112.556752, 22.694161],
+								[112.553684, 22.696739],
+								[112.552009, 22.700783],
+								[112.549452, 22.70096],
+								[112.546926, 22.703464],
+								[112.545502, 22.707041],
+								[112.546715, 22.70875],
+								[112.542835, 22.711459],
+								[112.538364, 22.718276],
+								[112.532939, 22.723478],
+								[112.530202, 22.722553],
+								[112.527254, 22.726102],
+								[112.523154, 22.728063],
+								[112.520326, 22.727933],
+								[112.519013, 22.72599],
+								[112.512476, 22.724038],
+								[112.51034, 22.725],
+								[112.507513, 22.723441],
+								[112.503883, 22.728073],
+								[112.500114, 22.72867],
+								[112.497376, 22.725579],
+								[112.49502, 22.726083],
+								[112.49095, 22.723655],
+								[112.490669, 22.722068],
+								[112.485666, 22.718967],
+								[112.482598, 22.71963],
+								[112.477053, 22.715895],
+								[112.476843, 22.714933],
+								[112.480051, 22.713037],
+								[112.480773, 22.710851],
+								[112.47949, 22.705584],
+								[112.476582, 22.704033],
+								[112.47178, 22.704229],
+								[112.46803, 22.70522],
+								[112.467849, 22.708423],
+								[112.463207, 22.711655],
+								[112.461743, 22.710132],
+								[112.459227, 22.709945],
+								[112.455607, 22.707676],
+								[112.448599, 22.708404],
+								[112.448499, 22.706387],
+								[112.445711, 22.704799],
+								[112.446844, 22.70154],
+								[112.444077, 22.700008],
+								[112.443536, 22.69644],
+								[112.439485, 22.692302],
+								[112.439305, 22.690676],
+								[112.436066, 22.68566],
+								[112.435775, 22.680999],
+								[112.42979, 22.677019],
+								[112.426291, 22.670835],
+								[112.420846, 22.670041],
+								[112.415322, 22.671956],
+								[112.411913, 22.671208],
+								[112.41069, 22.674871],
+								[112.408203, 22.677374],
+								[112.408183, 22.682895],
+								[112.403822, 22.682624],
+								[112.403461, 22.688453],
+								[112.401486, 22.690574],
+								[112.40304, 22.695319],
+								[112.40308, 22.700195],
+								[112.40686, 22.702025],
+								[112.408454, 22.70139],
+								[112.41074, 22.704482],
+								[112.409176, 22.707601],
+								[112.409216, 22.710319],
+								[112.407121, 22.710571],
+								[112.407241, 22.712897],
+								[112.404885, 22.716035],
+								[112.404193, 22.719304],
+								[112.3994, 22.720349],
+								[112.398418, 22.721881],
+								[112.39906, 22.726457],
+								[112.396894, 22.733433],
+								[112.393756, 22.740716],
+								[112.392763, 22.744423],
+								[112.392823, 22.750623],
+								[112.394638, 22.752154],
+								[112.393475, 22.75503],
+								[112.393455, 22.762546],
+								[112.391169, 22.765972],
+								[112.390818, 22.768287],
+								[112.393856, 22.773067],
+								[112.397425, 22.77289],
+								[112.399711, 22.770005],
+								[112.402017, 22.771284],
+								[112.405777, 22.771387],
+								[112.409617, 22.774029],
+								[112.413507, 22.774477],
+								[112.415603, 22.777501],
+								[112.422681, 22.77851],
+								[112.427995, 22.782038],
+								[112.432116, 22.783065],
+								[112.44141, 22.787741],
+								[112.443766, 22.791653],
+								[112.446854, 22.79281],
+								[112.447346, 22.79113],
+								[112.449782, 22.790868],
+								[112.453522, 22.792017],
+								[112.459036, 22.791111],
+								[112.463378, 22.789263],
+								[112.466917, 22.789711],
+								[112.472181, 22.793865],
+								[112.478196, 22.795041],
+								[112.482808, 22.794985],
+								[112.487009, 22.798681],
+								[112.486719, 22.800678],
+								[112.488453, 22.806754],
+								[112.490017, 22.809115],
+								[112.493216, 22.809078],
+								[112.495672, 22.810842],
+								[112.500404, 22.812447],
+								[112.502109, 22.818131],
+								[112.499372, 22.820828],
+								[112.499051, 22.826912],
+								[112.502009, 22.827481],
+								[112.505648, 22.824365],
+								[112.510561, 22.823058],
+								[112.513158, 22.825139],
+								[112.518562, 22.827519],
+								[112.520316, 22.827276],
+								[112.522582, 22.823319],
+								[112.522191, 22.820044],
+								[112.524237, 22.820548],
+								[112.527826, 22.817095],
+								[112.527535, 22.815116],
+								[112.530433, 22.814958],
+								[112.532258, 22.8166],
+								[112.532458, 22.822871],
+								[112.535015, 22.82219],
+								[112.545181, 22.823851],
+								[112.546906, 22.825531],
+								[112.550736, 22.825363],
+								[112.552801, 22.82639],
+								[112.557463, 22.826128],
+								[112.559619, 22.827845],
+								[112.562797, 22.832352],
+								[112.565575, 22.830001],
+								[112.567189, 22.829982],
+								[112.568061, 22.834629],
+								[112.571841, 22.83309],
+								[112.572392, 22.836076],
+								[112.57139, 22.839696],
+								[112.573586, 22.840582],
+								[112.573245, 22.844371],
+								[112.574648, 22.845089],
+								[112.574107, 22.847412],
+								[112.569695, 22.850202],
+								[112.568603, 22.852367],
+								[112.566367, 22.850995],
+								[112.563128, 22.85413],
+								[112.561795, 22.857405],
+								[112.561664, 22.860465],
+								[112.559469, 22.85997],
+								[112.557824, 22.863357],
+								[112.560562, 22.86484],
+								[112.558195, 22.867751],
+								[112.560361, 22.872294],
+								[112.561654, 22.87332],
+								[112.566146, 22.871753],
+								[112.573004, 22.866827],
+								[112.580052, 22.864187],
+								[112.584053, 22.864103],
+								[112.587141, 22.862946],
+								[112.591583, 22.865568],
+								[112.591643, 22.869803],
+								[112.595222, 22.870773],
+								[112.598852, 22.868796],
+								[112.601358, 22.870214],
+								[112.60193, 22.872938],
+								[112.604226, 22.87054],
+								[112.606802, 22.871809],
+								[112.606993, 22.873973],
+								[112.61348, 22.877508],
+								[112.615134, 22.872956],
+								[112.618242, 22.873068],
+								[112.620117, 22.874346],
+								[112.630735, 22.876911],
+								[112.632369, 22.877658],
+								[112.630865, 22.880783],
+								[112.635557, 22.883702],
+								[112.639588, 22.884159],
+								[112.64418, 22.886249],
+								[112.647258, 22.886267],
+								[112.65202, 22.887956],
+								[112.659249, 22.887172],
+								[112.661034, 22.890931],
+								[112.664804, 22.889858],
+								[112.668403, 22.890689],
+								[112.670058, 22.893198],
+								[112.672644, 22.893337],
+								[112.676394, 22.895427],
+								[112.677688, 22.898206],
+								[112.675763, 22.899083],
+								[112.677547, 22.902767],
+								[112.679813, 22.902841],
+								[112.684636, 22.898626],
+								[112.688285, 22.900099],
+								[112.689328, 22.898971],
+								[112.692466, 22.902086],
+								[112.690661, 22.905005],
+								[112.686491, 22.907616],
+								[112.688556, 22.907878],
+								[112.689859, 22.909845],
+								[112.687894, 22.914303],
+								[112.691624, 22.912643],
+								[112.694221, 22.914881],
+								[112.697148, 22.915003],
+								[112.696647, 22.917185],
+								[112.693288, 22.918779],
+								[112.690301, 22.92416],
+								[112.688175, 22.925568],
+								[112.6901, 22.927247],
+								[112.691504, 22.924981],
+								[112.695504, 22.921903],
+								[112.693589, 22.925624],
+								[112.69764, 22.927228],
+								[112.699224, 22.930464],
+								[112.698713, 22.933895],
+								[112.696126, 22.927498],
+								[112.691173, 22.927871],
+								[112.692757, 22.932478],
+								[112.694682, 22.932375],
+								[112.692386, 22.934538],
+								[112.691654, 22.931993],
+								[112.689047, 22.929792],
+								[112.687704, 22.931387],
+								[112.686751, 22.928394],
+								[112.684164, 22.9283],
+								[112.680746, 22.931564],
+								[112.679512, 22.934697],
+								[112.676845, 22.93824],
+								[112.676996, 22.940385],
+								[112.672674, 22.940496],
+								[112.675602, 22.944189],
+								[112.679071, 22.942799],
+								[112.681207, 22.943238],
+								[112.680946, 22.946277],
+								[112.682159, 22.947191],
+								[112.681899, 22.943797],
+								[112.686852, 22.948449],
+								[112.690782, 22.947284],
+								[112.694, 22.948869],
+								[112.696447, 22.947918],
+								[112.699735, 22.948375],
+								[112.700668, 22.946221],
+								[112.704668, 22.944123],
+								[112.705951, 22.941196],
+								[112.704357, 22.940198],
+								[112.703736, 22.935751],
+								[112.708849, 22.92775],
+								[112.711817, 22.927526],
+								[112.712418, 22.929997],
+								[112.71687, 22.932506],
+								[112.72064, 22.932552],
+								[112.724109, 22.937494],
+								[112.728741, 22.935974],
+								[112.731909, 22.938072],
+								[112.734075, 22.940758],
+								[112.735769, 22.945522],
+								[112.73614, 22.951517],
+								[112.740351, 22.955274],
+								[112.742437, 22.96042],
+								[112.741424, 22.962946],
+								[112.736271, 22.96386],
+								[112.736451, 22.967906],
+								[112.733193, 22.973126],
+								[112.735168, 22.9776],
+								[112.734777, 22.981208],
+								[112.738186, 22.984572],
+								[112.741053, 22.986325],
+								[112.744031, 22.98666],
+								[112.745174, 22.990249],
+								[112.747209, 22.991078],
+								[112.751571, 22.991032],
+								[112.752212, 22.986735],
+								[112.75523, 22.983053],
+								[112.757386, 22.983678],
+								[112.759662, 22.979735],
+								[112.762128, 22.979306],
+								[112.763472, 22.981786],
+								[112.770821, 22.990044],
+								[112.772385, 22.99407],
+								[112.776967, 22.994098],
+								[112.777037, 22.996531],
+								[112.780927, 22.996242],
+								[112.78575, 22.997099],
+								[112.782772, 22.998963],
+								[112.787655, 22.998348],
+								[112.787906, 23.001023],
+								[112.788547, 23.001153],
+								[112.78972, 23.001377],
+								[112.790532, 23.002039],
+								[112.793921, 23.000566],
+								[112.793961, 22.998208],
+								[112.792237, 22.99763],
+								[112.788607, 22.998898],
+								[112.789018, 22.99709],
+								[112.788216, 22.991898],
+								[112.791244, 22.990556],
+								[112.794874, 22.990398],
+								[112.797761, 22.9949],
+								[112.802323, 22.996214],
+								[112.810314, 23.003176],
+								[112.81631, 23.007546],
+								[112.822717, 23.011358],
+								[112.834076, 23.014759],
+								[112.839881, 23.000995],
+								[112.845115, 22.996997],
+								[112.856425, 22.985747],
+								[112.86239, 22.977367],
+								[112.868005, 22.968689],
+								[112.86999, 22.96249],
+								[112.870261, 22.955843],
+								[112.869499, 22.941401],
+								[112.873088, 22.929708],
+								[112.875545, 22.924887],
+								[112.883325, 22.915963],
+								[112.889681, 22.91089],
+								[112.897652, 22.903131],
+								[112.912521, 22.887545],
+								[112.914747, 22.878544],
+								[112.917173, 22.867079],
+								[112.922948, 22.85845],
+								[112.918617, 22.856033],
+								[112.916612, 22.856593],
+								[112.912441, 22.859625],
+								[112.909874, 22.862564],
+								[112.906385, 22.870428],
+								[112.902274, 22.873768],
+								[112.895797, 22.877471],
+								[112.888448, 22.879383],
+								[112.879515, 22.879337],
+								[112.874011, 22.882947],
+								[112.871604, 22.885316],
+								[112.869368, 22.885157],
+								[112.864145, 22.88221],
+								[112.860164, 22.873964],
+								[112.861929, 22.872033],
+								[112.860485, 22.869523],
+								[112.857267, 22.866351],
+								[112.849035, 22.855959],
+								[112.842478, 22.851574],
+								[112.83952, 22.851042],
+								[112.840312, 22.848989],
+								[112.838127, 22.844678],
+								[112.841796, 22.842504],
+								[112.843872, 22.838707],
+								[112.846649, 22.837475]
+							]
+						],
+						[
+							[
+								[112.78972, 23.001377],
+								[112.788547, 23.001153],
+								[112.787906, 23.001023],
+								[112.787214, 23.003744],
+								[112.788427, 23.004303],
+								[112.790532, 23.002039],
+								[112.78972, 23.001377]
+							]
+						]
+					]
+				}
+			}]
+	};
+ var busLines=[];
+
+ var citys=[];
+		function convertData(geoCoordMap,data) {
+	        var res = [];
+	        for (var i = 0; i < data.length; i++) {
+	            var geoCoord = geoCoordMap[data[i].name];
+	            if (geoCoord) {
+	                res.push({
+	                    name: data[i].name,
+	                    value: geoCoord.concat(data[i].value),
+	                });
+	            }
+	        }
+	        return res;
+	    };
+
+	 //下拉change事件
+	 function change(value,name){
+		 hidel();
+		 hide();
+		 //目前管理处PArty_id不会超过两位数，入超过，需要另写逻辑
+ 	 if(value.toString().length>2){
+ 		   //目标页面
+       //  var  url2 = "main/proscreem?pid="+value+"&name="+name;
+
+		 var  url2 = "/CommandCenter/ditu.html?secId="+value+"&prjId="+value+"&name="+escape(name)+"&bdid=999";
+           //判断是否打开
+         if (window.child == null || window.child.closed) {
+        	 window.child = window.open(url2);
+         } else {
+        	 window.child.location.replace(url2);
+         }
+         window.child.focus();
+	       }else {
+	    	   $('.select-content').text(name);
+	    	   point(value);
+	  		 //项目投资
+	  		 getChart1(value);
+	  		 //年度投资
+	  		 getChart2(value);
+	  		 //年度产值
+	  		 getChart3(value);
+	  		 //房屋管线
+	  		 getChart4(value);
+	  		 //土地
+	  		 getChart5(value);
+	  		 //临时用地
+	  		 getChart6(value);
+	  		 //在建项目，竣工项目
+	  		 getXm(value);
+	  		//目前管理处PArty_id不会超过两位数，入超过，需要另写逻辑
+	  		  if(value.toString().length<=2){
+	  			 //监理柱状图
+	  			// getChart8(value);
+	  		  }
+	  		 aqxj(value);
+	       }
+	 }
+
+
+	function point(prjId){
+		  busLines.length=0;
+		//目前管理处PArty_id不会超过两位数，入超过，需要另写逻辑
+		  if(prjId.toString().length>2){
+			  return;
+		  }
+		$.request({
+			url : $$pageContextPath+'mainScreen/point?partId='+prjId,
+			success : function(response){
+				var id =response.parameters.id;
+				var type =response.parameters.type;
+				var city =response.parameters.city;
+				var lon =response.parameters.lon;
+				var lat =response.parameters.lat;
+				 var adress = "{";
+				 var adress1 = "{";
+		            if (city !=undefined&&city.length>0){
+		                for(var i = 0;i<city.length;i++){
+		                    var val={"name": city[i]}
+		                     if(type[i]=="1"){
+		                    	 locValue.push(val);
+		                    	 adress += '"'+city[i]+'":['+lon[i]+','+lat[i]+','+id[i]+','+type[i]+'],'
+		                     }else{
+		                    	 locValue1.push(val);
+		                    	 adress1 += '"'+city[i]+'":['+lon[i]+','+lat[i]+','+id[i]+','+type[i]+'],'
+		                     }
+		                }
+		                if(adress1.length>2){
+		                adress1 = adress1.substring(0, adress1.length-1);
+		                }
+		                if(adress.length>2){
+		                adress = adress.substring(0, adress.length-1);
+		                }
+		            }
+		            adress += "}"
+		            adress1 += "}"
+		            	 geoCoordMap = $.parseJSON(adress) ;
+		            	 geoCoordMap1 = $.parseJSON(adress1) ;
+		            	 getcharts();
+		            	/*  if(prjId>2){
+		            		 getMaxcharts(prjId);
+		            	 } */
+
+			}
+		});
+	}
+
+	var ii=1;
+	function showImg(id){
+		if(ii%2!=0){
+			$('#tbody').html("");
+			document.getElementById(id).style.display="block";
+			hidel();
+			getzjxm();
+		}
+		else{document.getElementById(id).style.display="none";
+			}
+			ii++;
+	}
+
+	function getzjxm(){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/getzjxm',
+			 data:{},
+	         async: false,
+			success : function(response){
+				var jsonObject=response.parameters.getzjxm;
+				var px = jsonObject.length*30;
+				document.getElementById('table8').style.height=px+"px";
+			    for(var i=0;i<jsonObject.length;i++){
+			      var tr=document.createElement('tr');
+			      var tdename=document.createElement('td')
+			      var tdsalary=document.createElement('td')
+			      var tpid=document.createElement('td')
+			      tdename.innerHTML=jsonObject[i].name;
+			      tdsalary.innerHTML=jsonObject[i].time;
+			      tpid.innerHTML=jsonObject[i].pid;
+
+			      tr.appendChild(tdename);
+			      tr.appendChild(tdsalary);
+			      tr.appendChild(tpid);
+			      tpid.style.display="none";
+			      tdename.style.cursor = "pointer";
+			      tr.onclick = function(vlue) {
+			    	  var pid=vlue.currentTarget.children[2].innerHTML;
+				      var name=vlue.currentTarget.children[0].innerHTML;
+				      ii++;
+			    	 change(pid,name);
+			    	 document.getElementById('table8').style.display = "none";
+			 		$('#tbody').html("");
+			    	  }
+			      var tbody=document.getElementById('tbody');
+			      document.getElementById('tbody').style.color="#f8b000";
+			      tbody.appendChild(tr);
+
+			        }
+			}
+		});
+	}
+
+	function hide(){
+		document.getElementById('table8').style.display = "none";
+		$('#tbody').html("");
+		if(ii%2!=0){
+		}
+		else{
+			ii++;
+			}
+	}
+
+	var iy=1;
+	function showImg1(id){
+		if(iy%2!=0){
+			$('#tbodyjg').html("");
+			document.getElementById(id).style.display="block";
+			hide();
+			getzjxm1();
+		}
+		else{document.getElementById(id).style.display="none";
+
+			}
+		iy++;
+	}
+
+
+	function getzjxm1(){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/getjgxm',
+			 data:{},
+	         async: false,
+			success : function(response){
+
+				var jsonObject=response.parameters.getzjxm;
+				var px = jsonObject.length*30;
+				document.getElementById('table9').style.height=px+"px";
+			    for(var i=0;i<jsonObject.length;i++){
+			      var tr=document.createElement('tr');
+			      var tdename=document.createElement('td')
+			      var tdsalary=document.createElement('td')
+			      var tdage=document.createElement('td')
+			       var tpid=document.createElement('td')
+			      tdename.innerHTML=jsonObject[i].name;
+			      tdsalary.innerHTML=jsonObject[i].time;
+			      tdage.innerHTML=jsonObject[i].wgtime;
+			      tpid.innerHTML=jsonObject[i].pid;
+			      tr.appendChild(tdename);
+			      tr.appendChild(tdsalary);
+			      tr.appendChild(tdage);
+			      tr.appendChild(tpid);
+			      tpid.style.display="none";
+			      tdename.style.cursor = "pointer";
+			      tr.onclick = function(vlue) {
+			    	  var pid=vlue.currentTarget.children[3].innerHTML;
+				      var name=vlue.currentTarget.children[0].innerHTML;
+				      ii++;
+			    	 change(pid,name);
+			    	 document.getElementById('table8').style.display = "none";
+			 		$('#tbody').html("");
+			    	  }
+
+
+			      var tbody=document.getElementById('tbodyjg');
+			      tbody.appendChild(tr);
+			      document.getElementById('tbodyjg').style.color="#f8b000";
+			        }
+			}
+		});
+	}
+
+
+	function hidel(){
+		document.getElementById('table9').style.display = "none";
+		$('#tbodyjg').html("");
+		if(iy%2!=0){
+		}
+		else{
+			iy++;
+			}
+	}
+
+
+	function getMaxcharts(prjId){
+		var points=[];
+		$.request({
+			url : $$pageContextPath+'mainScreen/getPoint?partId='+prjId,
+			success : function(response){
+				var lng =response.parameters.lng;
+				var lat =response.parameters.lat;
+				var latList =response.parameters.latList;
+				var lngList =response.parameters.lngList;
+				  if (lngList !=undefined&&lngList.length>0){
+					  for(var i = 0;i<lngList.length;i++){
+						   points.push([lngList[i], latList[i]]);
+					  }
+				  }
+				    busLines.length=0;
+			    /*     busLines.push({
+                        coords: points,// 坐标这个数据是必须给的
+                         name:obj[i].name,// 类似name还可以根据自己的需求给更多的数据
+                        lineStyle: { //给每条线都不同的样式
+                            normal: {
+                                color: echarts.color.modifyHSL('#e20f15', Math.round(30 * i)),
+                                width: 5,
+
+                            }
+                        }
+                    }); */
+			       /*  getcharts(); */
+                    /*	if(lng!=undefined&&lat!=undefined){
+					 var _option = mapEchart.getOption();
+			        // _option.geo[0].zoom=3;
+			        _option.geo[0].center =[
+			          lng, lat],
+			          mapEchart.clear();
+			          mapEchart.setOption(_option);
+				} */
+			}
+		});
+	}
+
+	function  getChart1(prjid){
+		$.request({
+		url : $$pageContextPath+'mainScreen/scre/xmtz?prjid='+prjid,
+		success : function(response){
+		var xmztz = response.parameters.xmztz;
+		$("#xmztz").html(xmztz);
+		var xmwce = response.parameters.xmwce;
+		$("#xmwce").html(xmwce);
+		 var dom = document.getElementById("xmtzwcd");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+		 var t=response.parameters.wcbl;
+		 var value =t/100;
+		 var data = [value, value, value, ];
+		 option = {
+		     title: {
+		         text: (value * 100).toFixed(0) + '{a|%}',
+		         textStyle: {
+		             fontSize:20,
+		             fontFamily: 'Microsoft Yahei',
+		             fontWeight: 'normal',
+		             color: '#fff',
+		             rich: {
+		                 a: {
+		                     fontSize: 20,
+		                 }
+		             }
+		         },
+		         x: 'center',
+		         y: '40%'
+		     },
+		     series: [
+		         {
+		         type: 'liquidFill',
+		         radius: '80%',
+		         center: ['40%', '60%'],
+		         data: data,
+		         backgroundStyle: {
+		             color: {
+		                 type: 'radial',
+		                 x: 0,
+		                 y: 0,
+		                 r: 0,
+		                 colorStops: [{
+		                     offset: 1,
+		                     color: 'rgba(0,175,242, 1)'
+		                 }, {
+		                     offset: 0.5,
+		                     color: 'rgba(0,175,242, 1)'
+		                 }, {
+		                     offset: 0,
+		                     color: 'rgba(136,223,251, 1)'
+		                 }],
+		                 globalCoord: false
+		             },
+		         },
+		         outline: {
+		             borderDistance: 0,
+		             itemStyle: {
+		                 borderWidth: 0,
+		                 borderColor: {
+		                     type: 'linear',
+		                     x:0,
+		                     y: 0,
+		                     x2: 0,
+		                     y2: 0,
+		                     colorStops: [{
+		                         offset: 0,
+		                         color: 'rgba(212, 252, 125, 0)'
+		                     }, {
+		                         offset: 0.5,
+		                         color: 'rgba(2, 193, 131, 0)'
+		                     }, {
+		                         offset: 1,
+		                         color: 'rgba(2, 193, 131, 0)'
+		                     }],
+		                     globalCoord: false
+		                 },
+		                 shadowBlur:8,
+		                 shadowColor: 'rgba(13, 13, 46, 0)'
+		             }
+		         },
+		         color: new echarts.graphic.RadialGradient(0.6, 0, 1, [{
+		             offset: 0,
+		             color: 'rgba(178, 251, 105, 0)'
+		         }, {
+		             offset: 1,
+		             color: 'rgba(10, 203, 135, 0)'
+		         }]),
+		         label: {
+		             normal: {
+		                 formatter: '',
+		             }
+		         }
+		     },
+		     {
+		         type: 'liquidFill',
+		         radius: '80%',
+		         center: ['50%', '50%'],
+		         data: data,
+		         backgroundStyle: {
+		             color: {
+		                 type: 'radial',
+		                 x: 0,
+		                 y: 0,
+		                 r: 0,
+		                 colorStops: [{
+		                     offset: 1,
+		                     color: 'rgba(0,175,242, 1)'
+		                 }, {
+		                     offset: 0.5,
+		                     color: 'rgba(0,175,242, 1)'
+		                 }, {
+		                     offset: 0,
+		                     color: 'rgba(136,223,251, 1)'
+		                 }],
+		                 globalCoord: false
+		             },
+		         },
+		         outline: {
+		             borderDistance: 3,
+		             itemStyle: {
+		                 borderWidth:5,
+		                 borderColor: {
+		                     type: 'linear',
+		                     x: 1,
+		                     y: 0,
+		                     x2: 0,
+		                     y2: 0,
+		                     colorStops: [{
+		                         offset: 0,
+		                         color: 'rgba(0,175,242, 1)'
+		                     }, {
+		                         offset: 0.5,
+		                         color: 'rgba(90,211,254, 1)'
+		                     }, {
+		                         offset: 1,
+		                         color: 'rgba(90,211,254 ,1)'
+		                     }],
+		                     globalCoord: false
+		                 },
+		                 shadowBlur:10,
+		                 shadowColor: 'rgba(13, 13, 46, 1)'
+		             }
+		         },
+		         color: new echarts.graphic.RadialGradient(0.6, 0, 1, [{
+		             offset: 0,
+		             color: 'rgba(0,175,242, 1)'
+		         }, {
+		             offset: 1,
+		             color: 'rgba(90,211,254, 1)'
+		         }]),
+		         label: {
+		             normal: {
+		                 formatter: '',
+		             }
+		         }
+		     }, ]
+		 };
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+			 myChart.setOption(option, true);
+		 }
+			}
+		});
+	 }
+
+	function  getChart2(prjid){
+		 $.request({
+			url : $$pageContextPath+'mainScreen/scre/ndtz?prjid='+prjid,
+			success : function(response){
+				var ndztz = response.parameters.ndztz;
+				$("#ndztz").html(ndztz);
+				var ndwce = response.parameters.ndwce;
+				$("#ndwce").html(ndwce);
+		 var dom = document.getElementById("ndtzwcd");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+		 var t=response.parameters.ndwcbl;
+		 var value =t/100;
+		 var data = [value, value, value, ];
+		 option = {
+		     title: {
+		         text: (value * 100).toFixed(0) + '{a|%}',
+		         textStyle: {
+		             fontSize:20,
+		             fontFamily: 'Microsoft Yahei',
+		             fontWeight: 'normal',
+		             color: '#fff',
+		             rich: {
+		                 a: {
+		                     fontSize: 20,
+		                 }
+		             }
+		         },
+		         x: 'center',
+		         y: '40%'
+		     },
+		     series: [
+		         {
+		         type: 'liquidFill',
+		         radius: '80%',
+		         center: ['40%', '60%'],
+		         data: data,
+		         backgroundStyle: {
+		             color: {
+		                 type: 'radial',
+		                 x: 0,
+		                 y: 0,
+		                 r: 0,
+		                 colorStops: [{
+		                     offset: 1,
+		                     color: 'rgba(50, 65, 96, 1)'
+		                 }, {
+		                     offset: 0.5,
+		                     color: 'rgba(50, 65, 96, 1)'
+		                 }, {
+		                     offset: 0,
+		                     color: 'rgba(111, 117, 139, 1)'
+		                 }],
+		                 globalCoord: false
+		             },
+		         },
+		         outline: {
+		             borderDistance: 0,
+		             itemStyle: {
+		                 borderWidth: 0,
+		                 borderColor: {
+		                     type: 'linear',
+		                     x:0,
+		                     y: 0,
+		                     x2: 0,
+		                     y2: 0,
+		                     colorStops: [{
+		                         offset: 0,
+		                         color: 'rgba(212, 252, 125, 0)'
+		                     }, {
+		                         offset: 0.5,
+		                         color: 'rgba(2, 193, 131, 0)'
+		                     }, {
+		                         offset: 1,
+		                         color: 'rgba(2, 193, 131, 0)'
+		                     }],
+		                     globalCoord: false
+		                 },
+		                 shadowBlur:8,
+		                 shadowColor: 'rgba(13, 13, 46, 0)'
+		             }
+		         },
+		         color: new echarts.graphic.RadialGradient(0.6, 0, 1, [{
+		             offset: 0,
+		             color: 'rgba(178, 251, 105, 0)'
+		         }, {
+		             offset: 1,
+		             color: 'rgba(10, 203, 135, 0)'
+		         }]),
+		         label: {
+		             normal: {
+		                 formatter: '',
+		             }
+		         }
+		     },
+		     {
+		         type: 'liquidFill',
+		         radius: '80%',
+		         center: ['50%', '50%'],
+		         data: data,
+		         backgroundStyle: {
+		             color: {
+		                 type: 'radial',
+		                 x: 0,
+		                 y: 0,
+		                 r: 0,
+		                 colorStops: [{
+		                     offset: 1,
+		                     color: 'rgba(50, 65, 96, 1)'
+		                 }, {
+		                     offset: 0.5,
+		                     color: 'rgba(50, 65, 96, 1)'
+		                 }, {
+		                     offset: 0,
+		                     color: 'rgba(111, 117, 139, 1)'
+		                 }],
+		                 globalCoord: false
+		             },
+		         },
+		         outline: {
+		             borderDistance: 3,
+		             itemStyle: {
+		                 borderWidth:5,
+		                 borderColor: {
+		                     type: 'linear',
+		                     x: 1,
+		                     y: 0,
+		                     x2: 0,
+		                     y2: 0,
+		                     colorStops: [{
+		                         offset: 0,
+		                         color: 'rgba(250,224,0, 1)'
+		                     }, {
+		                         offset: 0.5,
+		                         color: 'rgba(250,175,0, 1)'
+		                     }, {
+		                         offset: 1,
+		                         color: 'rgba(250,175,0, 1)'
+		                     }],
+		                     globalCoord: false
+		                 },
+		                 shadowBlur:10,
+		                 shadowColor: 'rgba(13, 13, 46, 1)'
+		             }
+		         },
+		         color: new echarts.graphic.RadialGradient(0.6, 0, 1, [{
+		             offset: 0,
+		             color: 'rgba(250,224,0, 1)'
+		         }, {
+		             offset: 1,
+		             color: 'rgba(250,175,0, 1)'
+		         }]),
+		         label: {
+		             normal: {
+		                 formatter: '',
+		             }
+		         }
+		     }, ]
+		 };
+		 ;
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+		     myChart.setOption(option, true);
+		 }
+			}
+			});
+	 }
+
+	function  getChart3(prjid){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/ndczwc?prjid='+prjid,
+			success : function(response){
+		var ndczwc = response.parameters.ndczwc;
+		 var dom = document.getElementById("ndczwc");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+		 var xData =ndczwc.listAll;
+			var color = ['#15ebc9', '#f5c300', '#2ab7fe']
+			var name = ['计划', '实际', '计量']
+			var data = [
+			    ndczwc.ndjhlist.data,
+			    ndczwc.ndsjlist.data,
+			    ndczwc.ndjllist.data
+			]
+			var series = [];
+			for (var i = 0; i <3; i++) {
+			    series.push({
+			        name: name[i],
+			        type: "line",
+			        symbolSize: 3,//标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10[ default: 4 ]
+			        symbol: 'circle',//标记的图形。ECharts 提供的标记类型包括 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
+			        smooth: true, //是否平滑曲线显示
+			        showSymbol: true, //是否显示 symbol, 如果 false 则只有在 tooltip hover 的时候显示
+			        areaStyle: {
+			            normal: {
+			                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                    offset: 0,
+			                    color: color[i]
+			                }, {
+			                    offset: 0.8,
+			                    color: 'rgba(255,255,255,0)'
+			                }], false),
+			                shadowBlur: 10,
+			                opacity:0.3,
+			            }
+			        },
+			        itemStyle: {
+			            normal: {
+			                color: color[i],
+			                lineStyle: {
+			                    width: 1,
+			                    type: 'solid' //'dotted'虚线 'solid'实线
+			                },
+			                borderColor: color[i], //图形的描边颜色。支持的格式同 color
+			                borderWidth: 8 ,//描边线宽。为 0 时无描边。[ default: 0 ]
+			                barBorderRadius: 0,
+			                label: {
+			                    show: false,
+			                },
+			                opacity:0.5,
+			            }
+			        },
+			        data: data[i],
+
+			    })
+			}
+			option = {
+			    legend: {
+			            itemGap:5,
+			            itemWidth:5,
+			            textStyle: {
+			                color: '#fff',
+			                fontSize: '10'
+			            },
+			            data: name
+			    },
+			    title: {
+			        textStyle: {
+			            color: '#fff',
+			            fontSize: '22',
+			            fontWeight: 'normal',
+			        },
+			        subtextStyle: {
+			            color: '#90979c',
+			            fontSize: '16',
+
+			        },
+			    },
+			    tooltip: {
+			        trigger: "axis",
+			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+			            type: 'line', // 默认为直线，可选为：'line' | 'shadow'
+			            lineStyle: {
+			                color: '#0a469e'
+			            }
+			        },
+			        formatter: '{b}<br />{a0}: {c0}<br />{a1}: {c1}<br />{a2}: {c2}',
+			        backgroundColor: 'rgba(0,0,0,0.7)', // 背景
+			        padding: [8, 10], //内边距
+			        extraCssText: 'box-shadow: 0 0 3px rgba(255, 255, 255, 0.6);', //添加阴影
+			    },
+			    grid: {
+			        borderWidth: 0,
+			        top:30,
+			        left:60,
+			        bottom: 70,
+			        textStyle: {
+			            color: "#fff"
+			        }
+			    },
+			    xAxis: [{
+			        type: "category",
+			        axisLine: {
+			            lineStyle: {
+			                color: '#173471'
+			            }
+			        },
+			        splitLine: {
+			            show: true,
+			            lineStyle: {
+			            	type: 'dotted',
+			                color: '#173471 ',
+			            }
+			        },
+			        boundaryGap: false, //坐标轴两边留白策略，类目轴和非类目轴的设置和表现不一样
+			        axisTick: {
+			            show: false
+			        },
+			        splitArea: {
+			            show: false
+			        },
+			        axisLabel: {
+			            inside: false,
+			            textStyle: {
+			                color: '#bac0c0',
+			                fontWeight: 'normal',
+			                fontSize: '12',
+			            },
+			        },
+			        data: xData,
+			    }],
+			    yAxis: {
+			        type: 'value',
+			        name:'单位：万元',
+			        nameTextStyle:{
+			            color:'white',
+			            fontSize:12,
+			            padding:[0, 0, 0, -5]
+			        },
+			        axisTick: {
+			            show: false
+			        },
+			        axisLine: {
+			            show: false,
+			            lineStyle: {
+			                color: '#0a469e',
+			            }
+			        },
+			        splitLine: {
+			            show: true,
+			            lineStyle: {
+			                color: '#0a469e',
+			            }
+			        },
+			        axisLabel: {
+			            textStyle: {
+			                color: '#bac0c0',
+			                fontWeight: 'normal',
+			                fontSize: '12',
+			            },
+			            formatter: '{value}',
+			        },
+			    },
+			    series: series,
+			};
+		 ;
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+			 myChart.setOption(option, true);
+		 }
+			}
+		});
+	 }
+
+	function  getXm(prjid){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/xm?prjid='+prjid,
+			success : function(response){
+				var zjxm = response.parameters.zjxm;
+				$("#zjxm").html(zjxm);
+				var jgxm = response.parameters.jgxm;
+				$("#jgxm").html(jgxm);
+			}
+		});
+	}
+
+
+
+	function  getChart4(prjid){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/fwgx?prjid='+prjid,
+			success : function(response){
+		var fwgxzc = response.parameters.fwgxzc;
+		 var dom = document.getElementById("fwgx");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+		 var attr = [{
+			    name: "应征",
+			    unit: "个"
+
+			}, {
+			    name: "已征",
+			    unit: "个"
+			}]
+			var xData = ["房屋", "管线"];
+			var lines = [
+				fwgxzc.yzlist.data,
+				fwgxzc.yzslist.data
+			];
+			var option = {
+			    tooltip: {
+			        trigger: 'axis',
+			        backgroundColor: 'none',
+			        padding: 5,
+			        formatter: function(param) {
+			            var resultTooltip = "<div style='background:rgba(13,5,30,.6);border:1px solid rgba(255,255,255,.2);padding:5px;border-radius:3px;'>" +
+			                "<div style='text-align:center;'>" + param[0].name + "</div>" +
+			                "<div style='padding-top:5px;'>";
+			            for (var i = 0; i < param.length; i++) {
+			                resultTooltip +=
+			                    "<span style='display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:" + param[i].color.colorStops[0].color + ";'></span>" +
+			                    "<span style=''> " + param[i].seriesName + ": </span>" +
+			                    "<span style='color:" + param[i].color + "'>" + param[i].value + "</span></span><span>" + attr[i].unit + "</span></br>"
+
+			            }
+			            resultTooltip += "</div>";
+
+			            return resultTooltip
+			        }
+			    },
+			    grid: {
+			        left: '13%',
+			        top: '13%',
+			        right: '5%',
+			        bottom: '19%',
+			    },
+			    legend: {
+			        show: true,
+			        orient: 'horizontal',
+			        top: '0.5%',
+			        textStyle: {
+			            color: '#C9C8CD'
+			        }
+			    },
+			    xAxis: [{
+			        type: 'category',
+			        data: xData,
+			        axisLabel: {
+			            show: true,
+			            fontSize:12,
+			            textStyle: {
+			                color: "#C9C8CD" //X轴文字颜色
+			            },
+			            formatter: function(value) {
+			                var str = "";
+			                str += value.substring(0, 4) + "\n";
+			                str += value.substring(5, 10);
+			                return str;
+			            }
+			        },
+			        axisLine: {
+			            show: true //不显示x轴
+			        },
+			        axisTick: {
+			            show: false //不显示刻度
+			        },
+			        splitLine: {
+			            show: true,
+			            width: 0.08,
+			            lineStyle: {
+			                type: "solid",
+			                color: "#173471"
+			            }
+			        },
+			        axisPointer: { //轴指示器
+			            type: 'shadow',
+			            z: 1,
+			            shadowStyle: {
+			                color: {
+			                    type: 'linear',
+			                    x: 0,
+			                    y: 0,
+			                    x2: 0,
+			                    y2: 1,
+			                    colorStops: [{
+			                        offset: 0,
+			                        color: 'rgba(18,155,249,0)' // 0% 处的颜色
+			                    }, {
+			                        offset: 1,
+			                        color: 'rgba(18,155,249,1)' // 100% 处的颜色
+			                    }],
+			                    global: false // 缺省为 false
+			                },
+			                shadowColor: 'rgba(0, 0, 0, 0.2)',
+			                shadowBlur: 5
+			            }
+			        },
+
+			    }],
+			    yAxis: [{
+			        type: 'value',
+			        axisLabel: {
+			            show: true,
+			            textStyle: {
+			                fontSize:10,
+			                color: "#C9C8CD" //X轴文字颜色
+			            }
+			        },
+			        splitLine: {
+			            show: false,
+			            width: 0.08,
+			            lineStyle: {
+			                type: "solid",
+			                color: "#173471"
+			            }
+
+			        },
+			        axisTick: {
+			            show: true, //不显示刻度
+			        },
+			        axisLine: {
+			            show: false,
+			        },
+			        nameTextStyle: {
+			            color: "#173471"
+			        },
+			        splitArea: {
+			            show: false
+			        }
+			    }],
+			    series: [
+			        {
+			            name: '应征',
+			            type: 'bar',
+			            barWidth: '20%',
+			            itemStyle: {
+			                normal: {label: {
+								show: true, //开启显示
+								position: 'top', //在上方显示
+								textStyle: { //数值样式
+									color: 'white',
+									fontSize: 16
+								}
+							},
+			                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                        offset: 0,
+			                        color: '#00ffff'
+			                    }, {
+			                        offset: 1,
+			                        color: '#02c9c9'
+			                    }])
+			                }
+			            },
+			            data: lines[0]
+			        },
+			        {
+			            name: '已征',
+			            type: 'bar',
+			            barWidth: '20%',
+			            itemStyle: {
+			                normal: {label: {
+								show: true, //开启显示
+								position: 'top', //在上方显示
+								textStyle: { //数值样式
+									color: 'white',
+									fontSize: 14
+								}
+							},
+			                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                        offset: 0,
+			                        color: '#3e8bff'
+			                    }, {
+			                        offset: 1,
+			                        color: '#2f6cff'
+			                    }])
+			                }
+			            },
+			            data: lines[1]
+			        }
+			    ]
+			};
+		 ;
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+			 myChart.setOption(option, true);
+		 }
+			}
+		});
+	 }
+
+	function  getChart5(prjid){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/tdzc?prjid='+prjid,
+			success : function(response){
+		var td = response.parameters.td;
+		 var dom = document.getElementById("tdzc");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+			var sData = [{
+		                 value:td.tdlist.data[0] ,
+		                 name: '已征(m²)'
+		             }, {
+		                 value: td.tdlist.data[1] ,
+		                 name: '应征(m²)'
+		             }];
+var legendData1 = [];
+var legendData2 = [];
+for (var i = 0; i < sData.length; i++) {
+    var halfLength = Math.ceil(sData.length / 2);
+    var itemName = sData[i].name;
+    if (i < halfLength) {
+        legendData1.push(itemName)
+    } else {
+        legendData2.push(itemName)
+    }
+}
+var colorList = ['#d0db10', '#f5ad00'];
+option = {
+    title: {
+        text: '土地',
+        x: '60%',
+        y: 'center',
+        textStyle: {
+            color: '#fff',
+            fontSize: 14
+        }
+    },
+    tooltip: {
+        trigger: 'item',
+        borderColor: 'rgba(255,255,255,.3)',
+        backgroundColor: 'rgba(13,5,30,.6)',
+        borderWidth: 1,
+        padding: 5,
+        formatter: function(parms) {
+            var str = parms.marker + "" + parms.data.name + "</br>" +
+                "面积：" + parms.data.value + "m²</br>" +
+                "占比：" + parms.percent + "%";
+            return str;
+        }
+    },
+    legend: [{
+          orient: 'vertical',
+		         left: 10,
+		         top: 10,
+		         textStyle: { //图例文字的样式
+                     color: 'white',
+                     fontSize: 12
+                 },
+        data: legendData1
+    }, {
+         orient: 'vertical',
+		         left: 10,
+		         top: 30,
+		         textStyle: { //图例文字的样式
+                     color: 'white',
+                     fontSize: 12
+                 },
+        data: legendData2
+    }],
+    series: [{
+        type: 'pie',
+        z: 3,
+        radius: ['45%', '65%'],
+		center: ["70%", "50%"],　
+        clockwise: true,
+        avoidLabelOverlap: true,
+        hoverOffset: 15,
+        itemStyle: {
+            normal: {
+                color: function(params) {
+                    return colorList[params.dataIndex]
+                }
+            }
+        },
+        label: {
+            show: false
+        },
+        labelLine: {
+            normal: {
+                length: 20,
+                length2: 30,
+                lineStyle: {
+                    width: 1
+                }
+            }
+        },
+        data: sData
+    }]
+};
+		 ;
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+			 myChart.setOption(option, true);
+		 }
+			}
+		});
+
+	 }
+
+	function  getChart6(prjid){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/lsyd?prjid='+prjid,
+			success : function(response){
+
+		var lsyd = response.parameters.lsyd;
+		 var dom = document.getElementById("lsydzc");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+		var sData = [{
+    name: "使用中(m²)",
+    value: lsyd.lsydlist.data[0],
+}, {
+    name: "已回收(m²)",
+    value: lsyd.lsydlist.data[1],
+}];
+var legendData1 = [];
+var legendData2 = [];
+for (var i = 0; i < sData.length; i++) {
+    var halfLength = Math.ceil(sData.length / 2);
+    var itemName = sData[i].name;
+    if (i < halfLength) {
+        legendData1.push(itemName)
+    } else {
+        legendData2.push(itemName)
+    }
+}
+var colorList = ['#3e8bff', '#1fd3a9'];
+option = {
+    title: {
+        text: '临时用地',
+        x: '55%',
+        y: 'center',
+        textStyle: {
+            color: '#fff',
+            fontSize: 14
+        }
+    },
+    tooltip: {
+        trigger: 'item',
+        borderColor: 'rgba(255,255,255,.3)',
+        backgroundColor: 'rgba(13,5,30,.6)',
+        borderWidth: 1,
+        padding: 5,
+        formatter: function(parms) {
+            var str = parms.marker + "" + parms.data.name + "</br>" +
+                "面积：" + parms.data.value + "m²</br>" +
+                "占比：" + parms.percent + "%";
+            return str;
+        }
+    },
+    legend: [{
+          orient: 'vertical',
+		         left: 10,
+		         top: 10,
+		         textStyle: { //图例文字的样式
+                     color: 'white',
+                     fontSize: 12
+                 },
+        data: legendData1
+    }, {
+         orient: 'vertical',
+		         left: 10,
+		         top: 30,
+		         textStyle: { //图例文字的样式
+                     color: 'white',
+                     fontSize: 12
+                 },
+        data: legendData2
+    }],
+    series: [{
+        type: 'pie',
+        z: 3,
+        radius: ['45%', '65%'],
+		center: ["70%", "50%"],　
+        clockwise: true,
+        avoidLabelOverlap: true,
+        hoverOffset: 15,
+        itemStyle: {
+            normal: {
+                color: function(params) {
+                    return colorList[params.dataIndex]
+                }
+            }
+        },
+        label: {
+            show: false
+        },
+        labelLine: {
+            normal: {
+                length: 20,
+                length2: 30,
+                lineStyle: {
+                    width: 1
+                }
+            }
+        },
+        data: sData
+    }]
+};
+		 ;
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+			 myChart.setOption(option, true);
+		 }	}
+		});
+
+	 }
+
+
+	function  getChart7(prjid){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/jlbzt?prjid='+prjid,
+			success : function(response){
+
+		var yds = response.parameters.jlbzt;
+		 var dom = document.getElementById("jldcl");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+		 let data =[]
+		 for(let i=0;i<yds.data.name.length;i++){
+			 data.push({
+				 name:yds.data.name[i],
+				 value:yds.data.value[i]
+			 })
+		 }
+			let name = data.map((item) => item.name)
+			let value = data.map((item) => item.value)
+			let sum = value.reduce((a, b) => {
+			    return a + b
+			})
+			let color = [
+			    [
+			        "rgb(24, 183, 142)",
+			        "rgb(1, 179, 238)",
+			        "rgb(22, 75, 205)",
+			        "rgb(52, 52, 176)"
+			    ],
+			    ["rgba(24, 183, 142,0.1)",
+			        "rgba(1, 179, 238,0.1)",
+			        "rgba(22, 75, 205,0.1)",
+			        "rgba(52, 52, 176,0.1)"
+			    ]
+			]
+			let series = []
+			let yAxis = []
+			for (let i = 0; i < data.length; i++) {
+			    series.push({
+			        name: "",
+			        type: "pie",
+			        clockWise: false, //顺时加载
+			        hoverAnimation: false, //鼠标移入变大
+			        radius: [60 - i * 12 + "%", 50 - i *12 + "%"],
+			         center: ["35%", "40%"],
+			        label: {
+			            show: false
+			        },
+			        itemStyle: {
+			            label: {
+			                show: true
+			            },
+			            labelLine: {
+			                show: true
+			            },
+			            borderWidth: 10
+			        },
+			        label: {
+			        	 show: false,
+		                formatter: '{b|{b}}\n {c}%  ',
+		                rich: {
+		                    b: {
+		                        fontSize: 16,
+		                        lineHeight: 30
+		                    },
+
+		                }
+		            },
+			        data: [{
+			                value: data[i].value,
+			                name: data[i].name,
+			            },
+			            {
+			                value: 100 - data[i].value,
+			                name: "",
+			                itemStyle: {
+			                    color: 'transparent',
+			                },
+			                tooltip: {
+			                    show: false
+			                },
+			                hoverAnimation: false
+			            }
+			        ]
+			    })
+			    series.push({
+			        name: "",
+			        type: "pie",
+			        silent: true,
+			        z: 1,
+			        clockWise: false, //顺时加载
+			        hoverAnimation: false, //鼠标移入变大
+			        radius: [60 - i * 12 + "%", 50- i *12 + "%"],
+			        center: ["35%", "40%"],
+			        label: {
+			            show: false
+			        },
+
+			        itemStyle: {
+			            label: {
+			                show: false
+			            },
+			            labelLine: {
+			                show: false
+			            },
+			            borderWidth: 5
+			        },
+			        data: [{
+			                value: 7.5,
+			                itemStyle: {
+			                    color: color[1][i],
+			                },
+			                tooltip: {
+			                    show: false
+			                },
+			                hoverAnimation: false
+			            },
+			            {
+			                value: 0,
+			                itemStyle: {
+			                    color: "rgba(0,0,0,0)",
+			                    borderWidth: 0
+			                },
+			                tooltip: {
+			                    show: false
+			                },
+			                hoverAnimation: false
+			            }
+			        ]
+			    })
+			    yAxis.push(data[i].value+"%")
+			}
+			option = {
+
+			    color: color[0],
+			    legend: {
+			        show: true,
+			       icon: "circle",
+				   top: "10%",
+				    left: "60%",
+			        data: name,
+			        orient:'vertical',
+			        formatter: (name) => {
+			            return (
+			                "{title|" + name + "}\n{value|" + data.find((item) => {
+			                    return item.name == name
+			                }).value + "}{value|%}"
+			            );
+			        },
+			        textStyle: {
+			            rich: {
+			                title: {
+			                    fontSize: 16,
+			                    lineHeight: 15,
+			                    color: "#fff"
+			                },
+			                value: {
+			                    fontSize: 14,
+			                    lineHeight: 20,
+			                    color: "#fff"
+			                }
+			            }
+			        }
+			    },
+			    tooltip: {
+			        show: true,
+			        trigger: "item",
+			        formatter: "{a}<br>{b}:{c}({d}%)"
+			    },
+			    grid: {
+			       top: "4%",
+					 left: "34%",
+					 width:"40%",
+					 height:"21%",
+			        containLabel: false
+			    },
+			    yAxis: [{
+			        type: "category",
+			        inverse: true,
+			        axisLine: {
+			            show: false
+			        },
+			        axisTick: {
+			            show: false
+			        },
+			        axisLabel: {
+			            interval: 0,
+			            inside: true,
+			            textStyle: {
+			                color: "#fff",
+			                fontSize: 14
+			            },
+			            show: true
+			        },
+			        data: yAxis
+			    }],
+			    xAxis: [{
+			        show: false,
+			    }],
+			    series: series
+			};
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+			 myChart.setOption(option, true);
+		 }
+			}
+		});
+	 }
+
+	function  getChart8(prjid){
+		$.request({
+			url : $$pageContextPath+'mainScreen/scre/jlzzt?prjid='+prjid,
+			success : function(response){
+			var data = response.parameters.jlzzt.data;
+		 var dom = document.getElementById("jldcl");
+		 var myChart = echarts.init(dom);
+		 var app = {};
+		 option = null;
+		 option = {
+				    tooltip: {
+				        trigger: 'axis',
+				        axisPointer: {
+				            type: 'shadow'
+				        }
+				    },
+				    grid: {
+				        top: '5%',
+				        left: '9%',
+				        bottom: '35%'
+				    },
+				    xAxis: [{
+				        type: 'category',
+				        data: data.xsList,
+				        axisLine: {
+				            lineStyle: {
+				                color: 'rgba(255,255,255,0.12)'
+				            }
+				        },
+				        axisLabel: {
+				            margin: 10,
+				            color: '#e2e9ff',
+				            textStyle: {
+				                fontSize: 14
+				            },
+				            interval:0,//横轴信息全部显示
+				        	                      rotate:30,//度角倾斜显示
+				        	                    formatter:function(value){//只显示五个字 其余省略号
+				        	                        return value.length > 5?value.substring(0,5)+'...':value;
+				        	                    }
+				        },
+				    }],
+				    yAxis: [{
+				        axisLabel: {
+				            formatter: '{value}%',
+				            color: '#e2e9ff',
+				        },
+				        axisLine: {
+				            show: false,
+				            lineStyle: {
+				                color: 'rgba(255,255,255,1)'
+				            }
+				        },
+				        splitLine: {
+				            lineStyle: {
+				                color: 'rgba(255,255,255,0.12)'
+				            }
+				        }
+				    }],
+				    series: [{
+				        type: 'bar',
+				        data: data.ysList,
+				        barWidth: '20px',
+				        itemStyle: {
+				            normal: {
+				                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+				                    offset: 0,
+				                    color: 'rgba(0,244,255,1)' // 0% 处的颜色
+				                }, {
+				                    offset: 1,
+				                    color: 'rgba(0,77,167,1)' // 100% 处的颜色
+				                }], false),
+
+				                shadowColor: 'rgba(0,160,221,1)',
+				                shadowBlur: 3,
+				            }
+				        },
+				        label: {
+				            normal: {
+				                show: true,
+				                lineHeight: 30,
+				                width: 80,
+				                height: 30,
+				                borderRadius: 100,
+				                position: ['-20', '-20'],
+				                distance: 1,
+				                formatter: [
+				                    ' {a|{c}%}     \n'
+				                ].join(','),
+				                rich: {
+				                    d: {
+				                        color: '#3CDDCF',
+				                    },
+				                    a: {
+				                        color: '#fff',
+				                        align: 'center',
+				                    },
+				                    b: {
+				                        width: 1,
+				                        height: 30,
+				                        borderWidth: 1,
+				                        borderColor: '#234e6c',
+				                        align: 'left'
+				                    },
+				                }
+				            }
+				        }
+				    }]
+				};
+		 if (option && typeof option === "object") {
+			 myChart.clear();
+			 myChart.setOption(option, true);
+		 }
+			}
+		});
+	 }
+	function getcharts(){
+     echarts.registerMap('fs',geoJson);
+     var option = {
+    		  tooltip:{
+          		 formatter: function (params) {
+          			 var gsName="";
+          			 if(params){
+          				if(params.value[3]==1){
+          					gsName ="佛山市建盈发展有限公司";
+          				}else{
+          					gsName ="RequestMapping";
+          				}
+          			 }
+                     // var info = '<p style="font-size:18px">' +gsName + '</p><p style="font-size:14px">'+params.name+'</p>' + '</p><p style="font-size:14px">施工人数：'+params.value[2]+'人</p>'
+                      var info = '</p><p style="font-size:14px">'+params.name+'</p>' + '</p><p style="font-size:14px">施工人数：'+params.value[2]+'人</p>'
+
+                      return info;
+                  },
+                  backgroundColor: 'rgba(10,45,118,0.8)',//提示标签背景颜色
+                  textStyle: { color: "#fff" }, //提示标签字体颜色
+                  borderColor: '#116bb7',
+                  borderWidth: 1.5,
+         	  },
+         geo: {
+        	 label: {
+                 normal: {
+                   show: true,
+                   textStyle: {
+                     color: "#F0F8FB"
+                   }
+                 },
+                 emphasis: { // 对应的鼠标悬浮效果
+                   show: false,
+                   textStyle: {
+                       color: "#F0F8FB"
+                   }
+                 }
+               },
+                 type:'map',
+                 zoom:1.25,
+                 scaleLimit:{min:1,max:5}, // 缩放级别
+                 roam:true,
+                 map:'fs',
+                 itemStyle: {
+                     normal: {
+                       borderColor: '#1b51a2 ',
+                       borderWidth: 1.5,
+                       areaColor: {
+                    	   type: 'linear',
+                    	    x: 1,
+                    	    y: 0,
+                    	    x2: 0,
+                    	    y2: 1,
+                    	    colorStops: [{
+                    	        offset: 0, color: '#5eccff' // 0% 处的颜色
+                    	    }, {
+                    	        offset: 1, color: '#107eff' // 100% 处的颜色
+                    	    }],
+                    	    global: false // 缺省为 false
+                       }
+                     },
+                     emphasis: {
+                     }
+                   }
+         },
+         series: [
+                 {
+                      name: '桥梁',
+                      type: 'scatter',
+                      geoIndex: 0,
+                      coordinateSystem: 'geo',
+                      data: convertData(geoCoordMap,locValue).slice(0,100),
+                      showAllSymbol: true,
+                      symbol:
+                        "image://../images/screem/dian1.png;base64",
+                     // symbolRotate: 35,
+                      symbolSize: 28,
+                      label: {
+                          normal: {
+                              show: false
+                          },
+                          emphasis: {
+                              show: false
+                          }
+                      },
+                       itemStyle: {
+                          emphasis: {
+                              borderColor: '#fff',
+                              borderWidth: 1
+                          }
+                      }
+                  },
+                  {
+                      name: '桥梁',
+                      type: 'scatter',
+                      coordinateSystem: 'geo',
+                      data: convertData(geoCoordMap1,locValue1).slice(0,100),
+                      showAllSymbol: true,
+                      symbol:
+                        "image://../images/screem/dian2.png;base64",
+                      symbolSize: 28,
+                      label: {
+                          normal: {
+                              show: false
+                          },
+                          emphasis: {
+                              show: false
+                          }
+                      },
+                       itemStyle: {
+                          emphasis: {
+                              borderColor: '#fff',
+                              borderWidth: 1
+                          }
+                      }
+                  },
+                  {// 这个就是普通连线
+                      type: 'lines',
+                      coordinateSystem: 'geo',// 这句的意思是连线是基于地理坐标的,geo组件将在下面给出
+                      polyline: true,// 这表示连线是否为多端点的连线
+                      data: busLines,// 这里就是连线的数据了 上面组装的数据就在这里使用
+                      lineStyle: {
+                          normal: {
+                              opacity: 1,
+                              width: 2
+                          }
+                      },
+                      progressiveThreshold: 500,
+                      progressive: 200
+                  },
+                 ],
+     };
+     mapEchart.clear();
+     mapEchart.setOption(option,true);
+	}
+
+	mapEchart.on('click', function (params) {
+	    	// myChart.hitTest(event);
+	    	var _option = mapEchart.getOption();
+	    	if(params.data==undefined){
+	    		 return;
+	    	}
+	    	 var value=params.data.value;
+	    	  change(value[2],params.data.name);
+	    });
+</script>
+</html>

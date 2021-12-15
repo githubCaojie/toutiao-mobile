@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-row :height="50">
+			<hy-col :span=2> <hy-button text="报表测试" @click="printPdf" ></hy-button> </hy-col>
+			<hy-col :span=2> <hy-button text="导出excel" @click="printExcel" ></hy-button> </hy-col>
+		</hy-row>
+		 <hy-row :height="50">
+			<hy-col :span=3> <hy-button text="导出员工信息模板" @click="outperExcel" ></hy-button> </hy-col>
+			<hy-col :span=3> <hy-button text="导入员工信息" @click="importVkey" ></hy-button> </hy-col>
+		</hy-row>
+	</div>
+	<iframe id="hidden_frame1" style='display: none'></iframe>
+	<script th:inline="javascript">
+	    var carUuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				orgId : ""
+			},
+			mounted : function(){
+			},
+			methods : {				
+				importOrg : function(){
+					openFileUpload(vm.importOrgComp);
+				},
+				importOrgComp : function(response){
+					$.request({
+						url : $$pageContextPath + 'org/orgInfo/importOrg',
+						params : {"fileName":response},
+						success : function(response){
+							setRM("success",response.getMessage());
+						}
+					});
+				},
+				initRelationUuid : function(){
+					$.request({
+			    		url : $$pageContextPath + 'rest/partyRelationship/initRelationUuid',
+						success: function(response) {
+							setRM("success",response.getMessage());
+						}
+					});
+				},
+				printPdf : function(){
+					printFile($$pageContextPath + "jt/com/dataSynch/printPdf?action=printPdf&uuid=11111",'报表打印',null,null,null,null,null,null);
+				},
+				printExcel : function(){
+					$("#hidden_frame1").attr(
+							"src",
+							$$pageContextPath + "jt/com/dataSynch/printPdf?action=printPdf&uuid=11111" + "&fileName=测试" + "&exportType=excel");
+				},
+				importVkey : function(){
+					openFileUpload(vm.importVkeyComp);
+				},
+				importVkeyComp : function(response){
+					$.request({
+						url : $$pageContextPath + 'per/perEmployeeExcel/importExcel',
+						params : {"fileName":response},
+						success : function(response){
+							setRM("success",response.getMessage());
+						}
+					});
+				},
+				initRecursion : function(){
+					$.confirm("提示", "确定处理递归关系？", function() {
+						$.request({
+				    		url : $$pageContextPath + 'jt/com/dataSynch/initRecursion',
+							success: function(response) {
+								setRM("success",response.getMessage());
+							}
+						});
+					}, function() {
+					});
+					
+				},
+				initBusiPer : function(){
+					$.confirm("提示", "确定处理管理单位与人员关系？", function() {
+						$.request({
+				    		url : $$pageContextPath + 'jt/com/dataSynch/initBusiPer',
+							success: function(response) {
+								setRM("success",response.getMessage());
+							}
+						});
+					}, function() {
+					});
+					
+				},
+				outjyExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outjyExcel');
+				},
+				outperExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outperExcel');
+				},
+				outgrjsExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outgrjsExcel');
+				},
+				outzyjsExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outzyjsExcel');
+				},
+				outjlExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outjlExcel');
+				},
+				outzyzgExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outzyzgExcel');
+				},
+				outjtExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outjtExcel');
+				},
+				outzjExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outzjExcel');
+				},
+				outzyExcel : function(){
+					window.open($$pageContextPath + 'per/perEmployeeExcel/outzyExcel');
+				}
+			}
+		});
+	</script>
+</body>
+</html>

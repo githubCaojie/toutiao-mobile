@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>明细</title>
+	<template th:substituteby="framework/pageset.html"></template>
+
+	<!-- <link rel="stylesheet" type="text/css" href="../../../vue/hyfileupload.css">
+	<script type="text/javascript" src="../../../vue/hyfileupload.js"></script> -->
+</head>
+
+<body>
+	<div id="app" view>
+
+		<hy-filllayout rows="35,*" :showborder="false"  :showpadding="false"> 
+			 <hy-fillarea  :display="editFlag=='N'?'none':'block'">
+				<!-- <hy-button text="保存"  @click="save" ></hy-button> -->	
+			</hy-fillarea> 
+			<hy-fillarea>
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="140" :readonly="editFlag=='N'?true:false"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="详情">
+						<hy-forminput label="任务编号" name="taskNo" :maxlength="20" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="项目" name="projectName" :maxlength="20" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="标段"  name="sectionName"  :maxlength="20" :rules="{ required: true}" ></hy-forminput>
+						<hy-forminput label="市" name="cityName" :maxlength="20" :rules="{ required: true}"></hy-forminput>					
+						<hy-forminput label="区" name="areaName" :maxlength="10" :rules="{ required: true}"></hy-forminput>						
+						<hy-forminput label="镇" name="townName" :maxlength="10" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="房屋编号" name="fwbh"   :maxlength="10"  :rules="{ required: true}"></hy-forminput>
+						<hy-formselect label="房屋类型" name="fwlx" dropname="ZDCQ.FWLX" :rules="{ required: true}" :readonly="true"  ></hy-formselect>
+						<hy-forminput label="房屋名称" name="fwmc"   :maxlength="10"  :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="红线内拆迁面积" name="hxnmj"   :maxlength="10"  :rules="{ required: true}"></hy-forminput>
+						<hy-formselect label="拆迁状态" name="cqzt" dropname="ZDCQ.CQZT" :rules="{ required: true}" :readonly="true"  ></hy-formselect>
+						<hy-forminput label="补偿方式" name="bcfs"   :maxlength="10"  :rules="{ required: true}"></hy-forminput>
+						<hy-formdatepicker label="计划日期" type="date" name="jhrq"  :rules="{ required: true}"></hy-formdatepicker>
+						<hy-formdatepicker label="完成日期" type="date" name="wcrq"  :rules="{ required: true}"></hy-formdatepicker>
+						<hy-forminput label="实际拆迁面积" name="sjcqmj"   :maxlength="10"  :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="经度" name="lng" :maxlength="10" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="纬度" name="lat" :maxlength="10" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="高程" name="height" :maxlength="10" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="位置桩号" name="zh" :maxlength="10" :rules="{ required: true}"></hy-forminput>
+						 <hy-formselect label="拆迁方案落实" name="cqfals" dropname="UEP.YES_OR_NO" :rules="{ required: true}" :readonly="true"  ></hy-formselect> 
+						<hy-forminput label="拆迁预算编制" name="cqysbz" :colspan="2" :maxlength="255" :rowspan="2"  type="textarea" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="影响工程描述" name="yxgcms" :colspan="2" :maxlength="255" :rowspan="2"  type="textarea" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="重要程度描述" name="zycdms" :colspan="2" :maxlength="255" :rowspan="2"  type="textarea" :rules="{ required: true}"></hy-forminput>																		
+						<hy-forminput label="存在困难" name="czkn" :colspan="2" :maxlength="255" :rowspan="2"  type="textarea" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="解决建议" name=jjjy :colspan="2" :maxlength="255" :rowspan="2"  type="textarea" :rules="{ required: true}"></hy-forminput>
+						<hy-forminput label="备注" name="remark" :colspan="2" :maxlength="255" :rowspan="2"  type="textarea" :rules="{ required: true}"></hy-forminput>
+						
+						
+ 					</hy-formgroup>
+					<!-- <hy-formgroup title="附件上传">
+							<div >
+								<div style="margin-top:4px;margin-left:100px;"><h4>附件添加！</h4></div>
+							</div>
+							<div id="upload1"></div>
+					</hy-formgroup> --> 
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		
+	var	prjId; 
+	var	contractId; 
+	
+		var vm = new Vue({
+			el: "#app",
+			data: {
+				number: '',
+			},
+			mounted: function () {
+				prjId=response.getParameter("prjId");
+				contractId=response.getParameter("contractId");
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());				 			
+				cusUpload('upload1',myform.getRecord().get("uuid"),null,editFlag,"png,jpg,gif,bmp");
+				
+			},
+			
+			methods: {
+				save: function () {
+					debugger;
+					myform.validate(function (data) {
+						if(data){
+							debugger;
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + "aqlog/save?prjId="+prjId+"&contractId="+contractId, 
+								data : dataArr,
+								success : function(response){
+									setRM('success',response.getMessage(),function(){$.close(true);}) ;
+								}
+							});	
+						}	
+					});
+
+				},
+				selectJl : function(){
+					debugger;
+					$.showModalDialog($$pageContextPath + "aqlog/selectPerson?prjId="+prjId+"&contractId="+contractId, "选择人员", vm.selectJlComp, null, 800, 460, 0);
+				},
+				selectJlComp : function(data){
+					debugger;
+					person.setValue(data.id + "&" + data.name);
+				}
+				
+			}
+		});
+
+		function callback(data) {
+			alert(data);
+		}
+	 
+
+ 
+	</script>
+</body>
+
+</html>

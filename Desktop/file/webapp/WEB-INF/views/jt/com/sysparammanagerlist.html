@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="250,*">
+			 <hy-fillarea>
+			 	<hy-filllayout rows="35, *">
+			 		<hy-fillarea>
+			 			<hy-button text="添加" @click="addDrop" :pkain="true"></hy-button>
+						<hy-button text="删除" @click="removeDrop" :pkain="true" ></hy-button>
+			 		</hy-fillarea>
+			 		
+			 		<hy-fillarea>
+			 			<hy-tree id="paramTreeId" @nodeclick="query" :expandlevel="3"
+						 	valueprovider="com.haiyisoft.jt.com.tree.SysParamMangerTree" > 
+						</hy-tree>
+			 		</hy-fillarea>
+			 		
+			 	</hy-filllayout>
+			</hy-fillarea> 
+			<hy-fillarea>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件">
+				 <table>
+	              <tr> 
+					<td align="right" width="80px">参数代码</td>
+					<td align="left" width="120px"><hy-input name="dataWrap.query.paramCode_LIKE" :upload="true" ></hy-input></td>
+					<td align="right" width="80px">参数名称</td>
+					<td align="left" width="120px"><hy-input name="dataWrap.query.paramValue_LIKE" :upload="true" ></hy-input></td>
+					<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+           		  </tr>
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea align="left">
+	      		<div style="float:left">
+					<hy-button text="添加" @click="add" :pkain="true"></hy-button>
+					<hy-button text="删除" @click="remove" :pkain="true" ></hy-button>
+					<hy-button text="保存" @click="save" :pkain="true" ></hy-button>
+	      		</div>
+			</hy-fillarea>
+			<hy-fillarea>
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="false" height="100%"
+						 titlealign="center" style="width: 99%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column title="参数类型代码"  name="paramTypeCode" align="center" width="200" :readonly="true" :rules="{ required: true}"></hy-table-column> 
+						<hy-table-column title="参数代码"  name="paramCode" align="center" width="200" :rules="{ required: true, message: '请输入参数代码' }"></hy-table-column> 
+						<hy-table-column title="参数名称"  name="paramValue" align="center" width="200" :rules="{ required: true, message: '请输入参数名称' }"></hy-table-column> 
+						<hy-table-column title="可见性"  name="visible" align="center" width="80" type="drop" dropname="UEP.YES_OR_NO" :rules="{ required: true}"></hy-table-column> 
+						<hy-table-column title="排序"  name="displaySn" align="center" width="80" :rules="[{ required: true, message: '请输入排序号'},{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				query : function(){
+					var selectNode = paramTreeId.getSelectedNode();
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData);
+					if(selectNode.type == "2"){//叶子节点。去查询下拉有哪些。
+						$.request({
+	 						url : $$pageContextPath + 'jt/com/sysParamManager/list',
+	 						data : dataArr,
+	 						params : {
+	 							"paramTypeCode" : selectNode.code
+	 						},
+	 						success : function(response){
+	 							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+	 						}
+	 					});
+					}
+				},
+				add : function(){
+					var selectNode = paramTreeId.getSelectedNode();
+					if(selectNode == null || selectNode.type != "2")
+						return setRM("alert","请选择左侧树的叶子节点！");
+					var gridData = ajaxgrid.collectData(true, "update");
+					var dataArr = [];
+					dataArr.push(gridData);
+					$.request({
+						url : $$pageContextPath + 'jt/com/sysParamManager/add',
+						params : {
+							"paramTypeCode" : selectNode.code
+						},
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.addRecord(response.getAjaxDataWrap("dataWrap").getData(),0);
+						}
+					});
+				},
+				save : function(){
+					if (ajaxgrid.isValid()) {
+						var gridData = ajaxgrid.collectData(true, "update");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'jt/com/sysParamManager/save',
+							data : dataArr,
+							success : function(response){
+	 							setRM(vm.query());
+	 						}
+						});	
+					}
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if(checked == null || checked.length == 0)
+						return setRM("alert","请选择要删除的记录！");
+					$.confirm("提示", "确定要删除选中的记录？", function() {
+						var ids = "";
+						for(var i=0; i<checked.length; i++){
+							ids += checked[i].data.id + ",";
+						}
+						$.request({
+							url : $$pageContextPath + 'jt/com/sysParamManager/remove',
+							params : {
+								ids : ids
+							},
+							success : function () {
+								setRM("success", "操作成功!", function() {
+									vm.query();
+								});
+							}
+						});
+					}, function() {
+					});
+				},
+				addDrop : function(){
+					$.popWindow({
+						url: $$pageContextPath + 'jt/com/sysParamManager/addDrop?editFlag=Y',
+						title: "新增下拉",
+						callback: vm.onsavecomplete,
+						css:{width:600,height:300},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				removeDrop(){
+					var selectNode = paramTreeId.getSelectedNode();
+					if(selectNode == null)
+						return setRM("error", "请选择要删除的下拉!");
+					//先删除右侧的该下拉的所有下拉值,因为有关联外键
+					var count = ajaxgrid.getRecordCount();
+					if(count > 0)
+						return setRM("error","请先删除右侧该下拉所有的下拉值");
+					$.confirm("提示", "确定要删除该下拉？", function() {
+						$.request({
+	 						url : $$pageContextPath + 'jt/com/sysParamManager/removeDrop',
+	 						params : {
+	 							"paramTypeCode" : selectNode.code
+	 						},
+	 						success : vm.onsavecomplete
+	 					});
+					}, function() {
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					paramTreeId.refreshRootNode();
+				}
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea :display="(editFlag=='N')?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" :readonly="editFlag=='N'?true:false"
+					label-position="left" :labelwidth="100"  
+					label-suffix="：" :cols="1" size="normal"> 
+					<hy-forminput label="名称"  name="typeName" :rules="{ required: true}" :maxlength="32" ></hy-forminput> 
+					<hy-formselect label="字段类型" name="fieldType"  :rules="{ required: true}" dropname="JT.FIELD_TYPE" ></hy-formselect> 
+					<hy-formselect label="输入方式" name="inputType"  :rules="{ required: true}" dropname="JT.INPUT_FORM" ></hy-formselect> 
+					<hy-forminput label="扩展值" name="extValue"  :maxlength="64" ></hy-forminput> 
+					<hy-forminput label="扩展值2" name="extValue2"  :maxlength="64"></hy-forminput> 
+					<hy-forminput label="默认值" name="defaultValue"    :maxlength="64"></hy-forminput> 
+					<hy-formselect label="固定属性" name="fixFlag"   dropname="UEP.YES_OR_NO"></hy-formselect> 
+					<hy-forminput label="排序号"  name="orderSn"  :maxlength="5" ></hy-forminput>
+					<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="64" ></hy-forminput>
+				
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {		
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath + 'jt/jtExtFieldType/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

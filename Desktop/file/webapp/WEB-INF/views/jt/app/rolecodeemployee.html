@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+    	<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				角色名称  <hy-input  id="appNoId" v-model="roleName" :upload="true" width="200"></hy-input>
+				 登陆编码 <hy-input  id="curTaskNameId" v-model="loginCode" :upload="true" width="150"></hy-input> 
+				<hy-button text="查询" @click="retrieve" />
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="retrieve" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+						<hy-table-column  title="角色名称" name="roleName"align="center" width="100"></hy-table-column> 
+						<hy-table-column  title="登陆编码" name="loginCode"align="center" width="100"  ></hy-table-column> 
+						<hy-table-column  title="部门" name="orgPartyId"align="center"type="drop" dropname="ORG.ORG_PARTY_NAME"	width="120"></hy-table-column>
+						<hy-table-column  title="管理单位" name="busiCode" align="center"type="drop" dropname="ORG.ORG_PARTY_NAME"	width="120"></hy-table-column>  
+						<hy-table-column title="人员姓名" name="personName"  align="center"	width="100"></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				roleName : "",
+				loginCode : ""
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				retrieve : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/rolecodeemployee/retrieve',
+						data : dataArr,
+						params : { "roleName": this.roleName,
+								   "loginCode" : this.loginCode
+								   },
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="300,100,*">
+			<hy-fillarea title="设置角色">
+				<hy-tree v-model="roleTypeClassTree" id="roleTree" :multiple="true" :checkstrictly="false" :onlyselectleaf="true"
+					 default-expand-all valueprovider="com.haiyisoft.jt.ep.tree.AllRolesTree"> 
+				</hy-tree>
+			</hy-fillarea>
+			<hy-fillarea>
+				<table>
+					<br><br><br><br><br><br><br><br><br>
+		      		<tr ><td width="100" align="center"><hy-button text="添加->>" @click="add" :pkain="true" style="width:100%"></hy-button></td></tr>
+					<tr height="10"></tr>
+		      		<tr ><td width="100" align="center"  ><hy-button text="删除<<-"  @click="remove" :pkain="true" style="width:100%"></hy-button></td></tr>
+	      		</table>
+			</hy-fillarea>
+			<hy-fillarea >
+	          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+					@queryfunc="query" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+					<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+					<hy-table-column title="角色名称"  name="roleName" align="center"	width="150"></hy-table-column> 
+					<hy-table-column title="角色代码"  name="roleCode" align="center"	width="80"></hy-table-column> 
+					<hy-table-column title="角色类型"  name="roleTypeCode" align="center" width="150" type="drop" dropname="RIT.ROLE_TYPE"></hy-table-column> 
+					<hy-table-column title="上级角色"  name="roleParentCode" align="center" type="droptree" valueprovider="com.haiyisoft.jt.ep.tree.RolesTree" width="150"></hy-table-column> 
+<!-- 					<hy-table-column title="说明"  name="roleDescribe" align="center" width="200" ></hy-table-column> -->
+				</hy-table>  
+	       </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				roleTypeClassTree : ""
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {			
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/ep/userAccount/roleList',
+						data : dataArr,
+						params :{
+							loginId : vm.loginId
+						},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+							roleTree.refreshRootNode();	
+						}
+					});	
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						setRM("alert","请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'jt/ep/userAccount/removeRole',
+								data : dataArr,
+								params : {
+									loginId : vm.loginId
+								},
+								success : vm.onsavecomplete
+							});
+					　　　},function(){});
+					}
+				}, 
+				add : function(){
+					var checkNodes = roleTree.getCheckedNodes();
+					if(checkNodes.length == 0)
+						return setRM("alert","请选择要添加的记录!");
+					$.confirm("提示","确定要添加选中的记录？",function(){
+						var rtn = "";
+						for(var i=0; i<checkNodes.length; i++){
+							if(checkNodes[i].code == "0"){
+								roleTree.cancelCheckedNodes(['0']);								
+								return setRM("alert","不允许操作根节点！");
+							}
+							rtn += checkNodes[i].code + ",";
+						}
+						$.request({
+							url : $$pageContextPath + 'jt/ep/userAccount/addRole',
+							params : {
+								loginId : vm.loginId,
+								roleCodes : rtn
+							},
+							success : vm.onsavecomplete
+						});
+					},function(){});
+				}, 
+				onsavecomplete : function(response){
+					setRM("success",response.getMessage(),vm.query);
+				}
+			}
+		});  
+	</script>
+</body>
+</html>

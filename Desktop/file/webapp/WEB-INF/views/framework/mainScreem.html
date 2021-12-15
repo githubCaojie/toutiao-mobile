@@ -1,0 +1,939 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<template th:substituteby="framework/pageset.html"></template>
+<title>作战指挥中心</title>
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=b7t4tLpUInwwHBwN2aeTUNSjHtknBRXr"></script>
+</head>
+<style>
+.contaner{
+width:100%;
+height:100%;
+top:0px;
+display:flex;
+background: url(../images/screem/bg.png) center no-repeat; 
+background-size:100% 100%; 
+position: absolute;
+}
+
+.cont{
+width:98%;
+height:99%;
+left:1%;
+top:0px;
+display:flex;
+border: 2px solid #077eff;
+position: absolute;
+}
+
+.left_contaner{
+margin-left:10px;
+width:335px;
+height: 691.2px;
+float:left;
+}
+.center_contaner{ 
+margin-left:10px;
+width:656px;
+height: 691.2px;
+float:left;
+}
+.right_contaner{
+margin-left:5px;
+width:341px;
+height:691.2px;
+float:left;
+}
+.introduction{
+margin-top:20px;
+width:98%;
+height: calc(30% - 30px);
+}
+.img1{
+width: 100%;
+height: 100%;
+background: url(../images/screem/qietu.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction2{
+margin-top:20px;
+width:98%;
+height: calc(40% - 30px);
+}
+.img2{
+width: 100%;
+height: 100%;
+background: url(../images/screem/qietu1.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction3{
+margin-top:20px;
+width:98%;
+height: calc(33% - 30px);
+}
+.img3{
+width: 100%;
+height: 100%;
+background: url(../images/screem/qietu1.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction4{
+margin-top:20px;
+width:98%;
+height: calc(23% - 30px);
+}
+
+.img4{
+width: 100%;
+height: 100%;
+margin:0 auto;
+background: url(../images/screem/zs.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction5{
+margin-top:20px;
+width:98%;
+height:calc(75% - 5px);
+}
+.img5{
+width: 100%;
+height: 100%;
+background: url(../images/screem/zxn.png)no-repeat;
+background-size: 100% 100%;
+justify-content: space-around;
+align-items: center;
+}
+
+.introduction6{
+margin-top:20px;
+width:98%;
+height:39%;
+}
+.img6{
+width: 100%;
+height: 100%;
+background: url(../images/screem/qietu1.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction7{
+margin-top:20px;
+width:98%;
+height:25%;
+}
+.img7{
+width: 100%;
+height: 100%;
+background: url(../images/screem/qietu.png)no-repeat;
+background-size: 100% 100%;
+}
+
+.introduction8{
+margin-top:20px;
+width:98%;
+height:calc(25% + 7px);
+}
+.img8{
+width: 100%;
+height: 100%;
+background: url(../images/screem/qietu.png)no-repeat;
+background-size: 100% 100%;
+}
+.tetel{
+width: 100%;
+height: 10%;
+margin-top:2%;
+margin-left:1%;
+font-size:16px;      
+color: white;
+}
+
+.gsjj{
+width: 92%;
+height: 80%;
+margin-left:4%;
+margin-right:3%;
+font-size:10px;      
+color: #00d4e0;
+}
+option { 
+    /* Whatever color  you want */
+    background-color: black;
+}
+
+#left_bt{
+position:absolute;
+top:38%;
+width:33px;
+height:70px;
+float: left;
+left:26.4%;
+background: url(../images/screem/bt1.png)  no-repeat;
+}
+
+#right_bt{
+position:absolute;
+top:40%;
+width:20px;
+height:70px;
+float: right;
+right:26.4%;
+background: url(../images/screem/bt2.png)  no-repeat;
+}
+
+#down_bt{
+position:absolute;
+width:70px;
+height:30px;
+float: top;
+left:45%;
+background-image: url(../images/screem/bt3.png);
+background-size:100% 100%; 
+bottom: 17.5%;
+}
+#table{
+	width:14%; height:5%; z-index:999;
+	padding:5px; float: right;position:absolute;top:3%;left:42%;
+	justify-content: space-around;
+     align-items: center; 
+     display:flex;
+	
+}
+#obtable{
+	width:14%; height:5%; z-index:999; color:white;
+	padding:5px; float: right;position:absolute;top:5%;left:1%;
+	justify-content: space-around;
+     align-items: center; 
+     display:flex;
+	
+}
+#obtable1{
+	width:99%; height:100px; z-index:999; 
+	padding:5px; float: right;
+	position:absolute;top:20%;
+     overflow-x: auto;
+      white-space: nowrap;
+ }
+#obtable1::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 50px rgba(0,0,0,0.2);
+            background: #001b59;
+        }
+#obtable1::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            border-radius: 0;
+            background: #919191;
+        }
+ #obtable2{
+   white-space: nowrap;
+   margin: 0;
+   padding: 0;
+    z-index: 99;
+      position:absolute;
+   float: left;
+   top:5px;
+  }
+   #obtable3{
+   white-space: nowrap;
+   margin: 0;
+   padding: 0;
+   position:absolute;
+   float: left;
+   top:5px;
+   left:105px;
+   z-index: 90;
+  }
+#table1{
+	width:25%;
+	height:18%;
+	z-index:999; 
+	background: url(../images/screem/shangxm.png) center no-repeat;
+	background-size:100% 100%;
+	margin:0 auto;
+	padding:5px; 
+	float: right;
+	position:absolute;
+	top:1%;
+	left:1%;
+	opacity:0.9;
+}
+#table2{
+	width:25%; height:38%; z-index:999; 
+	padding:5px; float: right;position:absolute; top:21.5%;left:1%;
+	background: url(../images/screem/zhongxm.png) center no-repeat;
+	background-size:100% 100%;
+	margin:0 auto;opacity:0.9;
+}
+#table3{
+	width:25%; height:18%; z-index:999;
+	padding:5px; float: right;position:absolute; top:62%;left:1%;
+	background: url(../images/screem/xiaxm.png) center no-repeat;
+	background-size:100% 100%;
+	margin:0 auto;opacity:0.9;
+}
+#table4{
+	width:25%; height:18%; z-index:999; 
+	padding:5px; float: right;position:absolute; top:1%;right:1%;
+	background: url(../images/screem/shangxm.png) center no-repeat;
+	background-size:100% 100%;
+	margin:0 auto;opacity:0.9;
+}
+#table5{
+	width:25%; height:38%; z-index:999; 
+	padding:5px; float: right;position:absolute; top:21.5%;right:1%;
+	background: url(../images/screem/zhongxm.png) center no-repeat;
+	background-size:100% 100%;
+	margin:0 auto;opacity:0.9;
+}
+#table6{
+	width:25%; height:18%; z-index:999; 
+	padding:5px; float: right;position:absolute; top:62%;right:1%;
+	background: url(../images/screem/xiaxm.png) center no-repeat;
+	background-size:100% 100%;
+	opacity:0.9;
+}
+#table7{
+	width:97.5%; height:15.5%; z-index:999; 
+    background: url(../images/screem/zhujiemian.png) center no-repeat;
+    background-size:100% 100%;
+	padding:5px; float: right;position:absolute; top:82.5%;right:1%
+}
+
+#table8{
+	width:25%; height:30%; z-index:999;  
+	padding:5px; float: right;position:absolute; top:50.5%;right:47%;
+	display: none; pointer-events: none;
+}
+ .p1 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+           font-weight:bold;
+            font-size:16px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            width: 100%;
+            height:100%;
+            text-align: center;
+        }
+
+ .tb {
+    font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+   font-size:15px;
+   font-weight:bold;
+   font-style: normal;
+   float:left;
+    margin-left:10px;
+   margin-top:11px;
+    }
+    
+    .t {
+    font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+   font-size:11px;
+   font-weight:bold;
+   font-style: normal;
+   float:left;
+    margin-left:5px;
+   margin-top:13px;
+    }
+            
+ .p2 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-size:13px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            float:left;
+            margin-left:8px;
+            margin-top: 9px;
+        }
+        
+ .p3 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-size:12px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            float:left;
+            margin-left:10px;
+            margin-top:12px;
+        }
+.htmlDiv{
+font-size: 16px;
+   white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+    display: inline-block;
+    width: 200px;
+  height: 90px;
+ justify-content: space-around;
+ align-items: center;
+  z-index: 20; 
+ }
+ 
+ .lineDiv{
+     font-size: 16px;
+      white-space: normal;
+       word-wrap: break-word;
+       word-break: break-all;
+       overflow: hidden;
+       display: inline-block;
+      width: 200px;
+  height: 90px;
+ justify-content: space-around;
+ align-items: center; 
+ z-index: 0;
+ }
+ 
+ .img_div{
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: -15px 45%;
+ 
+ }
+  .date_div{
+  width: 100px;
+  height: 40px;
+  float: left;
+  margin: 0 30%;
+  color: #34a7ff;
+ }
+ 
+  .line_div{
+  float: left;
+  margin: 32 0;
+ }
+ 
+   .date1_div{
+  width: 100px;
+  height: 40px;
+  float: left;
+  margin: 0 30%;
+ }
+    .date2_div{
+  width: 100px;
+  height: 40px;
+  float: left;
+  margin: -15px 30%;
+ }
+</style>
+<body style="background-color:transparent;">
+	 <div class="contaner">
+	 <div class="cont">
+	 <div id="allmap" style="width:100%;height:100%;float: top;top:0; "></div>
+		 <div id="left_bt" onclick="showLeft()"></div>
+		 <div id="right_bt" onclick="showRight()"></div>
+		 <div id="down_bt" onclick="showBottom()"></div>
+		  <div id="table">
+		   <img  src="../images/screem/bhz2.png" onclick="bhz(this)">
+		   <img  src="../images/screem/shexiangtou2.png" onclick="shexiangtou(this)">
+		   <img  src="../images/screem/yshuche2.png" onclick="yshuche(this)">
+		   <img  src="../images/screem/xmb2.png" onclick="xmb(this)">
+		   <img  src="../images/screem/menjin2.png" onclick="menjin(this)">
+		   <img  src="../images/screem/shgongyuan2.png" onclick="shgongyuan(this)">
+		  </div>
+		 <div id="table1" style="voice-family: male;">
+		   <div style="height:6%;width:100%; display: inline-block;text-align: center;line-height:7%;margin-top: 2%;">
+	   		<tb class="p1">开工情况</tb>
+	  		 </div>
+	  		 <div style="background-color:#02358e;height: 15%;margin-top: 5%;margin-left:5%; width:90%;voice-family: male;text-align: center;">
+   			<span style="color: white;margin-top:1%;margin-left:5%; font-weight: bold;float: left;">计划起止时间：</span>
+			<span style="color: white;margin-top:1%;margin-left:1%; font-weight: bold;float: left;" id="jhrq"></span>
+	  		 </div>
+		 
+		 	<div style="height:50%; width: 98%;margin-left: 1%;margin-top:2%; display: inline-block;line-height:50%;voice-family: male;">
+		 	<div style="height: 90%;margin-top: 2%; width: 40%;	background: url(../images/screem/beijingt.png) center no-repeat;background-size:100% 100%;voice-family: male;float: left;margin-left:5%;">
+		 	
+		 	<div style="height:60%;width:25%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;text-align: center; ">
+	     <img src="../images/screem/zgq.png"style="float:left;margin-left:10px;">
+	     </div>
+	     <div style="height:60%;width:60%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;">
+	   	<div style="height: 40%;text-align: left ;margin-left:10%;margin-top:8%; color:white;font-size: 12px">总工期</div>
+	    <div style="height:50%;margin-left: 8%;margin-top:5%; ">
+	    <tb style="color: #08c7f1; font-size:16px;font-weight:bold; font-style: normal;" id="zgq"></tb><tb style="color: #08c7f1; font-size:16px;font-weight:bold; font-style: normal;">天</tb>
+	    </div>
+   		</div>
+		 	</div>
+		 	<div style="height: 90%;margin-top: 2%;width: 40%;	background: url(../images/screem/beijingt.png) center no-repeat;background-size:100% 100%;voice-family: male;float:right;margin-right:5%; ">
+		 	
+		 	<div style="height:60%;width:25%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;text-align: center; ">
+	     <img src="../images/screem/ykg.png"style="float:left;margin-left:10px;">
+	     </div>
+	     <div style="height:60%;width:60%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;">
+	   	<div style="height: 40%;text-align: left ;margin-left:10%;margin-top:8%; color:white;font-size: 12px">已开工</div>
+	    <div style="height:50%;margin-left: 8%;margin-top:5%; ">
+	    <tb style="color: #f8b101; font-size:16px;font-weight:bold; font-style: normal;" id="ykg"></tb><tb style="color: #f8b101; font-size:16px;font-weight:bold; font-style: normal;">天</tb>
+	    </div>
+   		</div>
+		 	
+		 	</div>
+		 	</div>
+		 </div>
+		 
+		 
+		 <div id="table2">
+		 <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%;margin-top: 2%;">
+	   		<tb class="p1">项目投资情况</tb>
+	  		 </div>
+			<div style="height:43%;width:97%; display: inline-block;margin-top:5px;padding:0;">
+	   <div style="width:60%;height:100%;display:inline-block;vertical-align: middle;text-align:center;">
+    <div style="height:10%;width:100%; display: inline-block;text-align: left;line-height:10%;margin-top:5px;margin-left:15px">
+    <img src="../images/screem/xbttb.png"style="width: 13px;height: 13px;float:left;margin-top: 2px">
+   <h class="p2">项目总体投资</h>
+	   </div>
+	   
+	    <div style="height:25%;width:80%; display: inline-block;margin-top:25px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%; ">
+	    <img src="../images/screem/xmztz.png"style="float:left;margin-left:15px;margin-top: 5px">
+	      <h class="p3">总投资</h>
+	      <tb class="tb" style="color: #2f6cff;" id="xmztz"></tb>
+	      <h class="t" style="color: #2f6cff;">万元</h>
+	    </div>
+	    
+	     <div style="height:25%;width:80%; display: inline-block;margin-top:10px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%;">
+	      <img src="../images/screem/xmwce.png"style="float:left;margin-left:15px;margin-top: 5px">
+	       <h class="p3">完成额</h>
+	       <tb class="tb" style="color: #3fc1a3;" id="xmwce"></tb>
+	      <h class="t" style="color: #3fc1a3;">万元</h>
+	     </div>
+    </div>
+    
+    <div style="width:39%;height:100%;display:inline-block;vertical-align: middle;text-align: center;">
+   <div id="xmtzwcd" style="height: 75%;width: 75%;margin-top:15%;margin-left:5%"></div>
+   <div style="height: 39%;text-align: left ;margin-left:18%;margin-top:5px; color: white;font-size: 12px">项目投资完成度</div>
+    </div>
+	</div>
+	   
+        <div style="height:43%;width:97%; display: inline-block;margin-top:5px;padding:0;">
+        	   <div style="width:60%;height:100%;display:inline-block;text-align: center;vertical-align: middle;">
+    <div style="height:10%;width:100%; display: inline-block;text-align: left;line-height:10%;margin-top:5px;margin-left:15px">
+    <img src="../images/screem/xbttb.png"style="width: 13px;height: 13px;float:left;margin-top: 2px">
+   <h class="p2">年度总投资</h>
+	   </div>
+	   
+	    <div style="height:25%;width:80%; display: inline-block;margin-top:25px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%; ">
+	     <img src="../images/screem/ndztz.png"style="float:left;margin-left:15px;margin-top: 5px">
+	      <h class="p3">总投资</h>
+	      <tb class="tb" style="color: #f8b000;" id="ndztz"></tb>
+	      <h class="t" style="color: #f8b000;">万元</h>
+	    </div>
+	    
+	     <div style="height:25%;width:80%; display: inline-block;margin-top:10px;background-image:url(../images/screem/xmbjt.png); background-repeat: no-repeat;background-size: 100% 100%;">
+	      <img src="../images/screem/ndwce.png"style="float:left;margin-left:15px;margin-top: 5px">
+	      <h class="p3">完成额</h>
+	      <tb class="tb" style="color: #e66f2a;" id="ndwce"></tb>
+	      <h class="t" style="color: #e66f2a;">万元</h>
+	     </div>
+    </div>
+    <div style="width:39%;height:100%;display:inline-block;vertical-align: middle;text-align: center;">
+   <div id="ndtzwcd" style="height: 75%;width: 75%;margin-top:10%;margin-left:5%"></div>
+   <div style="height: 39%;text-align: left ;margin-left:18%;margin-top:5px; color: white;font-size: 12px">年度投资完成度</div>
+    </div>
+        </div>
+		 
+		 
+		 </div>
+		 <div id="table3">
+		  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%;margin-top: 2%;">
+	   		<tb class="p1">年度产值完成情况</tb>
+	  		 </div>
+		  <div id="ndczwc" style="width:100%;height:100%;margin-top: 18px;margin-left: 10px"> </div>
+		 </div>
+		 <div id="table4">
+		  <div  style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%;margin-top: 2%;">
+	   		<tb class="p1">项目概况</tb>
+	  		 </div>
+	  		 <div style="height: 80%;width:96%; voice-family: male;margin-top: 2%;margin-left:2%;">
+	  		 <tb>&nbsp;&nbsp;&nbsp;&nbsp;</tb>
+	  		 <tb style="color:white;font-size:15px;" id="xmjj"></tb>
+	  		 </div>
+		 </div>
+		 <div id="table5">
+		  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%;margin-top: 2%;">
+	   		<tb class="p1">征拆</tb>
+	  		 </div>
+		  <div style="height:90%;width:96%;display: inline-block;text-align: center;line-height:90%;margin-left: 1.5%;margin-top: 5px;vertical-align: middle;">
+	       <div style="height:100%;width:48%; display: inline-block;text-align: center;line-height:90%;margin-top:5%;vertical-align: middle;">
+	       <div id="fwgx" style="width:100%;height:100%;"> </div>
+	       </div>
+	       <div   style="height:96%;width:48%; display: inline-block;text-align: center;line-height:90%;vertical-align: middle;">
+	        <div id="tdzc" style="width:100%;height:48%;"> </div>
+	         <div id="lsydzc" style="width:100%;height:49%;"> </div>  
+	       </div>       
+	   </div>
+		 </div>
+		 <div id="table6">
+		  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%;margin-top: 2%;">
+	   		<tb class="p1">隐患闭合统计</tb>
+	  		 </div>
+	  		   <div id="yhbhtj" style="width:98%;height:90%;margin-left:5px"> </div>
+	  		 
+		 </div>
+		 <div id="table7">
+		  <div id="obtable">
+		   <img  src="../images/screem/gc1.png" >
+		   <p>未开始</p>
+		   <img  src="../images/screem/gc2.png" >
+		  <p>进行中</p>
+		   <img  src="../images/screem/gc3.png">
+		   <p>已完成</p>
+		  </div>
+		  <div id="obtable1">
+		   <div id="obtable2">
+		 
+		 </div>
+		  <div id="obtable3">
+		 
+		 </div>
+		 </div>
+	 </div>
+	 <div id="table8">
+	<img id="show" src="" style="height: 290px; width:480px;float: left;margin: 0 auto;" />
+	 </div>
+	 </div>
+</body>
+<script type="text/javascript" src="../framework/js/zhzx/echarts.min.js"></script>
+<script type="text/javascript" src="../framework/js/zhzx/echarts-liquidfill.min.js"></script>
+<script type="text/javascript" src="../framework/js/zhzx/xmtj.js"></script>
+	<script type="text/javascript">
+	var partyId =""
+	$(function(){
+		var pageObj={};
+		var u = decodeURI(location.search); //获取url中"?"符后的字串 ('?modFlag=business&role=1')
+		    if ( u.indexOf( "?" ) != -1 ) {
+		      var str = u.substr( 1 ); //substr()方法返回从参数值开始到结束的字符串；
+		      var strs = str.split( "&" );
+		      for ( var i = 0; i < strs.length; i++ ) {
+		          pageObj[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+		      }
+		    }
+		var pid=pageObj.pid;
+		partyId=pageObj.pid;
+		//开工情况
+		getKgqk(pid);
+		 //项目投资
+		 getChart1(pid); 
+		 //年度投资
+		 getChart2(pid);
+		 getChart3(pid);
+		 //房屋管线
+		 getChart4(pid);
+		 //土地
+		 getChart5(pid);
+		 //临时用地
+		 getChart6(pid);
+		 //隐患闭合统计
+		 getChart7();
+		 getPointMap(pid);
+		 //项目简介
+		 getXmjj(pid);
+		 
+		 getXmjh(pid);
+		 getAllPoint();
+	})
+	function getKgqk(pid){
+		$.request({
+			url : $$pageContextPath+'main/mainxm/kgqk?pid='+pid,
+			success : function(response){
+			var jhrq=response.parameters.kgqk.jhrq;
+			var zgq=response.parameters.kgqk.zgq;
+			var ykg=response.parameters.kgqk.ykg;
+			$("#jhrq").html(jhrq);
+			$("#zgq").html(zgq);
+			$("#ykg").html(ykg);
+			}
+		})
+	}
+	
+	
+	function getXmjj(pid){
+		$.request({
+			url : $$pageContextPath+'main/mainxm/xmjj?pid='+pid,
+			success : function(response){
+			var xmjj=response.parameters.xmjj;
+			$("#xmjj").html(xmjj);
+			}
+		})
+	}
+	
+	function getXmjh(){
+		var html="";
+		var html1="";
+	//	$("#obtable1").html('<p>未开始</p><img  src="../images/screem/gc1.png"><p>进行中</p><img  src="../images/screem/gc2.png" ><p>已完成</p><img  src="../images/screem/gc3.png"></div>');
+ 		  $.request({
+			url : $$pageContextPath+'mainScreem/xmjh?partyId='+partyId,
+			success : function(response){
+			var json=response.parameters.list;
+			var data =  eval("("+json+")"); 
+			for(var i=0;i<data.length;i++){
+				var  uuid = data[i].uuid;
+				//
+				html+='<div class="htmlDiv"  onmouseenter="showImg(\''+uuid+'\')" onmouseleave ="hide(\''+uuid+'\')" >'
+				+'<div class="date_div">'+data[i].jhTime+'</div>';
+				html1+='<div class="lineDiv">';
+				if(data[i].status=="1"){
+				html+='<div class="img_div"><img  src="../images/screem/gc1.png" ></div>';
+				html+='<div class="date1_div" style="color:#34a7ff;">'+data[i].sjTime+'</div>';
+				html+='<div class="date2_div" style="color:#34a7ff;">'+data[i].xmmc+'</div></div>';
+				if(i<data.length-1)
+					html1+='<div class="line_div"><img  src="../images/screem/linehui.png"></div></div>';
+				}else if(data[i].status=="2"){
+				html+='<div class="img_div"><img  src="../images/screem/gc2.png" ></div>';
+				html+='<div class="date1_div" style="color:yellow;">'+data[i].sjTime+'</div>';
+				html+='<div class="date2_div" style="color:yellow;">'+data[i].xmmc+'</div></div>';
+				if(i<data.length-1)
+				html1+='<div class="line_div"><img  src="../images/screem/cheng.png"></div></div>';
+				}else{
+				html+='<div class="img_div"><img  src="../images/screem/gc3.png" ></div>';
+				html+='<div class="date1_div" style="color:#07eb5d;">'+data[i].sjTime+'</div>';	
+				html+='<div class="date2_div" style="color:#07eb5d;">'+data[i].xmmc+'</div></div>';
+				if(i<data.length-1)
+				html1+='<div class="line_div"><img  src="../images/screem/linegreen.png"></div></div>';
+				}
+				
+			}
+			$("#obtable2").html(html);
+			
+			
+			
+			$("#obtable3").html(html1);
+			} 
+		})  
+	
+	}
+	
+	function getPoint(type,imgStr){
+		 var overlays = mp.getOverlays();
+		$.request({
+			url : $$pageContextPath+'mainScreem/point?partyId='+partyId+'&type='+type,
+			success : function(response){
+				var json = response.parameters.list;
+				var data =  eval("("+json+")"); 
+				var myIcon = new BMap.Icon("../images/screem/"+imgStr+".png", new BMap.Size(40, 40));
+				for(var i=0;i<data.length;i++){
+					// 创建小车图标
+					// 创建Marker标注，使用小车图标
+					var pt = new BMap.Point(data[i].lng, data[i].lat);
+					var marker = new BMap.Marker(pt, {
+					    icon: myIcon
+					});
+					 marker.id=type;
+					// 创建信息窗口
+					 var opts = {
+					     width: 200,
+					     height: 50,
+					     title: data[i].typeName
+					 };
+					 var infoWindow = new BMap.InfoWindow('经度:'+data[i].lng +';纬度:'+data[i].lat, opts);
+					 // 点标记添加点击事件
+					 marker.addEventListener('mouseover', function () {
+					     mp.openInfoWindow(infoWindow, pt); // 开启信息窗口
+					 });
+					 
+					 marker.addEventListener("mouseout", function(){          
+							mp.closeInfoWindow(infoWindow,pt); //开启信息窗口
+					 });
+					// 将标注添加到地图
+					mp.addOverlay(marker);
+					
+				}
+			
+			}
+		})
+	}
+	
+	function removePoint(type,imgStr){
+	     var overlays = mp.getOverlays();
+         for(var i=0;i<overlays.length;i++){
+             if(overlays[i].id!=undefined&&overlays[i].id==type){
+                 mp.removeOverlay(overlays[i]);    
+             }
+         } 
+
+	}
+	
+	//左边隐藏
+	function showLeft(){
+		if(document.getElementById('table1').style.display == "none") {
+			document.getElementById('table1').style.display = "block";
+			document.getElementById('table2').style.display = "block";
+			document.getElementById('table3').style.display = "block";
+			document.getElementById('left_bt').style.left = "26.4%";
+			}else{
+				document.getElementById('left_bt').style.left = "0";
+				document.getElementById('table1').style.display = "none";
+				document.getElementById('table3').style.display = "none";
+				document.getElementById('table2').style.display = "none";
+			}
+	}
+	//右边隐藏
+	function showRight(){
+		if(document.getElementById('table4').style.display == "none") {
+			document.getElementById('table4').style.display = "block";
+			document.getElementById('table5').style.display = "block";
+			document.getElementById('table6').style.display = "block";
+			document.getElementById('right_bt').style.right = "26.4%";
+			}else{
+				document.getElementById('right_bt').style.right = "0";
+				document.getElementById('table4').style.display = "none";
+				document.getElementById('table5').style.display = "none";
+				document.getElementById('table6').style.display = "none";
+			}
+		
+	}
+	//下方隐藏
+	function showBottom(){
+		if(document.getElementById('table7').style.display == "none") {
+			document.getElementById('table7').style.display = "block";
+			document.getElementById('down_bt').style.bottom = "17.5%";
+			}else{
+				document.getElementById('down_bt').style.bottom = "0";
+				document.getElementById('table7').style.display = "none";
+			}
+	}
+	
+	function getPointMap(pid){
+		if(pid==102){
+			return;
+		}
+		var pointMap=[];
+		$.request({
+			url : $$pageContextPath+'proScreen/getPoint?partId='+pid,
+			success : function(response){
+				var lng =response.parameters.lng;
+				var lat =response.parameters.lat;
+				var latList =response.parameters.latList;
+				var lngList =response.parameters.lngList;
+				  if (lngList !=undefined&&lngList.length>0){
+					  for(var i = 0;i<lngList.length;i++){
+						  pointMap.push(
+								  new BMap.Point(lngList[i],latList[i]),
+						);
+					  } 
+				  }
+				  var polyline = new BMap.Polyline(pointMap, {
+				      strokeColor: 'red',
+				      strokeWeight: 5,
+				      strokeOpacity: 2
+				  });
+				  mp.addOverlay(polyline);
+				  
+				  if(lng!=undefined){
+					  var myIcon = new BMap.Icon("../images/screem/dian1.png", new BMap.Size(40, 40));
+					  
+					  
+				  }
+				 
+			}
+		}); 
+	}
+	
+	function getAllPoint(){
+		getPoint("5","bhz1");
+		getPoint("6","shexiangtou1");
+		getPoint("4","yshuche1");
+		getPoint("1","xmb1");
+		getPoint("2","menjin1");
+		getPoint("3","shgongyuan1");
+	}
+	
+	//拌合站
+	function bhz(obj){
+		if(obj.src.indexOf("bhzx.png") != -1){
+			obj.src="../images/screem/bhz2.png";
+			getPoint("5","bhz1");
+		}else{
+			obj.src="../images/screem/bhzx.png";
+			removePoint("5","bhz1");
+		}
+	}
+	//摄像头
+	function shexiangtou(obj){
+		if(obj.src.indexOf("shexiangtoux.png") != -1){
+			obj.src="../images/screem/shexiangtou2.png";
+			getPoint("6","shexiangtou1");
+			
+		}else{
+			obj.src="../images/screem/shexiangtoux.png";
+			removePoint("6","shexiangtou1");
+		}
+		
+		
+	}
+	//运输车
+	function yshuche(obj){
+		if(obj.src.indexOf("yshuchex.png") != -1){
+			obj.src="../images/screem/yshuche2.png";
+			getPoint("4","yshuche1");
+		}else{
+			obj.src="../images/screem/yshuchex.png";
+			removePoint("4","yshuche1");
+		}
+		
+		
+	}
+	//项目部
+	function xmb(obj){
+		if(obj.src.indexOf("xmbx.png") != -1){
+			obj.src="../images/screem/xmb2.png";
+			getPoint("1","xmb1");
+		}else{
+			obj.src="../images/screem/xmbx.png";
+			removePoint("1","xmb1");
+		}
+		
+		
+	}
+	//门禁
+	function menjin(obj){
+		if(obj.src.indexOf("menjinx.png") != -1){
+			obj.src="../images/screem/menjin2.png";
+			getPoint("2","menjin1");
+		}else{
+			obj.src="../images/screem/menjinx.png";
+			removePoint("2","menjin1");
+		}
+		
+		
+	}
+	//施工员
+	function shgongyuan(obj){
+		if(obj.src.indexOf("shgongyuanx.png") != -1){
+			obj.src="../images/screem/shgongyuan2.png";
+			getPoint("3","shgongyuan1");
+		}else{
+			obj.src="../images/screem/shgongyuanx.png";
+			removePoint("3","shgongyuan1");
+		}
+	}
+	var uuid1 ="";
+	var time=new Date().getTime();
+	function showImg(uuid){
+		if(uuid1==uuid&&(new Date().getTime()-time)<500){
+			time = new Date().getTime();
+			uuid1 = uuid;
+			return;
+		}
+		time = new Date().getTime();
+		uuid1 = uuid;
+		 $.request({
+			url : $$pageContextPath+'mainScreen/scre/geturl?uuid='+uuid,
+			success : function(response){
+				document.getElementById('table8').style.display = "block";
+				document.getElementById('show').src=response.parameters.url;
+			}}) 
+	}
+	
+	function hide(uuid){
+       document.getElementById('table8').style.display = "none";
+	}
+	
+
+	var mp = new BMap.Map("allmap");
+	mp.centerAndZoom(new BMap.Point(112.9114924000, 23.1199994500), 14);
+	mp.enableScrollWheelZoom();
+	//添加地图样式
+	/*  mp.setMapStyleV2({styleJson:eval(mapStyleBrown)}); */
+</script>
+</html>

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "baseUrl": "../jg",
+    "paths": {
+      "@/*": ["../jg/src/*"]
+    }
+  },
+  "exclude": ["../jg/node_modules", "../jg/dist"],
+  "include": ["../jg/src/**/*"]
+}

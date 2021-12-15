@@ -1,0 +1,287 @@
+		body,div,span,input,a,img{
+            margin:0;
+            padding: 0
+        }
+        .left{
+            float: left
+        }
+        html,body {
+            height: 100%;
+            font-family: "����";
+            font-size: 16px; 
+        }
+
+        .main{  
+            width: 100%;  
+            height: 100%; 
+            background-color: #FFFFFF;
+        }  
+        .mainBg{
+        	/* background: url(../../images/login/main.jpg); */
+        	background: url(../../images/main/loginbj.png);
+        	background-size: 100% 100%;
+        	width:100%;
+        	height:60%;
+        	position: relative;
+            top: 19%;
+        }
+        .logoBox{
+        	position:absolute;
+        	top:8%;
+        	left:10%;
+        }
+        .logo{
+        	display:inline-block;
+        	width:226px;
+        	height:54px;
+        	background: url(../../images/login/logo.png);
+        }
+        .logo_img{
+        	display:inline-block;
+        	height:70px;
+        }
+        .name{
+        	font-size:34px;
+        	font-weight:bold;
+        	display:inline-block;
+        	margin-left:40px;
+        	position: relative;  
+            top: -15px;  
+        }
+        .s2errormessage{ 
+        	font-size:14px;       	
+            position: absolute;  
+            left: 120px;
+            top:36px;  
+            color: #ababac;
+        }
+  
+        .login{          
+            width:396px;
+            background: rgba(255,255,255,0.4);
+            /* border-radius: 5px;
+            float:right;
+            margin-top:90px;
+            margin-right:160px; */
+            position: relative;
+            left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+        }  
+        .login-title{
+        	height:50px;
+        	/* background-color:#F4F6F8; */
+        	text-align:center;
+        	font-family:Microsoft YaHei;
+        	color:#25406d;
+        	font-size:25px;
+        	line-height: 50px;
+        	border-radius: 5px 5px 0 0;
+        	letter-spacing: 1px;
+        }
+        
+        .input-group,.input-group2,.input-group3,.input-group4{
+            width:276px;
+            height:40px;
+            background: #FFFFFF;
+			border: 1px solid #E6F0F7;
+			border-radius: 5px;
+            margin:0 auto;
+            position: relative;
+            margin-top:20px;
+        }
+        
+        .input-group5{
+            width:226px;
+            height:48px;
+            margin:0 auto;
+            position: relative;
+        }
+        
+        .input-group6{
+            width:158px;
+            height:48px;
+            float:left;  
+        }
+        
+        .input-group{ 
+            /* top:23px; */
+        }
+        .input-group2{ 
+           /*  top:46px; */
+        }
+        .input-group3{ 
+            /* top:100px; */
+        }
+        .input-group3 > input{
+        	border:0px;
+        	outline:none;
+        	height:100%;
+        	width:calc(100% - 86px);
+        	float:left;
+        	border-radius:10px;
+        	padding-left:20px;
+        	box-sizing:border-box;
+        }
+        .input-group3 > img{
+        	height:40px;
+        	float:right;
+        }
+        .input-group4{ 
+            top:110px;
+        }
+        .input-group5{ 
+            top:120px;
+        }
+    
+        .user{
+            /* background: url(../../images/login/yonghuming.png); */
+            background: url(../../images/main/loginuser.png);
+        }
+        .pwd{
+            /* background: url(../../images/login/mima.png); */
+            background: url(../../images/main/loginpwd.png);
+        }
+        .vali{
+            background: url(../../images/login/yonghuming.png);
+        }
+        .user,.pwd,.vali{
+            background-repeat: no-repeat;
+            background-position: center;  
+            height:40px;
+            width:45px;
+            border-right: 1px solid rgba(255, 255, 255, 0.51);
+            display: inline-block;
+        }
+
+        .message{
+            height:40px;
+            width:230px;
+            background:transparent;
+            border:none;
+            outline:none;
+            position: relative;
+            font-family: Microsoft YaHei;
+			font-size: 14px;
+			color: #CBCBD5;
+			letter-spacing: 0;
+        }
+        input::input-placeholder {
+		    color: #CBCBD5;
+		}
+		input::-webkit-input-placeholder {
+		    color: #CBCBD5;
+		}
+		input::-ms-input-placeholder {
+		    color: #CBCBD5;
+		}
+        input::-moz-input-placeholder {
+		    color: #CBCBD5;
+		}
+        /* .message:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px #84B2D6 inset;} */
+       
+        .errormessage{
+            font-size:14px;
+            color: #ababac;
+            position: relative;
+            left: 82px;
+            bottom: 82px;
+            display: none;
+        }
+
+        .form-group{
+            width:276px;
+            margin:0 auto;
+            position: relative;  
+            top:60px;
+            overflow:hidden;
+            font-family: Microsoft YaHei;
+			font-size: 12px;
+			color: #CBCBD5;
+			letter-spacing: 0;
+        }
+
+		.form-group input[type="checkbox"] ~label{
+			cursor:pointer;
+		}
+		.form-group input[type="checkbox"] ~label:hover{
+			color:#b2b2b3;
+		}
+		.form-group input[type="checkbox"] {
+		    /* display: none; */
+		    top:2px;
+		    right:30px;
+		    position:absolute;
+		}
+		
+		.form-group input[type="checkbox"] ~label+i {
+		    display: inline-block;
+		    width: 10px;
+		    height: 10px;
+		    border: 1px solid #E2E3E3;
+		    background: #FFFFFF;
+		    margin-right: 3px;
+		    position: relative;
+		    top:1px;
+		}
+		
+		.form-group input[type="checkbox"]:checked+i {
+		    position: relative;
+		}
+		
+		.form-group input[type="checkbox"]:checked+i::before {
+		    content: '';
+		    position: absolute;
+		    width: 5px;
+		    height: 10px;
+		    color: black;
+		    border-bottom: 1px solid blue;
+		    border-right: 1px solid blue;
+		    left: 50%;
+		    top: 20%;
+		    transform-origin: center;
+		    transform: translate(-50%, -30%) rotate(40deg);
+		    -webkit-transform: translate(-50%, -30%) rotate(40deg);
+		}
+		
+        .forget{
+            float: right;
+            position:relative;
+        }
+        .forget a{
+            text-decoration:none;
+            color: #0778ab
+        }
+        .btn{
+            width:276px;
+            height:40px;
+            /* background-image: linear-gradient(-90deg, #FFC048 0%, #FE9E21 99%); */
+            background: #143b8a;
+            position: relative;
+            left:60px;
+            border:none;
+            outline:none;
+            font-family: Microsoft YaHei;
+			font-size: 16px;
+			color: #FFFFFF;
+			letter-spacing: 0;
+			border-radius: 5px;
+			cursor: pointer;
+			margin-top:20px;
+			margin-bottom:40px;
+        }
+        .btn:hover{
+        	/* background-image: linear-gradient(-90deg, #fca22d 0%, #fa9614 99%); */
+        	/* background-color:#FFC048;  */
+        }
+        .foot{   
+            text-align: center;  
+            width: 100%;  
+            position: relative;  
+            top: 22%;       
+            font-family: Microsoft YaHei;
+            font-weight:bold;    
+			font-size: 15px;
+			color: #474746;
+			letter-spacing: 0;
+        }  

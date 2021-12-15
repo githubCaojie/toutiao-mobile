@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea :display="(editFlag!='N')?'block':'none'">
+				<hy-button text="保存" @click="save" ></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				 <hy-form id="myform" name="dataWrap" :readonly="editFlag!='N'?false:true"
+					label-position="left" :labelwidth="120"  label-suffix="：" :cols="2" size="normal" > 
+					<hy-forminput label="任务名称"  name="taskName" :maxlength="16"   :rules="{ required: true}"></hy-forminput> 
+					<hy-formselect label="任务类型"  name="taskType" dropname="JT.TASK_TYPE" readonly :rules="{ required: true}"></hy-formselect> 
+					<hy-forminput label="任务描述" type="textarea" name="taskDesc" :maxlength="16" :colspan="2" :rowspan="2" ></hy-forminput> 
+					<hy-formdatepicker label="开始时间"  name="beginTime"  editor="datetime"></hy-formdatepicker> 
+					<hy-formdatepicker label="结束时间"  name="endTime"  editor="datetime"></hy-formdatepicker>
+					<hy-formradio label="处理人类型" name="entityType" dataprovider="JT.TASK_ENTITY_TYPE" :colspan="2" @change="setReadonly"></hy-formradio>
+					<hy-forminputbutton label="检查人"  name="entityMan" @click="selectPerson" v-model="entityMan"
+						labelprovider="com.haiyisoft.hr.per.labelprovider.PersonNameLabel"> </hy-forminputbutton> 
+					<hy-formselect label="巡查中队"  name="entity" :items="patrolStaffelList" > </hy-formselect> 
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				entityMan:''
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				this.setReadonly();
+			},
+			methods : {	
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/taskManage/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				},
+				selectPerson : function(){
+					$.showModalDialog($$pageContextPath + "jt/right/selectPer/onePer", "选择人员", this.selectPersonComp, null, 800, 460, 0);
+				},
+				selectPersonComp : function(data){
+					this.entityMan = data.partyId;
+				},
+				setReadonly : function(){
+					if(this.editFlag=='N')
+						return;
+					setTimeout(function(){
+						if(myform.getValue('entityType') == '1'){
+							myform.setCellReadonly('entityMan',false);
+							myform.setCellReadonly('entity',true);
+						} else {
+							myform.setCellReadonly('entityMan',true);
+							myform.setCellReadonly('entity',false);
+						}
+					})
+				}
+			}
+		});
+	</script>
+</body>
+</html>

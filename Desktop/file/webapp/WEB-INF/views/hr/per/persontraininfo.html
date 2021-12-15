@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true" :showpadding="false">
+
+			<hy-fillarea :display="editFlag=='N'?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+				<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+			</hy-fillarea>
+			
+			<hy-fillarea> 
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120"
+					:readonly="editFlag=='N'?true:false" :cols="2" size="normal">
+					<hy-formgroup title="基本信息">
+						<hy-forminput title="培训名称"  name="activityName" :rules="{ required: true}"></hy-forminput>
+						<hy-formselect title="培训形式" clearable name="activityType" :items="trainTypeDrop"></hy-formselect>
+						<hy-formdatepicker title="开始时间"  name="fromDate" :rules="{ required: true}"></hy-formdatepicker> 
+						<hy-formdatepicker title="结束时间"  name="thruDate" :rules="{ required: true}"></hy-formdatepicker> 
+						<hy-forminput title="培训学时"  name="trainTime" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+						<hy-formselect title="培训级别"  name=trainType clearable :items="activityTypeDrop"></hy-formselect>
+						<hy-formselect title="通过状态"  name=trainResult clearable :items="trainResultDrop" ></hy-formselect>
+						<hy-forminput title="授课单位"  name="fromParty"></hy-forminput>
+						<hy-forminput title="培训费用"  name="trainCost" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+						<hy-forminput title="培训成绩"  name="trainMark" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+						<hy-forminput title="培训证书"  name="trainCertificate"></hy-forminput>
+						<hy-forminput title="培训地点"  name="trainPlace"></hy-forminput>
+						<hy-forminput title="培训内容"  name="trainContent"></hy-forminput>
+						<hy-forminput title="培训目的"  name="trainPurpose"></hy-forminput>
+						<hy-forminput title="培训积分"  name="trainPoint" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"></hy-forminput>
+						<hy-forminput title="证书编号"  name="trainCertificateCode"></hy-forminput>
+						<hy-forminput title="颁证机关"  name="trainCertificateDepart"></hy-forminput>
+						<hy-formdatepicker title="培训开始时间"  name="trainFromDate" ></hy-formdatepicker> 
+						<hy-formdatepicker title="培训结束时间"  name="trainThruDate" ></hy-formdatepicker> 
+						<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="255" ></hy-forminput>
+					
+					</hy-formgroup>
+				</hy-form> 
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					if(!compareDate(myform.getValue("fromDate"),myform.getValue("thruDate"))){
+						return setRM("alert","开始时间必须小于结束时间")
+					}
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'per/personTrainInfo/save',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),function(response){
+										myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+									});
+								}
+							});	
+						}	
+					});
+				} 
+			}
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="250,*">
+			 <hy-fillarea>
+				</hy-tree>
+				 <hy-tree v-model="roleTypeClassTree" name="dataWrap.query.roleParentCode" :upload="true"  
+						id="orgTree" @nodeclick="query" default-expand-all  valueprovider="com.haiyisoft.jt.ep.tree.RolesTree"> 
+				</hy-tree>
+			</hy-fillarea> 
+			<hy-fillarea>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件">
+				 <table>
+	              <tr> 
+					<td align="right" width="80px">角色名称</td>
+					<td align="left" width="120px"><hy-input name="dataWrap.query.roleName_LIKE"  :upload="true" ></hy-input></td>
+					<td align="right" width="80px">角色类型</td>
+					<td align="left" width="120px"><hy-select name="dataWrap.query.roleTypeCode" dropname="RIT.ROLE_TYPE" :upload="true" clearable></hy-select></td>
+					<td align="right" width="80px">单位类型</td>
+					<td align="left" width="120px"><hy-select name="dataWrap.query.orgType" dropname="ZL.TABLE_ORG" :upload="true" clearable></hy-select></td>
+					<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+           		  </tr>
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea align="left">
+	      		<div style="float:left">
+					<hy-button text="添加" @click="add" :pkain="true"></hy-button>
+					<hy-button text="删除"@click="remove" :pkain="true" ></hy-button>
+	      		</div>
+			</hy-fillarea>
+			<hy-fillarea>
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 99%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+						<hy-table-column title="角色名称"  name="roleName" align="center"	width="150"></hy-table-column> 
+						<hy-table-column title="角色代码"  name="roleCode" align="center"	width="80"></hy-table-column> 
+						<hy-table-column title="角色类型"  name="roleTypeCode" align="center" width="150" type="drop" dropname="RIT.ROLE_TYPE"></hy-table-column> 
+						<hy-table-column title="单位类型"  name="orgType" align="center" width="150" type="drop" dropname="ZL.TABLE_ORG"></hy-table-column> 
+						<hy-table-column title="上级角色"  name="roleParentCode" align="center" width="150" type="drop" dropname="RIT.ROLE_LIST"></hy-table-column> 
+						<hy-table-column title="说明"  name="roleDescribe" align="center" width="200" ></hy-table-column>
+						<hy-table-column title="设置账号" type="custom" width="80" align="center">
+				            <template scope="scope">
+				            	<a href="javascript:void(0)" @click="zhangHao(scope.row)">{{scope.row.sZZH}}</a>&nbsp;
+				            </template>
+				        </hy-table-column>
+				        <hy-table-column title="设置权限" type="custom" width="80" align="center">
+				            <template scope="scope">
+				            	<a href="javascript:void(0)" @click="controlset(scope.row)">{{scope.row.sZKZDX}}</a>&nbsp;
+				            </template>
+				        </hy-table-column>
+					    <hy-table-column title="操作" width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				  roleTypeClassTree : '0'  
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				query : function(response, b, c){
+					var roleParentCode =  this.roleTypeClassTree;
+					if(roleParentCode == "")
+						roleParentCode = 0;
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'ep/roles/list',
+						data : dataArr,
+					    params:{
+					    	roleParentCode : roleParentCode
+					    },   
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+			    detail : function(row){
+					$.popWindow({
+						title:"详细",
+						url:$$pageContextPath + 'ep/roles/pageForm?roleCode='+row.roleCode,
+						callback:vm.query,
+						button:0,
+						css:{width:900,height:450},
+					});
+				},
+				add : function(){
+					//选择左侧树
+					if(this.roleTypeClassTree == ""){
+						return setRM("alert","请先选择左侧树！");
+					}
+					$.popWindow({
+						title:"添加",
+						url:$$pageContextPath + 'ep/roles/pageForm?roleParentCode='+this.roleTypeClassTree,
+						callback: vm.onsavecomplete,
+						button:0,
+						css:{width:900,height:450},
+					});
+				},
+				remove : function(response,b,c){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						setRM("alert", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url :$$pageContextPath + 'ep/roles/delList',
+								data : dataArr,
+								success : vm.onsavecomplete
+							});
+					　　　},function(){});
+					}
+				}, 
+				onsavecomplete : function(response){
+					orgTree.refreshRootNode();
+					setRM(vm.query());
+				}, 
+				zhangHao : function(row) {
+					$.popWindow({
+						title:"设置角色相关账号",
+						url:$$pageContextPath + 'ep/roles/pageLogin?editFlag=Y&roleCode='+row.roleCode,
+						callback: vm.query,
+						button:0,
+						css:{width:1150,height:500},
+						isRunCallback : true
+					});
+				} ,
+				controlset : function(row) {
+					$.popWindow({
+						title:"设置角色相关权限",
+						url:$$pageContextPath + 'ep/roles/pageRightObj?editFlag=Y&roleCode='+row.roleCode,
+						callback: vm.query,
+						button:0,
+						css:{width:750,height:500},
+						isRunCallback : true
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

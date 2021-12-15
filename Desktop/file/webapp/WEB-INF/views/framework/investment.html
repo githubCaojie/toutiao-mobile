@@ -1,0 +1,2018 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<template th:substituteby="framework/pageset.html"></template>
+<title>作战指挥中心</title>
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script type="text/javascript"
+	src="http://api.map.baidu.com/api?v=3.0&ak=b7t4tLpUInwwHBwN2aeTUNSjHtknBRXr"></script>
+ <script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
+	
+<script type="text/javascript"
+	src="http://developer.baidu.com/map/custom/stylelist.js"></script>
+</head>
+<style>
+.contaner {
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	display: flex;
+	background: url(../images/screem/bg.png) center no-repeat;
+	background-size: 100% 100%;
+	position: absolute;
+}
+
+.cont {
+	width: 98%;
+	height: 99%;
+	left: 1%;
+	top: 0px;
+	display: flex;
+	border: 2px solid #077eff;
+	position: absolute;
+}
+
+.left_contaner {
+	margin-left: 10px;
+	width: 335px;
+	height: 691.2px;
+	float: left;
+}
+
+.center_contaner {
+	margin-left: 10px;
+	width: 656px;
+	height: 691.2px;
+	float: left;
+}
+
+.right_contaner {
+	margin-left: 5px;
+	width: 341px;
+	height: 691.2px;
+	float: left;
+}
+
+.introduction {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(30% - 30px);
+}
+
+.img1 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction2 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(40% - 30px);
+}
+
+.img2 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu1.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction3 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(33% - 30px);
+}
+
+.img3 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu1.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction4 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(23% - 30px);
+}
+
+.img4 {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	background: url(../images/screem/zs.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction5 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(75% - 5px);
+}
+
+.img5 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/zxn.png) no-repeat;
+	background-size: 100% 100%;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.introduction6 {
+	margin-top: 20px;
+	width: 98%;
+	height: 39%;
+}
+
+.img6 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu1.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction7 {
+	margin-top: 20px;
+	width: 98%;
+	height: 25%;
+}
+
+.img7 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction8 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(25% + 7px);
+}
+
+.img8 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.tetel {
+	width: 100%;
+	height: 10%;
+	margin-top: 2%;
+	margin-left: 1%;
+	font-size: 16px;
+	color: white;
+}
+
+.gsjj {
+	width: 92%;
+	height: 80%;
+	margin-left: 4%;
+	margin-right: 3%;
+	font-size: 10px;
+	color: #00d4e0;
+}
+
+option {
+	/* Whatever color  you want */
+	background-color: black;
+}
+
+#left_bt {
+	position: absolute;
+	top: 38%;
+	width: 33px;
+	height: 70px;
+	float: left;
+	left: 26.4%;
+	background: url(../images/screem/bt1.png) no-repeat;
+}
+
+#right_bt {
+	position: absolute;
+	top: 40%;
+	width: 20px;
+	height: 70px;
+	float: right;
+	right: 26.4%;
+	background: url(../images/screem/bt2.png) no-repeat;
+}
+
+#down_bt {
+	position: absolute;
+	width: 70px;
+	height: 30px;
+	float: top;
+	left: 45%;
+	background-image: url(../images/screem/bt3.png);
+	background-size: 100% 100%;
+	bottom: 17.5%;
+}
+
+#table {
+	width: 14%;
+	height: 5%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 3%;
+	left: 42%;
+	justify-content: space-around;
+	align-items: center;
+	display: flex;
+}
+
+#table1 {
+	width: 25%;
+	height: 28%;
+	z-index: 999;
+	background: url(../images/screem/shangxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 1%;
+	left: 1%;
+	opacity: 0.9;
+}
+
+#table2 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 31.5%;
+	left: 1%;
+	background: url(../images/screem/zhongxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table3 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 65%;
+	left: 1%;
+	background: url(../images/screem/xiaxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table4 {
+	width: 25%;
+	height: 28%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 1%;
+	right: 1%;
+	background: url(../images/screem/shangxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table5 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 31.5%;
+	right: 1%;
+	background: url(../images/screem/zhongxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table6 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 65%;
+	right: 1%;
+	background: url(../images/screem/xiaxm.png) center no-repeat;
+	background-size: 100% 100%;
+	opacity: 0.9;
+}
+/* #table7{ */
+/* 	width:97.5%; height:15.5%; z-index:999; background: #0c1848; */
+/* 	padding:5px; float: right;position:absolute; top:82.5%;right:1% */
+/* } */
+.p1 {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-weight: bold;
+	font-size: 16px;
+	font-style: normal;
+	color: white; /*字体颜色*/
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+.tb {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 20px;
+	font-weight: bold;
+	font-style: normal;
+	float: left;
+	margin-left: 10px;
+	margin-top: 7px;
+}
+
+.t {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 14px;
+	font-weight: bold;
+	font-style: normal;
+	float: left;
+	margin-left: 5px;
+	margin-top: 13px;
+}
+
+.p2 {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 13px;
+	font-style: normal;
+	color: white; /*字体颜色*/
+	float: left;
+	margin-left: 8px;
+	margin-top: 9px;
+}
+
+.p3 {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 12px;
+	font-style: normal;
+	color: white; /*字体颜色*/
+	float: left;
+	margin-left: 10px;
+	margin-top: 12px;
+}
+</style>
+<body style="background-color: transparent;">
+	<div class="contaner">
+		<div class="cont">
+			<div id="allmap"
+				style="width: 100%; height: 100%; float: top; top: 0;"></div>
+			<div id="left_bt" onclick="showLeft()"></div>
+			<div id="right_bt" onclick="showRight()"></div>
+			<div id="table1" >
+				<div style="height: 6%; width: 100%; display: inline-block; text-align: center; line-height: 7%; margin-top: 2%;">
+					<tb class="p1">工序总数</tb>
+				</div>
+
+				<div style="height: 38%; width: 98%; margin-left: 1%; margin-top: 2%; display: inline-block; line-height: 50%; voice-family: male;">
+						<table style="height: 100%;width: 100%;">
+							<tr style="height: 100%;">
+								<th style="width: 33%;">
+									<div style="height: 60%; width: 90%; display: inline-block; background-image: url(../images/screem/gx.png); background-repeat: no-repeat; background-size: 100% 100%;padding: 5px;">
+									<div style="height: 100%; width: 36%;float: left; margin-top: 5%;">
+											<img src="../images/screem/zs2.png" style="float: left; margin-left: 5px;">
+										</div>
+										
+										<div style="height: 60%; width: 58%; float: left;">
+											<div style="height: 50%; text-align: left;margin-top:5%;   color: white; font-size: 15px">工序总数</div>
+											<div style="height: 50%;  margin-top: 8%;text-align: left;">
+												<span style="color: #08c7f1; font-size:14px;text-align: left;"  id="yysgxid1"></span>
+											</div>
+										</div>
+									
+									</div>
+								</th>
+								<th style="width: 33%;">
+									<div style="height: 60%; width: 90%; display: inline-block; background-image: url(../images/screem/gx.png); background-repeat: no-repeat; background-size: 100% 100%;padding: 5px;">
+									<div style="height: 100%; width: 36%;float: left; margin-top: 5%;">
+											<img src="../images/screem/yys.png" style="float: left; margin-left: 5px;">
+										</div>
+										
+										<div style="height: 60%; width: 58%; float: left;">
+											<div style="height: 50%; text-align: left;margin-top:5%;   color: white; font-size: 15px">已验收工序</div>
+											<div style="height: 50%;  margin-top: 8%;text-align: left;">
+												<span style="color: #08c7f1; font-size:14px;text-align: left;" id="yysgxid2"></span>
+											</div>
+										</div>
+									
+									</div>
+								</th>
+								<th style="width: 33%;">
+									<div style="height: 60%; width: 90%; display: inline-block; background-image: url(../images/screem/gx.png); background-repeat: no-repeat; background-size: 100% 100%;padding: 5px;">
+									<div style="height: 100%; width: 36%;float: left; margin-top: 5%;">
+											<img src="../images/screem/wys.png" style="float: left; margin-left: 5px;">
+										</div>
+										
+										<div style="height: 60%; width: 58%; float: left;">
+											<div style="height: 50%; text-align: left;margin-top:5%;   color: white; font-size: 15px" >未验收工序</div>
+											<div style="height: 50%;  margin-top: 8%;text-align: left;">
+												<span style="color: #08c7f1; font-size:14px;text-align: left;"  id="yysgxid3"></span>
+											</div>
+										</div>
+									
+									</div>
+									</th>
+							</tr>
+						</table>
+				</div>
+				
+				<div style="height: 40%; width: 98%; margin-left: 1%; display: inline-block; line-height: 50%; voice-family: male;">
+						<table style="height: 100%;width: 100%;">
+							<tr style="height: 100%;">
+								<th style="width: 22%;" id="gxzstable1">
+
+								</th>
+								<th style="width: 22%;" id="gxzstable2">
+									
+								</th>
+								<th style="width: 22%;" id="gxzstable3">
+
+								</th>
+								<th style="width: 22%;" id="gxzstable4">
+
+								</th>
+							</tr>
+						</table>
+				</div>
+			</div>
+
+
+			<div id="table2">
+				<div style="height: 7%; width: 100%; display: inline-block; text-align: center; line-height: 7%; margin-top: 2%;">
+					<tb class="p1">工序报验进度</tb>
+				</div>
+				<div style="width: 100%;height: 85%;">
+					<div style="width: 100%;height: 100%;" id="gxbyjd"></div>
+				</div>
+			</div>
+			<div id="table3">
+				<div
+					style="height: 7%; width: 100%; display: inline-block; text-align: center; line-height: 7%; margin-top: 2%;">
+					<tb class="p1">工序报验数量</tb>
+					
+				</div>
+				<div style="width: 100%;height: 85%;">
+					<div style="width: 100%;height: 100%; " id="gxbysl"></div>
+				</div>
+			</div>
+			<div id="table4">
+				<div style="height: 7%; width: 100%; display: inline-block; text-align: center; line-height: 7%; margin-top: 2%;">
+					<tb class="p1">监理到场及时率</tb>
+				</div>
+				<div style="width: 100%;height: 85%;">
+					<div style="width: 100%;height: 100%;  margin: 10% -10%;" id="jldcjsl"></div>
+				</div>
+			</div>
+			<div id="table5">
+				<div style="height: 7%; width: 100%; display: inline-block; text-align: center; line-height: 7%; margin-top: 2%;">
+					<tb class="p1">工程部位</tb>
+				</div>
+				
+				<div style="width: 100%;height: 85%;">
+					<div style="height: 20%; width: 95%;margin-left:10px; background-image: url(../images/screem/gx.png); background-size: 100% 100%;margin-top: 3%;">					
+							<div style="height: 60%; width: 600px; float: left;">
+								<div style="height: 100%;line-height:40px; text-align: left; margin-left:20px;  color: white; font-size: 15px" id="weiyanshou"></div>
+							</div>
+					</div>
+					<div style="height: 70%;width: 95%;margin-left:10px;margin-top : 3%;">
+						<table style="height: 100%;width: 100%;">
+							<tr style="height: 100%;">
+								<th style="width: 20%;">
+									<div style="width: 100%;height: 100%;">
+										<div style="width: 80%;margin: 0 auto;height: 60%;">
+											<img src="../images/screem/jl.png" style="width: 100%;float: left;margin: 0 auto;margin-top: 20%;" />
+										</div>
+										<div style="width: 100%;margin: 0 auto;color: white;">
+											发起人
+										</div>
+										<div style="width: 100%;margin: 0 auto;margin-top: 5%;color: white;">
+											<span id="faqiren"></span>
+										</div>
+									</div>
+								</th>
+								<th style="width: 20%;">
+									<div style="width: 100%;height: 100%;">
+										<div style="width: 80%;margin: 0 auto;height: 60%;">
+											<img src="../images/screem/jl.png" style="width: 100%;float: left;margin: 0 auto;margin-top: 20%;" />
+										</div>
+										<div style="width: 100%;margin: 0 auto;color: white;">
+											审核人
+										</div>
+										<div style="width: 100%;margin: 0 auto;margin-top: 5%;color: white;">
+											<span id="shenheren"></span>
+										</div>
+									</div>
+								</th>
+								<th style="width: 60%;">
+									<div style="width: 100%;height: 100%;">
+										<div style="width: 90%;margin: 0 auto;height: 90%;margin-top: 10%;">
+											<img id="imgprw" src="" style="height: 150px; width:300px;float: left;margin: 0 auto;" />
+										</div>
+									</div>
+								</th>
+							</tr>
+						</table>
+					</div>
+					
+				</div>
+				
+			</div>
+			<div id="table6">
+				<div style="height: 7%; width: 100%; display: inline-block; text-align: center; line-height: 7%; margin-top: 2%;">
+					<tb class="p1">监理完成数</tb>
+				</div>
+				<div style="width: 100%;height: 85%;">
+					<div style="width: 100%;height: 100%; " id="jlwcs"></div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../framework/js/zhzx/echarts.min.js"></script>
+<script type="text/javascript"
+	src="../framework/js/zhzx/echarts-liquidfill.min.js"></script>
+<script type="text/javascript" src="../framework/js/zhzx/gxgl.js"></script>
+<script type="text/javascript" src="../framework/js/zhzx/gxgl2.js"></script>
+<script type="text/javascript">
+	$(function() {
+		var pageObj = {};
+		var u = decodeURI(location.search); //获取url中"?"符后的字串 ('?modFlag=business&role=1')
+		if (u.indexOf("?") != -1) {
+			var str = u.substr(1); //substr()方法返回从参数值开始到结束的字符串；
+			var strs = str.split("&");
+			for (var i = 0; i < strs.length; i++) {
+				pageObj[strs[i].split("=")[0]] = (strs[i].split("=")[1]);
+			}
+		}
+		var pid = pageObj.pid;
+		//项目投资
+		/* var dom1 = document.getElementById("gxtgl1");
+		var dom2 = document.getElementById("gxtgl2");
+		var dom3 = document.getElementById("gxtgl3");
+		var dom4 = document.getElementById("gxtgl4");
+		getChartInit(pid,dom1);
+		getChartInit(pid,dom2);
+		getChartInit(pid,dom3);
+		getChartInit(pid,dom4); */
+		//初始化图表
+		initDataGxgl(pid);
+	/* 	var gxbysl = document.getElementById("gxbysl");
+		getChartInit3(pid,gxbysl); */
+		
+		var jldcjsl = document.getElementById("jldcjsl");
+		getChartInit4(pid,jldcjsl);
+		
+		var jlwcs = document.getElementById("jlwcs");
+		getChartInit6(pid,jlwcs);	
+		getsh(pid);
+		getPointMap(pid);
+		getRelitu(pid);
+		setInterval(function () {
+			$.request({
+				url : $$pageContextPath+'mainScreen/scre/getGx?prjid='+pid,
+				success : function(response){
+					$("#weiyanshou").html(response.parameters.xmmc);
+					$("#faqiren").html(response.parameters.shry);
+					$("#shenheren").html(response.parameters.sbry);
+					document.getElementById('imgprw').src=response.parameters.url;
+				}})
+	 	}, 1000*30);
+	})
+	
+	function getsh(pid){
+				$.request({
+					url : $$pageContextPath+'mainScreen/scre/getGx?prjid='+pid,
+					success : function(response){
+						$("#weiyanshou").html(response.parameters.xmmc);
+						$("#faqiren").html(response.parameters.shry);
+						$("#shenheren").html(response.parameters.sbry);
+						document.getElementById('imgprw').src=response.parameters.url;
+					}})
+	}
+	//左边隐藏
+	function showLeft() {
+		if (document.getElementById('table1').style.display == "none") {
+			document.getElementById('table1').style.display = "block";
+			document.getElementById('table2').style.display = "block";
+			document.getElementById('table3').style.display = "block";
+			document.getElementById('left_bt').style.left = "26.4%";
+		} else {
+			document.getElementById('left_bt').style.left = "0";
+			document.getElementById('table1').style.display = "none";
+			document.getElementById('table3').style.display = "none";
+			document.getElementById('table2').style.display = "none";
+		}
+	}
+	//右边隐藏
+	function showRight() {
+		if (document.getElementById('table4').style.display == "none") {
+			document.getElementById('table4').style.display = "block";
+			document.getElementById('table5').style.display = "block";
+			document.getElementById('table6').style.display = "block";
+			document.getElementById('right_bt').style.right = "26.4%";
+		} else {
+			document.getElementById('right_bt').style.right = "0";
+			document.getElementById('table4').style.display = "none";
+			document.getElementById('table5').style.display = "none";
+			document.getElementById('table6').style.display = "none";
+		}
+
+	}
+
+	//地图样式
+	var mapStyleBrown = [ {
+		"featureType" : "land",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"color" : "#091220ff"
+		}
+	}, {
+		"featureType" : "water",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"color" : "#113549ff"
+		}
+	}, {
+		"featureType" : "green",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"color" : "#0e1b30ff"
+		}
+	}, {
+		"featureType" : "building",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "building",
+		"elementType" : "geometry.topfill",
+		"stylers" : {
+			"color" : "#113549ff"
+		}
+	}, {
+		"featureType" : "building",
+		"elementType" : "geometry.sidefill",
+		"stylers" : {
+			"color" : "#143e56ff"
+		}
+	}, {
+		"featureType" : "building",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#dadada00"
+		}
+	}, {
+		"featureType" : "subwaystation",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"color" : "#113549B2"
+		}
+	}, {
+		"featureType" : "education",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "medical",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "scenicspots",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"weight" : 4
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#fed66900"
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "arterial",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"weight" : 2
+		}
+	}, {
+		"featureType" : "arterial",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "arterial",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffeebb00"
+		}
+	}, {
+		"featureType" : "arterial",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "arterial",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "arterial",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "local",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on",
+			"weight" : 1
+		}
+	}, {
+		"featureType" : "local",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "local",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "local",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "local",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#979c9aff"
+		}
+	}, {
+		"featureType" : "local",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffffff"
+		}
+	}, {
+		"featureType" : "railway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "subway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"weight" : 1
+		}
+	}, {
+		"featureType" : "subway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#d8d8d8ff"
+		}
+	}, {
+		"featureType" : "subway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "subway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "subway",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#979c9aff"
+		}
+	}, {
+		"featureType" : "subway",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffffff"
+		}
+	}, {
+		"featureType" : "continent",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "continent",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "continent",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "continent",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "city",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "city",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "city",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "city",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "town",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "town",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "town",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#454d50ff"
+		}
+	}, {
+		"featureType" : "town",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffffff"
+		}
+	}, {
+		"featureType" : "road",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "poilabel",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "districtlabel",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "road",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "road",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "road",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "district",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "poilabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "poilabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "poilabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "manmade",
+		"elementType" : "geometry",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "districtlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffffff"
+		}
+	}, {
+		"featureType" : "entertainment",
+		"elementType" : "geometry",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "shopping",
+		"elementType" : "geometry",
+		"stylers" : {
+			"color" : "#0c1848"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "6"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "7"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "8"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "9"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "10"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "6"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "7"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "8"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "9"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "10"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "6"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "7"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "8"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "9"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,10",
+			"level" : "10"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "6"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "7"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "8"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"stylers" : {
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "9"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "6"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "7"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "8"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "9"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "6"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "7"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "8"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off",
+			"curZoomRegionId" : "0",
+			"curZoomRegion" : "6,9",
+			"level" : "9"
+		}
+	}, {
+		"featureType" : "subwaylabel",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "subwaylabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "tertiarywaysign",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "tertiarywaysign",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "provincialwaysign",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "provincialwaysign",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "nationalwaysign",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "nationalwaysign",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "highwaysign",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "highwaysign",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "village",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "district",
+		"elementType" : "labels.text",
+		"stylers" : {
+			"fontsize" : 20
+		}
+	}, {
+		"featureType" : "district",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "district",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "country",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "country",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "water",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "water",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "tertiaryway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "tertiaryway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff10"
+		}
+	}, {
+		"featureType" : "provincialway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "provincialway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "highway",
+		"elementType" : "labels.text",
+		"stylers" : {
+			"fontsize" : 20
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "nationalway",
+		"elementType" : "labels.text",
+		"stylers" : {
+			"fontsize" : 20
+		}
+	}, {
+		"featureType" : "provincialway",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "provincialway",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "provincialway",
+		"elementType" : "labels.text",
+		"stylers" : {
+			"fontsize" : 20
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "labels.text",
+		"stylers" : {
+			"fontsize" : 20
+		}
+	}, {
+		"featureType" : "cityhighway",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "estate",
+		"elementType" : "geometry",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "tertiaryway",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "tertiaryway",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "fourlevelway",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "fourlevelway",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "scenicspotsway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "scenicspotsway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "universityway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "universityway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "vacationway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "vacationway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "fourlevelway",
+		"elementType" : "geometry",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "fourlevelway",
+		"elementType" : "geometry.fill",
+		"stylers" : {
+			"color" : "#12223dff"
+		}
+	}, {
+		"featureType" : "fourlevelway",
+		"elementType" : "geometry.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "transportationlabel",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "transportationlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "transportationlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "transportationlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "educationlabel",
+		"elementType" : "labels",
+		"stylers" : {
+			"visibility" : "on"
+		}
+	}, {
+		"featureType" : "educationlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "educationlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "educationlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "transportation",
+		"elementType" : "geometry",
+		"stylers" : {
+			"color" : "#113549ff"
+		}
+	}, {
+		"featureType" : "airportlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "airportlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "scenicspotslabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "scenicspotslabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "medicallabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "medicallabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "medicallabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "scenicspotslabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "airportlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "entertainmentlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "entertainmentlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "entertainmentlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "estatelabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "estatelabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "estatelabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "businesstowerlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "businesstowerlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "businesstowerlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "companylabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "companylabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "companylabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "governmentlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "governmentlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "governmentlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "restaurantlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "restaurantlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "restaurantlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "hotellabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "hotellabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "hotellabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "shoppinglabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "shoppinglabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "shoppinglabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "lifeservicelabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "lifeservicelabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "lifeservicelabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "carservicelabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "carservicelabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "carservicelabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "financelabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "financelabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "financelabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "otherlabel",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "otherlabel",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "otherlabel",
+		"elementType" : "labels.icon",
+		"stylers" : {
+			"visibility" : "off"
+		}
+	}, {
+		"featureType" : "manmade",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "manmade",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "transportation",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "transportation",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "education",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "education",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "medical",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "medical",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	}, {
+		"featureType" : "scenicspots",
+		"elementType" : "labels.text.fill",
+		"stylers" : {
+			"color" : "#2dc4bbff"
+		}
+	}, {
+		"featureType" : "scenicspots",
+		"elementType" : "labels.text.stroke",
+		"stylers" : {
+			"color" : "#ffffff00"
+		}
+	} ]
+ var points =[];//这里面添加经纬度
+	var mp = new BMap.Map("allmap");
+	mp.centerAndZoom(new BMap.Point(112.9114924000, 23.1199994500), 14);
+	mp.enableScrollWheelZoom();
+	//添加地图样式
+	/* mp.setMapStyleV2({
+		styleJson : eval(mapStyleBrown)
+	}); */
+	heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":20,"visible":true});
+    mp.addOverlay(heatmapOverlay);
+    //heatmapOverlay.setDataSet({data:points,max:100});
+    
+    function getPointMap(pid){
+		if(pid==102){
+			return;
+		}
+		var pointMap=[];
+		$.request({
+			url : $$pageContextPath+'proScreen/getPoint?partId='+pid,
+			success : function(response){
+				var lng =response.parameters.lng;
+				var lat =response.parameters.lat;
+				var latList =response.parameters.latList;
+				var lngList =response.parameters.lngList;
+				  if (lngList !=undefined&&lngList.length>0){
+					  for(var i = 0;i<lngList.length;i++){
+						  pointMap.push(
+								  new BMap.Point(lngList[i],latList[i]),
+						);
+					  } 
+				  }
+				  var polyline = new BMap.Polyline(pointMap, {
+				      strokeColor: 'red',
+				      strokeWeight: 5,
+				      strokeOpacity: 2
+				  });
+				  mp.addOverlay(polyline);
+				  
+				  if(lng!=undefined){
+					  var myIcon = new BMap.Icon("../images/screem/dian1.png", new BMap.Size(40, 40));
+					  
+					  
+				  }
+				 
+			}
+		}); 
+	}
+    
+    function getRelitu(pid){
+    	$.request({
+			url : $$pageContextPath+'mainScreen/scre/getRelitu?pid='+pid,
+			success : function(response){
+				var lng= response.parameters.lng;
+				var lat= response.parameters.lat;
+				points.length=0;
+				if(lng.length>0){
+					for(var i=0;i<lng.length;i++){
+						 points.push({
+			                    lng: lng[i],
+			                    lat: lat[i],
+			                    count:"1"
+			                });	
+					}
+				}
+				heatmapOverlay.setDataSet({data:points,max:10});
+			}
+    	
+    	})
+    	
+    }
+</script>
+</html>

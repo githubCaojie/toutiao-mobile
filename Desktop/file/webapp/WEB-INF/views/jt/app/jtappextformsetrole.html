@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="300,100,*">
+			<hy-fillarea title="未授权角色">
+				 <hy-tree id="orgTree" v-model="ControlTypeClassTree" :multiple="true" :checkstrictly="true" :rootcode="formId"   :rootvisible="false"
+					  default-expand-all dataprovider="com.haiyisoft.jt.tree.JtAppExtFomRoleNoTree"> 
+				</hy-tree>
+			</hy-fillarea>
+			<hy-fillarea>
+				<table>
+					<br><br><br><br><br><br><br><br><br>
+		      		<tr ><td width="100" align="center"><hy-button text="添加->>" @click="add" :pkain="true" style="width:100%"></hy-button></td></tr>
+					<tr height="10"></tr>
+		      		<tr ><td width="100" align="center"  ><hy-button text="删除<<-"  @click="remove" :pkain="true" style="width:100%"></hy-button></td></tr>
+	      		</table>
+			</hy-fillarea>
+		
+			<hy-fillarea title="已授权角色">
+				<hy-tree v-model="MyControlTypeClassTree" :multiple="true" :rootcode="formId" :checkstrictly="true" :rootvisible="false"
+						 id="myOrgTree" default-expand-all dataprovider="com.haiyisoft.jt.tree.JtAppExtFomRoleTree"> 
+				</hy-tree>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		 var vm = new Vue({
+			el : "#app",
+			data : {
+				ControlTypeClassTree : "",
+				MyControlTypeClassTree : ""
+			},
+			mounted : function(){
+			},
+			methods : {				
+				remove : function(){
+					var checkNodes = myOrgTree.getCheckedNodes();
+					if(checkNodes.length == 0)
+						return setRM("alert","请选择要删除的记录!");
+					$.confirm("提示","确定要删除选中的记录？",function(){
+						var rtn = "";
+						for(var i=0; i<checkNodes.length; i++){
+							rtn += checkNodes[i].code + ",";
+						}
+						$.request({
+							url :$$pageContextPath + 'jt/app/jtAppExtForm/delRole',
+							params : {
+								formId : vm.formId,
+								roles : rtn
+							},
+							success : vm.onsavecomplete
+						});
+					},function(){});
+				}, 
+				add : function(){
+					var checkNodes = orgTree.getCheckedNodes();
+					if(checkNodes.length == 0)
+						return setRM("alert","请选择要添加的记录!");
+					$.confirm("提示","确定要添加选中的记录？",function(){
+						var rtn = "";
+						for(var i=0; i<checkNodes.length; i++){
+							rtn += checkNodes[i].code + ",";
+							var parentNodes = orgTree.getParentCascade(checkNodes[i].code);
+							for(var j=0; j<parentNodes.length; j++){
+								rtn += parentNodes[j].code + ",";
+							}
+						}
+						$.request({
+							url :$$pageContextPath + 'jt/app/jtAppExtForm/addRole',
+							params : {
+								formId : vm.formId,
+								roles : rtn
+							},
+							success : vm.onsavecomplete
+						});
+					},function(){});
+				}, 
+				onsavecomplete : function(response){
+					setRM(function(){
+						myOrgTree.refreshRootNode();		
+						orgTree.refreshRootNode();		
+					});
+				}
+			}
+		});  
+	</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,*" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea >
+				<table>
+	              <tr>
+	                <td align="right" width="80px">姓名</td>
+	                <td width="120px" align="left"><hy-input name="personName"  :upload="true"></hy-input>
+	                </td>
+	                <td align="right" width="60">部门</td>
+					<td width="220" align="left"><hy-droptree name="orgId"  :rootvisible="true"
+                   	:highlight-current="true"  valueprovider="com.haiyisoft.hr.org.tree.HrRightOrgTree" :upload="true" /></td>		
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	               	<td><hy-button text="添加" @click="add"></hy-button>		</td>
+	               	<td><hy-button text="删除" @click="remove"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column  title="操作" width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+						<hy-table-column title="姓名"  name="personName" align="center"	width="120"></hy-table-column> 
+						<hy-table-column title="部门名称"  name="orgName" align="center"	width="220"></hy-table-column> 
+						<hy-table-column title="身份证号"  name="idCard" align="center"	width="160"></hy-table-column> 
+						<hy-table-column title="性别"  name="gender" align="center" type="drop" dropname="ORG.GENDER"	 width="80"></hy-table-column> 
+						<hy-table-column title="员工状态"  name="partyStatus" align="center" width="100" type="drop" dropname="ORG.EMP_STATE" ></hy-table-column> 
+						<hy-table-column title="政治面貌"  name="politicalStatus" align="center" width="100" type="drop" dropname="PER.POLITY" ></hy-table-column> 
+						<hy-table-column title="出生日期"  name="personBirthday" align="center" width="100" type="date" ></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/right/selectPer/selectShowQuery',
+						data : dataArr,
+						params : {fieldValueId : vm.fieldValueId},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'per/person/queryOne?partyId='+row.partyId+"&uuid="+row.uuid+"&editFlag=N", "详细", null, null, 1000, 450,
+							0);
+				},
+				add : function(){
+					$.popWindow({
+						url: $$pageContextPath + 'jt/right/selectPer/selectPer' ,
+						title: "添加",	
+						callback: function (data) {
+							if (!!data && data.length > 0) {
+								var subUuids = $(data).map(function() {
+									return this.partyId;
+								}).get().join(",");
+								 //直接保存
+								 $.request({
+									url : $$pageContextPath + 'jt/com/rela/saveMulComRela',
+									data : [],
+									params : {
+										"mainId" : vm.fieldValueId,
+										"subUuids" : subUuids
+									},
+									success : function(response){
+										vm.onsavecomplete(response);
+									}
+								});	
+							}
+						},
+						css:{width:1200,height:600,type:1},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				remove :function(row){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						setRM("alert", "请选择要删除的记录!");
+					} else {
+						$.confirm("提示", "确定要删除选中的记录？", function() {
+							var subUuids = $(checked).map(function() {
+								return this.data.partyId;
+							}).get().join(",");
+							$.request({
+								url : $$pageContextPath + "jt/com/rela/removeMulComRela",
+								data : [],
+								params : {
+									"mainId" : vm.fieldValueId,
+									"subUuids" : subUuids
+								},
+								success : function(response){
+									setRM(vm.query());
+								}
+							});
+						}, function() {
+						});
+					}
+				},
+				onsavecomplete : function(response){
+					setRM(vm.query());
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

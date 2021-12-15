@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea align="left">
+	      		<div style="float:left">
+					<hy-button text="添加" @click="add" :pkain="true"></hy-button>
+					<hy-button text="保存" @click="save" :pkain="true"></hy-button>
+					<hy-button text="删除" @click="remove" :pkain="true"></hy-button>
+	      		</div>
+			</hy-fillarea>
+			<hy-fillarea>
+	          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="false" height="100%"
+				@queryfunc="query" titlealign="center" style="width: 99%">
+				<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+				<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+				<hy-table-column title="年份" name="year" align="center" width="150" type="date" format="yyyy" :rules="[{ required: true}]"></hy-table-column> 
+				<hy-table-column title="年度计划总投资（亿元）"  name="tzJe" align="center" width="300" :maxlength="25" 
+					:rules="[{ required: true},{pattern: /^\d{0,18}$|^\d{1,18}\.\d{1,6}$/ ,message: '只能为整数部分不大于18位小数部分不大于6位的数字' ,trigger: 'blur,change'}]"></hy-table-column> 
+				<hy-table-column title="备注" name="remark" width="200" align="center"></hy-table-column>
+			</hy-table> 
+	      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pmXmYearTz/list',
+						data : dataArr,
+						params : {
+							prjId : vm.prjId
+						},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					$.request({
+						url : $$pageContextPath + 'pmXmYearTz/get',
+						params : {
+							prjId : vm.prjId
+					   	},
+						success : function(response){
+							ajaxgrid.addRecord(response.getAjaxDataWrap("dataWrap").data);
+						}
+					});	
+				},
+				save : function(){
+					debugger;
+					var a = ajaxgrid.isValid();
+					if (ajaxgrid.isValid()) {
+						var gridData = ajaxgrid.collectData(true, "update");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'pmXmYearTz/save',
+							data : dataArr,
+							success : vm.onsavecomplete
+						});	
+					}
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						return setRM("alert", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'pmXmYearTz/del',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				}, 
+				onsavecomplete : function(response){
+					setRM("success",'保存成功',vm.query());
+				}
+			}
+		});
+	</script>
+</body>
+</html>

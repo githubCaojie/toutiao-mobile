@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true" :showpadding="false">
+
+			<hy-fillarea :display="editFlag=='N'?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+				<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+			</hy-fillarea>
+			
+			<hy-fillarea> 
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120"
+					:readonly="editFlag=='N'?true:false" :cols="2" size="normal" >
+					<hy-formgroup title="基本信息">
+						<hy-formselect label="联系类型"  name="contactType" :maxlength="50" type="drop" clearable dropname="ORG.CONTACT_MECH_TYPE" :rules="{ required: true}" ></hy-formselect> 
+						<hy-forminput label="联系方式"  name="content" :maxlength="50" :rules="{ required: true}" ></hy-forminput> 
+					</hy-formgroup>
+				</hy-form> 
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'per/personContact/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(response){$.close('')});
+								}
+							});	
+						}	
+					});
+				} 
+			}
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>我的待办</title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hytreetable.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%" >
+							<hy-table-column title=" " name="cost" align="center" width="90%"></hy-table-column> 
+					       	<hy-table-column title=" " align="center" width="90%" type="index"></hy-table-column>
+					       
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {	
+				detail : function(row){
+				},
+				onsavecomplete : function(response){
+					treeTable.refreshTreeGrid();
+				}
+			
+			}
+		});
+	</script>
+</body>
+</html>

@@ -45,7 +45,7 @@
                   </el-col>
                   <el-col :span="6">
                     <el-badge :value="2" class="item">
-                      <el-button>
+                      <el-button @click="gyzcxxglxtbtn">
                         <p class="img"><el-image :src="require('../../assets/img/home/jingyingguanlidaiban_icon.png')"/></p>
                         <p class="names">国有企业组织机构基本信息管理系统</p>
                       </el-button>
@@ -65,59 +65,24 @@
             <el-col :span="12">
               <div class="name">
                 <i class="img"><el-image :src="require('../../assets/img/home/information_icon.png')"/></i>
-                待办审批事项
+                资讯信息
               </div>
               <div class="information">
                 <div class="nav">
-                  <div class="nav-item active">集团要闻</div>
-                  <div class="nav-item">招标信息</div>
-                  <div class="nav-item">人事信息</div>
-                  <div class="nav-item">党建天地</div>
-                  <div class="nav-item">综合信息</div>
-                  <div class="nav-item">安全发展</div>
+                  <div
+                    class="nav-item"
+                    v-for="item in consultTitle"
+                    :key="item.id"
+                    @click="cutTitle(item.id)"
+                    :class="{active: thisConsultId == item.id}"
+                  >{{item.name}}</div>
                 </div>
                 <div class="main">
                   <el-row>
-                    <el-col class="link-item">
+                    <el-col class="link-item" v-for="item in consult" :key="item">
                       <el-link :underline="false">
-                        <span>资讯中心</span>
-                        <span>2021-06-23</span>
-                      </el-link>
-                    </el-col>
-                    <el-col class="link-item">
-                      <el-link :underline="false">
-                        <span>资讯中心</span>
-                        <span>2021-06-23</span>
-                      </el-link>
-                    </el-col>
-                    <el-col class="link-item">
-                      <el-link :underline="false">
-                        <span>资讯中心</span>
-                        <span>2021-06-23</span>
-                      </el-link>
-                    </el-col>
-                    <el-col class="link-item">
-                      <el-link :underline="false">
-                        <span>资讯中心</span>
-                        <span>2021-06-18</span>
-                      </el-link>
-                    </el-col>
-                    <el-col class="link-item">
-                      <el-link :underline="false">
-                        <span>资讯中心</span>
-                        <span>2021-06-18</span>
-                      </el-link>
-                    </el-col>
-                    <el-col class="link-item">
-                      <el-link :underline="false">
-                        <span>资讯中心</span>
-                        <span>2021-06-17</span>
-                      </el-link>
-                    </el-col>
-                    <el-col class="link-item">
-                      <el-link :underline="false">
-                        <span>资讯中心</span>
-                        <span>2021-06-17</span>
+                        <span>{{item.name}}</span>
+                        <span>{{item.date}}</span>
                       </el-link>
                     </el-col>
                   </el-row>
@@ -131,46 +96,10 @@
               </div>
               <div class="focus">
                 <el-row>
-                  <el-col class="link-item">
+                  <el-col class="link-item" v-for="item in attention" :key="item">
                     <el-link :underline="false">
-                      <span>资讯中心</span>
-                      <span>2021-06-18</span>
-                    </el-link>
-                  </el-col>
-                  <el-col class="link-item">
-                    <el-link :underline="false">
-                      <span>资讯中心</span>
-                      <span>2021-06-18</span>
-                    </el-link>
-                  </el-col>
-                  <el-col class="link-item">
-                    <el-link :underline="false">
-                      <span>资讯中心</span>
-                      <span>2021-06-18</span>
-                    </el-link>
-                  </el-col>
-                  <el-col class="link-item">
-                    <el-link :underline="false">
-                      <span>资讯中心</span>
-                      <span>2021-06-18</span>
-                    </el-link>
-                  </el-col>
-                  <el-col class="link-item">
-                    <el-link :underline="false">
-                      <span>资讯中心</span>
-                      <span>2021-06-18</span>
-                    </el-link>
-                  </el-col>
-                  <el-col class="link-item">
-                    <el-link :underline="false">
-                      <span>资讯中心</span>
-                      <span>2021-06-18</span>
-                    </el-link>
-                  </el-col>
-                  <el-col class="link-item">
-                    <el-link :underline="false">
-                      <span>资讯中心</span>
-                      <span>2021-06-18</span>
+                      <span>{{item.name}}</span>
+                      <span>{{item.date}}</span>
                     </el-link>
                   </el-col>
                 </el-row>
@@ -202,9 +131,115 @@ export default {
     classList,
     Gantt
   },
+  data () {
+    return {
+      consultTitle: [
+        {
+          id: 1,
+          name: '集团要闻'
+        },
+        {
+          id: 2,
+          name: '招标信息'
+        },
+        {
+          id: 3,
+          name: '人事信息'
+        },
+        {
+          id: 4,
+          name: '党建天地'
+        },
+        {
+          id: 5,
+          name: '综合信息'
+        },
+        {
+          id: 6,
+          name: '安全发展'
+        }
+      ],
+      thisConsultId: '1',
+      consult: [
+        {
+          name: '邵阳武冈机场关于导航设备备件招标项目中标候选人公示',
+          date: '2020-08-12'
+        },
+        {
+          name: '低值易耗品采购 项目(第二次）采购结果公示',
+          date: '2020-08-11'
+        },
+        {
+          name: '长沙机场分公司UPS电源系统主机更换项目竞争性谈判公告',
+          date: '2020-08-11'
+        },
+        {
+          name: '长沙机场分公司安检信息系统服务器采购项目竞争性谈判公告',
+          date: ' 2020-08-11'
+        },
+        {
+          name: '2号航站楼负二层油水分离器扩容更换项目中标候选人公示',
+          date: ' 2020-08-11'
+        },
+        {
+          name: '长沙机场分公司T2楼国内安检通道滚轴台采购项目竞争性谈判公告',
+          date: ' 2020-08-11'
+        },
+        {
+          name: '长沙黄花国际机场购置轮式挖掘机及平板夯项目竞争性谈判公告',
+          date: ' 2020-08-11'
+        }
+      ],
+      attention: [
+        {
+          name: '湖南省机场管理集团有限公司 公司负责人2018年度薪酬情况		',
+          date: '2020-07-02'
+        },
+        {
+          name: '关于常希娟等同志受邀赴新加坡机场进行业务综合考察的任务公示',
+          date: '2018-11-28'
+        },
+        {
+          name: '湖南空港实业股份有限公司招聘公告',
+          date: '2018-11-28'
+        },
+        {
+          name: '湖南机场集团2019重点院校毕业生招聘',
+          date: '2018-11-08'
+        },
+        {
+          name: '关于管理人员任前公示的通告',
+          date: '2018-10-09'
+        },
+        {
+          name: '湖南空港实业股份有限公司招聘公告',
+          date: '2018-08-28'
+        },
+        {
+          name: '关于推荐王舟、伏懿曛同志为全国民航青联第二届委员会委员人选的公示',
+          date: '2018-08-24'
+        },
+        {
+          name: '关于管理人员任前公示的通告',
+          date: '2018-07-26'
+        },
+        {
+          name: '湖南空港实业股份有限公司招聘启事',
+          date: '2018-07-25'
+        },
+        {
+          name: '湖南空港实业股份有限公司招聘启事',
+          date: '2018-07-12'
+        }
+      ]
+    }
+  },
   methods: {
     szydbtn() {
       window.open('http://124.232.137.239:55555/szyd/templates/maincopy.html')
+    },
+    gyzcxxglxtbtn() {
+      window.open('http://222.244.147.108:12345/xmjgpt/templates/MessageWarning/main.html')
     },
     // 监听用户按钮的点击
     handleCommand(command) {
@@ -230,6 +265,10 @@ export default {
         });
       }
     },
+    // 切换信息资讯类别
+    cutTitle(id) {
+      this.thisConsultId = id
+    }
   }
 }
 </script>
@@ -250,10 +289,11 @@ export default {
       justify-content: space-between;
       padding: 0;
       .el-dropdown {
+        cursor: pointer;
         .el-dropdown-link {
           display: flex;
           align-items: center;
-          color: #79A9D8;
+          color: var(--white-color);
           .img {
             width: 48px;
             height: 48px;
@@ -308,10 +348,14 @@ export default {
             position: relative;
             width: 100%;
             .el-link--inner {
-              padding: 0 6px;
+              padding: 0 3px;
               display: flex;
               justify-content: space-between;
               width: calc(100% - 12px);
+              span:first-child {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
             }
           }
           /deep/ .el-link::before {

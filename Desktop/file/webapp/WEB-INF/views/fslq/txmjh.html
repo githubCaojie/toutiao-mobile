@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true" :showpadding="false">
+			<hy-fillarea :display="editFlag=='N'?'none':'block'"> 
+				<hy-button text="保存" @click="save"></hy-button>
+			</hy-fillarea> 
+			<hy-fillarea> 
+			<hy-form id="myform" name="dataWrap" :readonly="editFlag=='N'?true:false"
+				:labelwidth="150" :cols="2" size="normal">
+				<hy-formgroup title="详细信息"> 
+					<hy-forminput label="工程名称" name="xmmc" :rules="{ required: true}" :maxlength="64" ></hy-forminput>
+					<hy-formdatepicker label="计划完工日期" name="jhTime" :rules="{ required: true}" ></hy-formdatepicker>
+					<hy-formdatepicker label="实际完工日期" name="sjTime" ></hy-formdatepicker>
+					<hy-forminput label="排序号" name="num" :rules="[{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change',required: 'true'}]" :maxlength="10" ></hy-forminput>
+					<hy-formselect label="状态" name="status" dropname="FSLQ.PRO_STATUS" :rules="{ required: true}"></hy-formselect>
+				</hy-formgroup> 
+				 <hy-formgroup title="附件上传">
+							<div >
+								<div style="margin-top:4px;margin-left:100px;"><h4>附件添加！</h4></div>
+							</div>
+							<div id="upload1"></div>
+					</hy-formgroup> 
+		   </hy-form> 
+		  </hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			
+			},
+			mounted : function() {
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+				cusUpload('upload1',myform.getRecord().get("uuid"),null,editFlag,"png,jpg,gif,bmp");
+			},
+			methods : {
+				save : function() {
+					myform.validate(function(data) {
+						if (data) {
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath + 'gcSection/save',
+								data : dataArr,
+								success : function(response) {
+									setRM(function() {
+										$.close(response)
+									})
+								}
+							});
+						}
+					});
+				},
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="280,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+		  		<hy-tree id="treeview" @nodeclick="treeClick" v-model="slTreeCode" :rootcode="upId" valueprovider="com.haiyisoft.web.tree.WpMenuTree" :dynamic="false"></hy-tree>
+	        </hy-fillarea>
+			<hy-fillarea :href="url">
+					
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+</body>
+</html>
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			slTreeCode : "",
+			url : ""
+		},
+		mounted : function() {
+			
+		},
+		methods : {
+			treeClick : function() {
+				var type = treeview.getNodeByCode(this.slTreeCode).menutype;
+				if (type) {
+					var param="?menuId="+this.slTreeCode+"&type="+type;
+					this.url= vm.page+param;
+				} else {
+					this.url = "";
+				}
+			}
+		}
+	});
+	
+	$(function(){
+		var cs=treeview.getChildren(treeview.getRootCode());
+		if(cs.length>0){
+			var node=cs[0];
+			var type = node.menutype;
+			var id=node.code;
+			if (type) {
+				var param="?type="+type+"&menuId="+id;
+				vm.url= vm.page+param;
+			} else {
+				vm.url = "";
+			}
+		}	
+	})
+</script>

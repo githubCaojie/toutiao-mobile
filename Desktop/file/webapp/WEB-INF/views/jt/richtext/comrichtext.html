@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>富文本编辑</title>
+<template th:substituteby="framework/pageset.html"></template>
+
+<!-- 配置文件 -->
+<script th:src="@{/plugin/ueditor/ueditor.config.js}"></script>
+<!-- 编辑器源码文件 -->
+<script th:src="@{/plugin/ueditor/ueditor.all.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="40,*">
+		<hy-fillarea :display="saveVisible">
+			<hy-button text="保存" @click="save" ></hy-button>	
+		</hy-fillarea>
+		<hy-fillarea>
+			<script id="container" name="content" type="text/plain">
+				请输入正文
+			</script>
+		</hy-fillarea>
+	</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var data = { saveVisible: "block" }
+		var ue = UE.getEditor('container');
+		var id,content,height;
+		var vm = new Vue({
+			el : "#app",
+			data :data,
+			mounted : function(){
+				id = response.getParameter("id");
+				content = response.getParameter("content");
+				this.saveVisible = response.getParameter("saveVisible");
+				ue.ready(function() {
+					ue.setHeight(document.body.clientHeight-120);
+					ue.setContent(content);
+				});
+			},
+			methods : {				
+				save : function(){
+					var txt = ue.getContent();
+					contain = UE.utils.html(txt);
+					$.request({
+						url : $$pageContextPath + 'jt/richtext/comRichText/save',
+						params:{"id":id,"content":contain},
+						success : function(response) {
+							if(vm.saveVisible != 'none')
+								setRM("success", response.getMessage());
+						}
+					});
+				}
+			}
+			
+		});
+		function saveRichText(){
+			vm.save();
+		}
+	</script>
+</body>
+</html>

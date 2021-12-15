@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件" >
+				<table>
+	              <tr>
+	                <td align="right" width="80px">单位名称</td>
+	                <td width="120px" align="left"><hy-input name="dataWrap.query.unitName_LIKE"  :upload="true"  ></hy-input> </td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" @rowclick="selectRow" @rowdblclick="selectDbRow"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+						<hy-table-column title="" align="center" type="singleselection" width="40"></hy-table-column> 
+						<hy-table-column title="单位名称"  name="unitName" align="center"	width="210"></hy-table-column> 
+						<hy-table-column title="地址"  name="address" align="center"	width="210"></hy-table-column> 
+						<hy-table-column title="联系人"  name="linkMan" align="center"	width="100"></hy-table-column> 
+						<hy-table-column title="联系电话"  name="linkTel" align="center"	width="100"></hy-table-column> 
+						<hy-table-column title="法人"  name="lawMan" align="center"	width="100"></hy-table-column> 
+						<hy-table-column title="排序号"  name="orderSn" align="center"	width="80"></hy-table-column> 
+						<hy-table-column  title="操作"  width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		function returnValue(sn){
+			var rtn = '';
+			var checked = ajaxgrid.getCheckedRecords();
+			if (checked.length <= 0) {
+// 				setRM("alert", "请选择记录!");
+			}else{
+				rtn = '';
+				for(var i=0;i<checked.length;i++){
+					rtn += ","+checked[i].data.id;
+				}
+				if(rtn.length>0)
+					rtn = rtn.substring(1);
+			}
+		     return rtn;//需要返回值应当写好对应的return方法 
+		}
+ 
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				unitTypeId :''
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				detail : function(row){
+					$.popWindow({
+						url: $$pageContextPath + 'gc/pmGcUnit/pageForm?editFlag=N&id='+row.id,
+						title: "详细",	
+						callback: vm.onsavecomplete,
+						css:{width:900,height:500},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				onsavecomplete : function(response){
+					vm.query() ;
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				selectDbRow : function(row){
+					$.close(row.id);
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'gc/pmGcUnit/list',
+						params:{"unitType":vm.unitType},
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}
+			}
+		});
+	</script>
+</body>
+</html>

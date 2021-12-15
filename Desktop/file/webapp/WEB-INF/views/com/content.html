@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,40">
+			<hy-fillarea>
+				<hy-input v-model="content" type="textarea" ></hy-input>
+			</hy-fillarea> 
+			<hy-fillarea>
+				<div align="center"> 
+					<hy-button type="primary"  text="确定"  @click="upload"></hy-button>
+					<hy-button type="primary"  text="取消"  onClick="$.close()"></hy-button>
+				</div>
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+</body>
+</html>
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			content:''
+		},
+		mounted : function() {
+
+		},
+		methods : {
+			upload:function(){
+				if(!this.content ||this.content.length<=0){
+					return setRM("error","请填写内容。")
+				}else{
+					$.close(this.content)
+				}
+				
+			}
+		}
+	});
+</script>

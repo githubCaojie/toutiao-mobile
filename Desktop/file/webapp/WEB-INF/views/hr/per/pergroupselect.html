@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,*,queryh" :showborder="true"  :showpadding="false">
+			<hy-fillarea title="查询条件">
+				 <table>
+		              <tr> 
+						<td align="center" width="50">组代码</td>
+						<td width="120" align="left"><hy-input name="dataWrap.query.groupCode_LIKE" :upload="true"/></td>
+						<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+		              <tr/>
+		            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" @rowdblclick="detailXcGroup" @rowclick="selectRow"  @rowdblclick="dbSelectRow"
+					id="ajaxgrid" showpage height="100%" :readonly="true"
+					@queryfunc="query" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="60" type="index" />
+					<hy-table-column title="多选" align="center" type="selection" /> 
+					<hy-table-column title="组代码" name="groupCode" align="center" width="150" ></hy-table-column>
+					<hy-table-column title="组名称" name="groupName" align="center" width="200" ></hy-table-column>
+				</hy-table> 
+		      </hy-fillarea>
+			<hy-fillarea >
+				<hy-row>
+					<hy-col :span="4" :offset="10">
+						<hy-button text="确定" @click="ok"></hy-button>
+						<hy-button text="取消" @click="$.close()"></hy-button>					
+					</hy-col>
+				</hy-row>		
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'glyh/xc/selexcgroup/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detailXcGroup : function(row){
+					$.close({
+						"uuid" : row.uuid,
+						"groupName" : row.groupName,
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					vm.query();
+				},
+				ok : function(){
+					 var records =  ajaxgrid.getCheckedRecords();
+					 if(records.length>0){
+						 var perData = records[0].data;
+						 $.close(perData);
+					 }
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.ok();
+				}
+			}
+		});
+	</script>
+</body>
+</html>

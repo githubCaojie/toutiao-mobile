@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" :readonly="true"
+					label-position="left" :labelwidth="120"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-formselect label="消息类型" name="msgType"  dropname="JT.MSG_TYPE" ></hy-formselect>
+						<hy-formselect label="发送方式" name="sendForm" v-model="sendFormData" multiple  dropname="JT.MSG_SEND_PATH"  />
+						<hy-formdatepicker  label="消息时间" name="addTime" type="datetime" :rules="{ required: true}"></hy-formdatepicker> 
+						<hy-forminput label="标题" name="title"  :maxlength="128"   :colspan="2" ></hy-forminput>
+						<hy-forminput label="消息内容" name="infoContent" :maxlength="128" type="textarea"  :rowspan="2" :colspan="2" ></hy-forminput>
+						<hy-forminput label="备注" name="remark" :rowspan="2" :colspan="2" :maxlength="128" type="textarea"></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				sendFormData: null
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+			}
+		});
+	</script>
+</body>
+</html>

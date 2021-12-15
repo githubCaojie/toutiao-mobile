@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	
+	<hy-filllayout rows="toolh,*" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea :display="editFlag!='N'?'block':'none'" >
+				<hy-button text="退回选定环节" @click="save(1)"></hy-button>	
+				<hy-button text="退回上一环节" @click="save(2)"></hy-button>	
+				<hy-button text="退回上报环节" @click="save(3)"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					labelposition="right" :labelwidth="120" 
+					labelsuffix="：" :cols="2" size="normal" :readonly="editFlag!='N'?false:true"> 
+						<hy-forminput label="工单号"  name="instanceId" :readonly="true" :visible="false" ></hy-forminput> 
+						<hy-forminput label="任务号"  name="taskId"  :readonly="true" :visible="false"></hy-forminput> 
+						<hy-formselect name="rtnInfo" label="退回环节" :items="rtnActDrop" :colspan="2"   />
+						<hy-forminput type="textarea" name="sendAdvice" label="退回原因" :rowspan="2" :colspan="2"   :maxlength="512"  :rules="{ required: true}"/>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var editFlag;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(rtnType){
+					if(rtnType=='1'){
+						var rtnInfo = myform.getRecord().get("rtnInfo");
+						if(!rtnInfo){
+							return setRM("alert","请选择退回环节！");
+						}
+					}
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/app/appSendAdvice/save',
+								data : dataArr,
+								params : {"rtnType" :rtnType},
+								success : function(response){
+									$.close({"rtnType" :rtnType,"rtnInfo" : myform.getRecord().get("rtnInfo")});
+								}
+							});	
+						}	
+					});
+				
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

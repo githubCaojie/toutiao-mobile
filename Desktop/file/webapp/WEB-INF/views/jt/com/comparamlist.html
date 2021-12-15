@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="查询条件" >
+						<table>
+			              <tr>
+			                <td align="right" width="80px">参数代码</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.paramCode_LIKE"  :upload="true" ></hy-input> </td>
+			                <td align="right" width="80px">参数名称</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.paramName_LIKE"  :upload="true" ></hy-input> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+						<hy-button text="添加" @click="add"></hy-button>	
+						<hy-button text="删除" @click="remove"></hy-button>	
+						<hy-button text="保存" @click="save"></hy-button>	
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="false" height="100%"
+									@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="参数代码" name="paramCode" align="center" width="200"></hy-table-column> 
+								<hy-table-column title="参数名称" name="paramName" align="center"	width="200"></hy-table-column> 
+								<hy-table-column title="参数值" name="paramValue" align="center"	 width="200"></hy-table-column> 
+								<hy-table-column title="说明" name="paramExplain" align="center" width="300"></hy-table-column> 
+								<hy-table-column title="备注" name="remark" align="center"	width="300"></hy-table-column> 
+						  </hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var infoId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/com/comParam/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					ajaxgrid.addRecord();
+				},
+				remove : function(){
+					if (ajaxgrid.getCheckedRecords() == null
+							|| ajaxgrid.getCheckedRecords() == "") {
+						$.alert("请选择删除项!");
+						return false;
+					}
+					$.confirm("确认删除", "确认删除吗?", function() {
+						ajaxgrid.delCheckedRecords();
+						var gridData = ajaxgrid.collectData(false, "update");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'jt/com/comParam/remove',
+							data : dataArr,
+							success : vm.onsavecomplete
+						});
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					setRM(vm.query());
+				},
+				save : function(){
+					var dataArr = [];
+					var gridData = ajaxgrid.collectData(false, "update");
+					dataArr.push(gridData);
+					$.request({
+						url: $$pageContextPath + "jt/com/comParam/save",
+						data: dataArr,
+						success: vm.onsavecomplete
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

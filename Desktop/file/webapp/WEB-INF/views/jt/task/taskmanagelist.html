@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="查询条件" >
+						<table>
+			              <tr>
+			                <td align="right" width="80px">任务名称</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.taskName_LIKE"  :upload="true"  ></hy-input> </td>
+			                <td align="right" width="80px">任务状态</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.status" dropname="JT.TASK_STATUS" :upload="true" :clearable="true"></hy-select> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+						<hy-button text="添加" @click="add"></hy-button>	
+						<hy-button text="删除" @click="remove"></hy-button>	
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="任务类型"  name="taskTypeName" align="center" width="90"></hy-table-column> 
+								<hy-table-column title="任务名称"  name="taskName" align="center" width="150"></hy-table-column> 
+								<hy-table-column title="任务描述"  name="taskDesc" align="center" width="200"></hy-table-column> 
+								<hy-table-column title="开始时间"  name="beginTime" align="center" width="150" editor="date" type="date"></hy-table-column> 
+								<hy-table-column title="结束时间"  name="endTime" align="center"	 width="150" editor="date" type="date"></hy-table-column> 
+								<hy-table-column title="办理人"  name="entityName" align="center" width="120"></hy-table-column> 
+								<hy-table-column title="状态"  name="status" align="center"	width="80" type="drop" dropname="JT.TASK_STATUS"></hy-table-column> 
+								<hy-table-column title="创建时间"  name="addTime" align="center"	width="150" type="datetime" editor="datetime"></hy-table-column> 
+								<hy-table-column title="创建人"  name="addMan" align="center" type="drop" dropname="ORG.PERSON_NAME" width="90"> </hy-table-column> 
+								<hy-table-column  title="操作"  width="180" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">任务信息</a>&nbsp;
+							     	<a href="javascript:void(0)" @click="deal(scope.row)">办理情况</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				onsavecomplete : function(response){
+					vm.query() ;
+				},
+				add : function(){
+					$.showModalDialog($$pageContextPath + 'jt/taskManage/pageGet?', "添加", vm.onsavecomplete, null, 800, 500, 0);
+				},
+				detail : function(obj){
+					$.showModalDialog($$pageContextPath + 'jt/taskManage/pageGet?uuid='+obj.uuid, "详情", vm.onsavecomplete, null, 800, 500, 0);
+				},
+				deal : function(obj){
+					$.showModalDialog(obj.url, "详情", vm.onsavecomplete, null, 800, 500, 0);
+				},
+				remove : function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'jt/taskManage/del',this.query);
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/taskManage/list',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

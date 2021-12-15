@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		 <hy-row :height="50">
+			<hy-col  :span=2> <hy-button text="单选人" @click="selectOnePer" ></hy-button> </hy-col>
+			<hy-col  :span=2> <hy-button text="多选人" @click="selectMulPer" ></hy-button> </hy-col>
+			<hy-col :span=2> <hy-button text="单选单位" @click="selectOneBusi" ></hy-button> </hy-col>
+			<hy-col :span=2> <hy-button text="多选组织" @click="selectMulOrg" ></hy-button> </hy-col>
+		</hy-row>
+	</div>
+	<iframe id="hidden_frame1" style='display: none'></iframe>
+	<script th:inline="javascript">
+	    var carUuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				orgId : ""
+			},
+			mounted : function(){
+			},
+			methods : {				
+				selectOnePer : function(){
+					$.showModalDialog($$pageContextPath + 'jt/right/selectPer/onePer', "详细", function(data){
+						console.log(data);
+					}, null, 800, 400,
+							0);
+				},
+				selectMulPer : function(){
+					$.showModalDialog($$pageContextPath + 'jt/right/selectPer/mulper?relaType=1&busiUuid=2', "详细", function(data){
+						console.log(data);
+					}, null, 1000, 600,
+							0);
+				},
+				selectOneBusi : function(){
+					$.showModalDialog($$pageContextPath + 'jt/right/selectOrg/oneBusi', "详细", function(data){
+						console.log(data);
+					}, null, 800, 400,
+							0);
+				},
+				selectMulOrg : function(){
+					$.showModalDialog($$pageContextPath + 'jt/right/selectOrg/mulOrg?relaType=1&busiUuid=2', "详细", function(data){
+						console.log(data);
+					}, null, 1000, 600,
+							0);
+				}
+			}
+		});
+	</script>
+</body>
+</html>

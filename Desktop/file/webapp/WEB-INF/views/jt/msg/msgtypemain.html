@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="240,*">
+			<hy-fillarea>
+				 <hy-tree id="tree1" @nodeclick="flushRight" :rootcode="msgClass"
+				  valueprovider="com.haiyisoft.jt.msg.tree.MsgTypeTree"  v-model="code" ></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea id="rightMain" href="../msgType/?editFlag=Y">
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				code : null
+			},
+			mounted : function(){
+				this.code = '0';
+				this.flushRight();
+			},
+			methods : {				
+				flushRight : function(data){
+					if(this.code == '0'){
+						$("#rightMain iframe").attr("src","../msgType/?editFlag=Y&msgClass="+this.msgClass);
+					}else{
+						$("#rightMain iframe").attr("src","../comWarningFactor/?msgType="+ this.code);
+					}
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

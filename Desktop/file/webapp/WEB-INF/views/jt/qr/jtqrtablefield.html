@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*,40" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="editFlag=='Y'?false:true"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="字段名称"  name="fieldName" :rules="{ required: true}" :maxlength="64"></hy-forminput> 
+						<hy-forminput label="实体字段"  name="fieldCode" :rules="{ required: true}" :maxlength="32"></hy-forminput> 
+						<hy-forminput label="库表字段"  name="columnName" :rules="{ required: true}" :maxlength="32"></hy-forminput> 
+						<hy-formselect label="字段类型"  name="fieldType" dropname="JT.FIELD_TYPE" :rules="{ required: true}"></hy-formselect>
+						<hy-formselect label="输入方式"  name="inputForm" dropname="JT.INPUT_FORM" :rules="{ required: true}"></hy-formselect>
+						<hy-forminput label="字段宽度"  name="fieldWidth"  :maxlength="5" :colspan="1"></hy-forminput> 
+						<hy-forminput label="下拉名"  name="extCode1"  :maxlength="128" :colspan="2"></hy-forminput> 
+						<hy-forminput label="树显示"  name="extCode2"  :maxlength="128"></hy-forminput> 
+<!-- 						<hy-forminput label="字表关联字段"  name="extCode3"  :maxlength="128"></hy-forminput>  -->
+						<hy-formselect label="是否可导出"  name="isExport" dropname="UEP.YES_OR_NO" :clearable="false"></hy-formselect>
+						<hy-formselect label="是否行字段"  name="isRowField" dropname="UEP.YES_OR_NO" :clearable="false"></hy-formselect>
+						<hy-formselect label="查询条件"  name="searchFlag" dropname="JT.SEARCH_FLAG" :clearable="false"></hy-formselect>
+						<hy-forminput label="单独子表"  name="singleTable" :maxlength="200" ></hy-forminput>
+						<hy-forminput label="子表关联字段"  name="relaField" :maxlength="200" ></hy-forminput>
+						<hy-formselect  label="显示方式"  name="visibleFlag" dropname="EQ.DISPLAY_RULE" ></hy-forminput>
+						<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="200" ></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		    <hy-fillarea  :display="editFlag=='Y'?'block':'none'" >
+		    	<div style="text-align:center">
+					<hy-button text="保存" @click="save"></hy-button>	
+					<hy-button text="关闭" onClick="$.close()" :plain="true"></hy-button>	
+				</div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/jtQrTableField/save',
+								data : dataArr,
+								success : function(response){
+									$.close(response);
+								}
+							});	
+						}
+					});
+				} 
+			}
+			
+		});
+	</script>
+</body>
+</html>

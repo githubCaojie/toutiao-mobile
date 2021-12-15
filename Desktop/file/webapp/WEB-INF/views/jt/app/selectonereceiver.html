@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*,40" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+							姓名  <hy-input  id="partyIdId" v-model="partyId" :upload="true" width="200"></hy-input>
+							部门<hy-droptree id="orgIdId" v-model="orgId":upload="true" width="130"	 
+			                   valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree"></hy-droptree>
+							<hy-button text="查询" @click="query" />
+						</hy-fillarea>  
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="singleselection" width="40"></hy-table-column> 
+							<hy-table-column name="partyId" title="姓名" dropname="ORG.PERSON_NAME" type="drop" align="center" width="150"></hy-table-column>
+							<hy-table-column name="orgId" title="部门" dropname="ORG.ORG_PARTY_NAME"  type="drop" align="center" width="150"></hy-table-column>  
+					</hy-table> 
+		      </hy-fillarea>
+		      <hy-fillarea >
+				 <hy-row>
+					<hy-col :span="9"> </hy-col>
+					<hy-col :span="3"  > <hy-button text="确定" @click="ok()" ></hy-button> </hy-col>
+					<hy-col :span="3"  > <hy-button text="取消" onclick="$.close()" ></hy-button> </hy-col>
+				</hy-row>
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+	var action;
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			partyId : "",
+			orgId : ""
+		},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var formData = myform.collectData();
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(formData);
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/selectOneReceiver/query',
+						data : dataArr,
+						params : { "partyId": this.partyId,
+							   "orgId" : this.orgId},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				ok : function(){
+					var loginId = "";
+					var personName = "";
+					var records = ajaxgrid.getCheckedRecords();
+					if(records.length > 0) {
+						loginId = records[0].data.loginId;
+						personName= records[0].data.personName;
+					 $.close({"loginId" : loginId,"personName" : personName});
+					}
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.ok();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>
+		

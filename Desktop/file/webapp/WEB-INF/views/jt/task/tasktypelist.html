@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea >
+						<table>
+			              <tr>
+			                <td align="right" width="80px">类型名称</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.msgName_LIKE"  :upload="true"  ></hy-input> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+						<hy-button text="添加" @click="add"></hy-button>	
+						<hy-button text="删除" @click="remove"></hy-button>	
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="类型名称"  name="taskName"align="center"	width="200"></hy-table-column> 
+								<hy-table-column title="TITLE模板"  name="titleTemplate"align="center"	width="250"></hy-table-column> 
+								<hy-table-column title="消息模板"  name="taskTemplate"align="center"	width="250"></hy-table-column> 
+								<hy-table-column title="服务名"  name="serviceName"align="center"	width="200"></hy-table-column> 
+								<hy-table-column  title="操作"  width="80" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'jt/taskType/pageForm?id='+row.id, "详细", vm.onsavecomplete, null, 800, 500, 0);
+				},
+				add : function(){
+					$.showModalDialog($$pageContextPath + 'jt/taskType/pageForm?', "添加", vm.onsavecomplete, null, 800, 500, 0);
+				},
+				remove : function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'jt/taskType/remove',this.query);
+				},
+				onsavecomplete : function(response){
+					vm.query() ;
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url :$$pageContextPath +  'jt/taskType/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

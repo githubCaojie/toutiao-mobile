@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hyfileupload.js}"></script>
+<link th:href="@{/vue/hyfileupload.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div id="app" view>
+			<hy-filllayout rows="*,queryh" :showborder="false"  :showpadding="false"> 
+				<hy-fillarea>
+					<hy-filllayout cols="*,160" :showborder="false"  :showpadding="false"> 
+						<hy-fillarea>
+							<img id="headPhoto" v-if="photoPic!=null" :src="photoPic"  style=" width : 250px; height : 200px;"></img>
+							<div v-if="photoPic==null" style="color: red;font-size: 30px">请先上传头像</div>
+						</hy-fillarea>
+						<hy-fillarea>
+							<hy-fileupload :width="100" id="webuploader" @autoupload="submitFile" @success="uploadSuccess" @error="fileError">
+							</hy-fileupload>
+						</hy-fillarea>	
+					</hy-filllayout>
+			    </hy-fillarea>
+			    <hy-fillarea>
+			    	<hy-row justify="center">
+						<hy-col :span="6"> </hy-col>
+						<hy-col :span="6" type="center"><hy-button text="确定" @click="ok" ></hy-button></hy-col>
+						<hy-col :span="6" type="center"><hy-button text="关闭" onclick="$.close()"></hy-button></hy-col>
+						<hy-col :span="6"> </hy-col>
+					</hy-row>
+				</hy-fillarea>
+			</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var warnUuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				fileName : null,
+				photoPic : null
+			},
+			mounted : function(){
+			},
+			methods : {		
+				submitFile : function(){
+					webuploader.submitFile({
+				          server : $$pageContextPath+'jt/com/fileTempUpload/upload',//请求
+				          params:{//请求携带的参数
+				          }
+				        });
+					
+				},
+				fileError : function(){
+					
+				},
+				uploadSuccess : function(WUFile,aa){
+					vm.fileName = aa.parameters.newFileName;
+					var d = new Date();
+					var url =  $$pageContextPath + "per/perPersonPicturecut/getFileInputStream?fileId="+vm.fileName+"&t="+d;
+					$("#headPhoto").attr("src",url).attr("width",'250').attr("height",'200');
+				},
+				ok : function(){
+					if(vm.fileName==null||vm.fileName==""){
+						setRM("alert","请上传文件！");
+						return;
+					}
+					vm.uploadIconComp(vm.fileName);
+				},
+				uploadIconComp : function(response){
+					var suffix = response.substring(response.lastIndexOf(".")+1);
+					var allowSuffix = "jpg,jpeg,bmp,png,JPG,JPEG,BMP,PNG,";
+					if(allowSuffix.indexOf(suffix+",")<0){
+						setRM("error","上传文件格式不符合要求！");
+						return false;
+					}
+					$.request({
+						url : $$pageContextPath + 'per/perPersonPicturecut/upload',
+						params : {"fileId":response,
+		    	        	  "partyId" : vm.partyId,},
+						success : function(response){
+							var msg = response.getMessage();
+							vm.photoPic = response.getParameter("photoPic");
+							if("操作成功"==msg){
+								setRM("success","上传成功！");
+							}else{
+								setRM("error",msg);
+							}
+						}
+					});
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

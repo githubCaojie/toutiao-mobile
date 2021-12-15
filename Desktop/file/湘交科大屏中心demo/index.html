@@ -1,0 +1,965 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<template th:substituteby="framework/pageset.html"></template>
+	<link rel="stylesheet" type="text/css" href="framework/template1/css/home3.css">
+	<link rel="stylesheet" type="text/css" href="framework/template1/css/hymultitask.css">
+	<link href="plugin/menu/css/menu.css" rel="stylesheet" type="text/css">
+	<link href="framework/template1/css/menu_cus.css" rel="stylesheet" type="text/css">
+	<link href="framework/template1/css/defaultmain.css" rel="stylesheet" type="text/css">
+	<script src="vue/hymultitask.js"></script>
+	<script src="framework/template1/js/multitask.js"></script>
+	<!-- <script src="framework/js/importjs.js"></script> -->
+	<script src="plugin/menu/masonry.js"></script>
+	<script src="plugin/jqueryscrollbar/jquery.nicescroll.js"></script>
+	<script src="framework/template1/js/menu_cus.js"></script>
+	<script src="jt/websocket.js"></script>
+	<script src="./vue.min.js"></script>
+	<link href="./dhtmlxgantt.css" rel="stylesheet" type="text/css">
+	<script src="./dhtmlxgantt.js"></script>
+	<script src="./locale_cn.js"></script>
+	<title>大屏中心</title>
+</head>
+<style>
+
+* {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+}
+
+html,body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	background: url(../images/index/bg1.png) no-repeat center;
+	background-size: 100% 100%;
+}
+
+ul,li {
+	list-style: none;
+}
+
+.title_div {
+	width: 85%;
+	height: 80px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.title_div .logo_img{
+	height:45px;
+	float: left;
+}
+
+.title_div .title1{
+	height:30px;
+	line-height: 30px;
+	font-size: 15px;
+	color:white;
+	display: flex;
+	align-items: center;
+}
+
+.title_div .title1_img{
+	height:30px;
+	width:30px;
+	border-radius: 50%;
+	margin-right: 10px;
+}
+
+.title_div .title1_img2{
+	margin-left: 10px;
+}
+
+.main_content_div {
+	width: 85%;
+	margin: 0 auto;
+	height: calc(100% - 80px - 10px);
+	background: #fff url("../images/index/containbg.png") bottom center / 100% 100% no-repeat;
+}
+
+.nav_list_div {
+	display: flex;
+	justify-content: space-around;
+	padding: 10px;
+	width: 100%;
+	height: 28%;
+}
+
+.item_div{
+	height:100%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-around;
+	flex-direction: column;
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.item_div1 {
+	background: url("../images/index/nav1bg.png");
+	width: 27%;
+}
+.item_div2 {
+	background: url("../images/index/nav2bg.png");
+	width: 46%;
+	margin: 0 1%;
+}
+.item_div3 {
+	background: url("../images/index/nav3bg.png");
+	width: 27%;
+}
+.item_div p.title {
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	color: #fff;
+}
+.item_div .btn_item {
+	display: flex;
+	justify-content: center;
+}
+
+.item_div .menudiv{
+	height: 100%;
+	text-align: center;
+	cursor: pointer;
+	margin: 0 2%;
+}
+
+.item_div .menudiv p{
+	font-size: 15px;
+	color: white;
+	margin-top: 14px;
+}
+
+.item_div .menudiv img{
+	width: 50px;
+	height: 50px;
+}
+
+.contain_div {
+	height: calc(100% - 28%);
+	margin: 0 auto;
+	position: relative;
+	padding: 0 10px 10px;
+}
+
+.part1_div {
+	width: 100%;
+	height: calc(50% - 5px);
+	margin-bottom: 5px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.part1_div .block_div {
+	width: 49%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	float: left;
+}
+
+.part1_div .block_div .title {
+	height:48px;
+	line-height:48px;
+	width:100%;
+	color: #415261;
+	font-size:18px;
+	padding-left:8px;
+	background: linear-gradient(90deg, rgba(214, 232, 243) 0%, rgba(247, 250, 252) 100%);
+}
+
+.part1_div .block_div .title .title_img {
+	height: 16px;
+	width: 16px;
+	margin-right: 8px;
+}
+
+.part1_div .daiban_div {
+	width: 100%;
+	height: calc(100% - 35px);
+	display: flex;
+	flex-flow: wrap;
+	align-content: flex-start;
+}
+
+.part1_div .daiban_div .daiban_item {
+	position: relative;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 45px;
+	border: 1px solid #cad7e0;
+	border-radius: 5px;
+	padding: 0 10px;
+	margin: 10px 10px 0 0 ;
+}
+
+.part1_div .daiban_div .daiban_item .daiban_img {
+	width: 25px;
+	margin-right: 5px;
+}
+
+.part1_div .daiban_div .daiban_item .daiban_word {
+	color: #415261;
+	display: flex;
+	align-items: center;
+}
+
+.part1_div .daiban_div .daiban_item .daiban_point {
+	padding: 0 10px;
+	border-radius: 10px;
+	background: #EF7230;
+	text-align: center;
+	color: white;
+	margin-top: -20px;
+}
+
+.part1_div .zixun_div {
+	width: 100%;
+	height: calc(100% - 48px);
+	display: flex;
+}
+
+.part1_div .zixun_div ul{
+	width: 120px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: scroll;
+}
+::-webkit-scrollbar {
+	display: none;
+}
+
+.part1_div .zixun_div ul li{
+    width: 115px;
+    height: 48px;
+    line-height: 48px;
+    cursor: pointer;
+	text-align: center;
+	color: #415261;
+	font-size: 14px;
+	border-right: 1px solid #cad7e0;
+}
+
+.part1_div .zixun_div .tab{
+    color: #1f8ecd;
+		position: relative;
+}
+.part1_div .zixun_div .tab::before {
+	content: "";
+	width: 0;
+	height: 0;
+	border-top: 4px solid transparent;
+	border-left: 5px solid #1F8ECD;
+	border-bottom: 4px solid transparent;
+	position: absolute;
+	right: -6px;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+.part1_div .zixun_div .tab::after {
+	content: "";
+	width: 2px;
+	height: 100%;
+	background: #1F8ECD;
+	position: absolute;
+	right: -2px;
+	top: 0;
+}
+
+.part1_div .zixun_div .zixun_content{
+    width: calc(100% - 120px);
+    height: 100%;
+		overflow-y: scroll;
+}
+
+.part1_div .zixun_div .zixun_content .div1{
+    display: none;
+}
+
+.part1_div .zixun_div .zixun_content .div_show{
+    display: block;
+}
+
+.part1_div .zixun_div .zixun_content .zixun_item {
+	height: 47px;
+	line-height: 48px;
+	color: #415261;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid #cad7e0;
+	margin-left: 10px;
+	cursor: pointer;
+	position: relative;
+}
+.part1_div .zixun_div .zixun_content .zixun_item::before {
+	content: "";
+	width: 4px;
+	height: 4px;
+	background: #415261;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.part1_div .zixun_div .zixun_content .zixun_item .zixun_word1 {
+	font-size: 14px;
+	text-indent: 8px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.part1_div .zixun_div .zixun_content .zixun_item .zixun_word2 {
+	flex: 0 0 70px;
+	text-align: right;
+	margin-right: 5px;
+}
+
+.part2_div {
+	width: 100%;
+	height: calc(50% - 5px);
+	margin-top: 5px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.part2_div .block_div {
+	width: 49%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	float: left;
+}
+
+.part2_div .block_div .title {
+	height:48px;
+	line-height:48px;
+	width:100%;
+	color: #415261;
+	font-size:18px;
+	padding-left:8px;
+	background: linear-gradient(90deg, rgba(214, 232, 243) 0%, rgba(247, 250, 252) 100%);
+	display: flex;
+	align-items: center;
+}
+
+.part2_div .block_div .title .title_img {
+	width: 16px;
+	height: 16px;
+	margin-right: 8px;
+}
+
+.part2_div .guanzhu_div {
+	width: 100%;
+	height: calc(100% - 48px);
+	overflow-y: scroll;
+}
+
+.part2_div .guanzhu_div .guanzhu_item {
+	width: 100%;
+	height: 47px;
+	line-height: 48px;
+	color: #415261;
+	font-size: 14px;
+	display: flex;
+	justify-content: space-between;
+	padding-left: 14px;
+	border-bottom: 1px solid #cad7e0;
+	position: relative;
+	cursor: pointer;
+}
+.part2_div .guanzhu_div .guanzhu_item::before {
+	content: "";
+	width: 4px;
+	height: 4px;
+	background: #415261;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.part2_div .guanzhu_div .guanzhu_item .guanzhu_word1 {
+	text-indent: 8px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 14px;
+}
+.part2_div .guanzhu_div .guanzhu_item .guanzhu_word2 {
+	flex: 0 0 70px;
+	font-size: 12px;
+}
+
+.part2_div .jihua_div {
+	width: 100%;
+	height: calc(100% - 48px);
+}
+#gantt_here {
+	height: 100%;
+}
+#personInfo{
+	height: 69px;
+	width: 174px;
+	position: absolute;
+	top: 58px;
+	right: 5%;
+	z-index: 1;
+	background: white;
+	box-shadow: 0px 0px 5px #ccc;
+	display: none;
+
+}
+.market-nav-arrow {
+	content: "";
+	width: 0px;
+	height: 0px;
+	border-width: 10px;
+	border-color: transparent transparent white transparent;
+	border-style: solid;
+	position: absolute;
+	top: -20px;
+	right: 78px;
+
+}
+.bar{
+	height: 30px;
+	line-height: 30px;
+	background: #E4F1FA;
+	font-size: 14px;
+	font-weight: bold;
+	color: #81888E;
+	text-align: center;
+	position: relative;
+	margin-top: 10px;
+	cursor: pointer;
+	padding-bottom: 0px;
+}
+.gantt_tree_icon.gantt_file, .gantt_task_content {
+	display: none;
+}
+.gantt_task_line {
+	height: 20px !important;
+	margin: 11px 0;
+	border-radius: 10px !important;
+}
+.gantt_container, .gantt_grid_scale, .gantt_task_scale, .gantt_row, .gantt_task_row {
+	background-color: transparent !important;
+}
+[v-clock] {
+	display: none;
+}
+</style>
+<body>
+
+<div id="app" v-clock>
+	
+	<div class="title_div">
+		<img class="logo_img" src="../images/index/logo.png" />
+		<div class="title1">
+			<img class="title1_img" src="../images/index/img1.png" />
+			李某某
+			<img class="title1_img2" src="../images/index/img18.png" onclick="showPersonInfo(event)" />
+			<div id="personInfo" >
+				<i class="market-nav-arrow"></i>
+				<div id="orgName" style="color: black;font-weight: bolder">&nbsp;&nbsp;[[${session.UserView.organization.groupName}]]</div>
+				<div class="bar">
+					<div onclick="changepwd()" style="display: inline-block; width: auto; border-radius: 0px;">
+						<img src="../images/main/loginpwd.png" style=" width: 13px;height: 13px;opacity:1;"/>
+						<span style="color: black">修改密码</span>
+					</div>
+					<div onclick="tuichu()" style="display: inline-block;">
+						<img src="../images/main/logoff2.png" style=" width: 13px;height: 13px" />
+						<span style="color: black">退出</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="main_content_div">
+		<div class="nav_list_div">
+			<div class="item_div item_div1">
+				<p class="title">决策类</p>
+				<div class="btn_item">
+					<div class="menudiv">
+						<img src="../images/index/img2.png" />
+						<p>决策支持</p>
+					</div>
+				</div>
+			</div>
+			<div class="item_div item_div2">
+				<p class="title">经营生产管理类</p>
+				<div class="btn_item">
+					<div class="menudiv" id="oms" onClick="openPurchase(this)">
+						<img src="../images/index/img3.png" />
+						<p>项目运营管理</p>
+					</div>
+					<div class="menudiv" id="purchase" onClick="openPurchase(this)">
+						<img src="../images/index/img4.png" />
+						<p>采购管理</p>
+					</div>
+					<div class="menudiv" id="tf_main_web" onClick="openPurchase(this)">
+						<img src="../images/index/img5.png" />
+						<p>人力资源</p>
+					</div>
+					<div class="menudiv">
+						<img src="../images/index/img6.png" />
+						<p>安全管理</p>
+					</div>
+					<div class="menudiv">
+						<img src="../images/index/img7.png" />
+						<p>资产管理</p>
+					</div>
+				</div>
+			</div>
+			<div class="item_div item_div3">
+				<p class="title">日常管理类</p>
+				<div class="btn_item">
+					<div class="menudiv">
+						<img src="../images/index/img8.png" />
+						<p>智慧党建</p>
+					</div>
+					<div class="menudiv" onClick="openManage()">
+						<img src="../images/index/img9.png" />
+						<p>行政管理</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	
+	
+		<div class="contain_div">
+	
+	
+			<div class="part1_div">
+	
+				<div class="block_div">
+					<div class="title">
+						<img class="title_img" src="../images/index/icon_1.png" />待办审批事项
+					</div>
+					<div class="daiban_div">
+						<div class="daiban_item">
+							<img class="daiban_img" src="../images/index/img10.png"/>
+							<p class="daiban_word">人力资源待办</p>
+							<p class="daiban_point">1</p>
+						</div>
+						<div class="daiban_item">
+							<img class="daiban_img" src="../images/index/img11.png"/>
+							<p class="daiban_word">项目管理待办</p>
+							<p class="daiban_point">2</p>
+						</div>
+						<div class="daiban_item">
+							<img class="daiban_img" src="../images/index/img12.png"/>
+							<p class="daiban_word">经营管理待办</p>
+							<p class="daiban_point">3</p>
+						</div>
+						<div class="daiban_item">
+							<img class="daiban_img" src="../images/index/img13.png"/>
+							<p class="daiban_word">智慧党建待办</p>
+							<p class="daiban_point">4</p>
+						</div>
+					</div>
+				</div>
+	
+				<div class="block_div">
+					<div class="title">
+						<img class="title_img" src="../images/index/icon_2.png" />资讯信息
+					</div>
+					<div class="zixun_div">
+						<ul>
+							<li
+								v-for="(item, index) in msgData"
+								:key="item.id"
+								:class="{tab: thisNewIndex == index}"
+								@click="msgItemClick(item.id - 1)"
+							>
+								{{item.name}}
+							</li>
+						</ul>
+						<div class="zixun_content">
+							<div class="div1 div_show" v-for="item in msgData[thisNewIndex].data" :key="item.id">
+								<div class="zixun_item">
+									<span class="zixun_word1">{{item.title}}</span>
+									<span class="zixun_word2">{{item.time}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+	
+				</div>
+	
+			</div>
+	
+	
+			<div class="part2_div">
+	
+				<div class="block_div">
+					<div class="title">
+						<img class="title_img" src="../images/index/icon_3.png" />
+						我的关注
+					</div>
+					<div class="guanzhu_div">
+						<div class="guanzhu_item" v-for="item in guanzhuData" :key="item.id">
+							<span class="guanzhu_word1">{{item.name}}</span>
+							<span class="guanzhu_word2">{{item.time}}</span>
+						</div>
+					</div>
+				</div>
+	
+				<div class="block_div">
+					<div class="title">
+						<img class="title_img" src="../images/index/icon_4.png" />
+						工作计划
+					</div>
+					<div class="jihua_div">
+						<div ref="gantt" id="gantt_here"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 联系我们 -->
+	<img src="../images/index/img14.png" style="width:60px; position: fixed; top:30%; left: 0; cursor: pointer;"/>
+
+	<div style="position: fixed; top:50%; left: 0; width:60px;">
+		<img src="../images/index/img15.png" style="width:100%; cursor: pointer;"/>
+		<img src="../images/index/img16.png" style="width:100%; cursor: pointer;"/>
+	</div>
+
+	<img src="../images/index/img17.png" style="width:60px; position: fixed; top:60%; right: 0; cursor: pointer;"/>
+
+
+</div>
+</body>
+<script>
+	let app = new Vue({
+		el: '#app',
+		data() {
+			return {
+				msgData: [
+					{
+						id: 1,
+						name: '院新闻',
+						data: [
+							{
+								id: 1,
+								title: '院新闻院新闻院新闻院新闻院新闻',
+								time: '2020-12-10'
+							},
+							{
+								id: 2,
+								title: '省交通运输厅1省交通运输厅1省交',
+								time: '2020-12-10',
+								show: false
+							}
+						]
+					},
+					{
+						id: 2,
+						name: '集团新闻',
+						data: [
+							{
+								id: 1,
+								title: '集团新闻集团新闻集团新闻集团新闻集团新闻',
+								time: '2020-12-10'
+							},
+							{
+								id: 2,
+								title: '省交通运输厅1省交通运输厅1省交',
+								time: '2020-12-10'
+							}
+						]
+					},
+					{
+						id: 3,
+						name: '公告公示',
+						data: [
+							{
+								id: 1,
+								title: '公告公示公告公示公告公示公告公示公告公示',
+								time: '2020-12-10'
+							},
+							{
+								id: 2,
+								title: '省交通运输厅1省交通运输厅1省交',
+								time: '2020-12-10'
+							}
+						]
+					}
+				],
+				thisNewIndex: 0,
+				guanzhuData: [
+					{
+						id: 1,
+						name: '省交通运输厅省交通运输厅省交通运输厅省交通运输厅省交通运输厅省交通运输厅省交通运输厅',
+						time: '2021-10-12'
+					},
+					{
+						id: 2,
+						name: '省交通运输厅省交通运输厅省交通运输厅省交通运输厅省交通运输厅省交通运输厅省交通运输厅',
+						time: '2021-10-12'
+					}
+				],
+				tasks: {
+          data: []
+        }
+			}
+		},
+		methods: {
+			msgItemClick(id) {
+				console.log(id)
+				this.thisNewIndex = id
+			},
+      initData () {
+        this.tasks.data = [
+					{
+						text: '国资监管类任务一', // 任务名
+						start_date: '19-07-2021', // 开始时间
+						id: 1, // 任务id
+						duration: 4, // 任务时长，从start_date开始计算
+						progress:0.6,
+						type: 1
+					},
+					{
+						text: '财务资产类任务一',
+						start_date: '18-07-2021',
+						id: 2,
+						duration: 3,
+						type: 2
+					},
+					{
+						text: '经营管理类任务二',
+						start_date: '21-07-2021',
+						id: 3,
+						duration: 2,
+						type: 3
+					},
+					{
+						text: '日常管理类任务一',
+						start_date: '19-07-2021',
+						id: 4,
+						duration: 3,
+						type: 4
+					}
+        ].map(function(current, ind, arry) {	
+          var newObj = {}
+          if (current.type) { //存在type字段 说明非一级菜单，判断阶段的具体类型 设置不同颜色
+            if (current.type == 1) { //冒烟
+              newObj = Object.assign({}, current, { 'color': '#EF7230' })
+            } else if (current.type == 2) { //单元
+              newObj = Object.assign({}, current, { 'color': '#003A7C' })
+            } else if (current.type == 3) { //回归
+              newObj = Object.assign({}, current, { 'color': '#003A7C' })
+            } else if (current.type == 4){
+              newObj = Object.assign({}, current, { 'color': '#1F8ECD' })
+            }
+          } else { //一级菜单是蓝色的
+            newObj = Object.assign({}, current, { 'color': '#5692f0' })
+          }
+          return newObj
+        })
+				
+				gantt.config.autosize = false
+				//只读模式
+				gantt.config.readonly = true
+				//是否显示左侧树表格
+				gantt.config.show_grid = true
+				//表格列设置
+				gantt.config.columns = [
+					{ name: 'text', label: '工作任务', tree: true, width: '193' }
+				]
+				//时间轴图表中，如果不设置，只有行边框，区分上下的任务，设置之后带有列的边框，整个时间轴变成格子状。
+				gantt.config.show_task_cells = true
+
+				//设置x轴日期
+				gantt.config.scale_unit = 'day'
+				gantt.config.step = 1
+				gantt.config.date_scale = '周' + '%D'
+
+				//当task的长度改变时，自动调整图表坐标轴区间用于适配task的长度
+				gantt.config.fit_tasks = true
+				//时间轴图表中，甘特图的高度
+				gantt.config.row_height = 47
+
+				// 初始化
+				console.log(this.tasks)
+				gantt.init(this.$refs.gantt)
+				// 数据解析
+				gantt.parse(this.tasks)
+      }
+		},
+		mounted () {
+			this.initData()//初始化甘特图
+		}
+	})
+</script>
+<script>
+window.parent.$("#app").hide();
+
+
+function reload(retStr,b,c)
+{
+	alert(retStr+":"+b+":"+c);
+ 	 location.href = $$pageContextPath + 'login' ;
+}
+
+function updateAccount() {
+
+ 	$.confirm("提示","当前密码安全等级过低！请修改默认密码！",function(){
+		//location.href = $$pageContextPath + 'login' ;
+		$.showModalDialog($$pageContextPath + '/main/updatePassword', "修改密码", reload, null, 800, 600, 0);
+
+	},function(){
+
+	});
+
+}
+
+
+
+function initUserAccount(){
+
+	$.request({
+		url : $$pageContextPath+'/main/firstlogin',
+		success : function(response){
+			let flag  = response.getParameter("flag");
+			if(flag=="Y")
+			{
+				updateAccount();
+			}
+
+		}
+	});
+}
+
+
+
+
+
+initUserAccount();
+
+
+
+
+$("#personInfo").hide();
+
+
+$('ul li').click(function(event) {
+     $(this).addClass('tab');
+     $(this).siblings().removeClass('tab');
+     $('.zixun_content .div1').eq($(this).index()).addClass('div_show');
+     $('.zixun_content .div1').eq($(this).index()).siblings().removeClass('div_show');
+})
+
+function openManage(){
+	  window.parent.$("#iframe").hide();
+	    window.parent.$("#app").show();
+}
+
+function openBim(){
+	debugger;
+	$.request({
+		url : $$pageContextPath+'main/openBim',
+		success : function(response){
+			debugger;
+			var url = response.parameters.url;
+			window.open(url);
+		}
+	});
+}
+function openPurchase(data){
+	debugger;
+	$.request({
+		url : $$pageContextPath+'/main/openPurchase?id='+data.id,
+		success : function(response){
+			debugger;
+			var url = response.parameters.url;
+			var identity=response.parameters.identity;
+			var ticket=response.parameters.ticket;
+			var isFlag=response.parameters.isFlag;
+			var url1=response.parameters.url1;
+			var sessionKey=response.parameters.sessionKey;
+			var fullScreenFlag=response.parameters.fullScreenFlag;
+			var buttonlogin=response.parameters.buttonlogin;
+			let params={
+				"identity":identity,
+				"ticket":ticket,
+				"isFlag":isFlag,
+				"url":url1,
+				"sessionKey":sessionKey,
+				"fullScreenFlag":fullScreenFlag,
+				"buttonlogin":buttonlogin
+			}
+			post(url,params);
+		}
+	});
+}
+function post(URL, PARAMS) {
+	var temp_form = document.createElement("form");
+	temp_form.action = URL;
+	temp_form.target = "_blank";
+	temp_form.method = "post";
+	temp_form.style.display = "none";
+	for (var x in PARAMS) {
+		var opt = document.createElement("textarea");
+		opt.name = x;
+		opt.value = PARAMS[x];
+		temp_form .appendChild(opt);
+	}
+	document.body.appendChild(temp_form);
+	temp_form.submit();
+}
+function showPersonInfo(e){
+	console.log(e)
+	e = e || window.event;
+	if (e.stopPropagation) {//W3C阻止冒泡方法
+		e.stopPropagation();
+	} else {
+		e.cancelBubble = true;
+		//IE阻止冒泡方法
+	}
+	$("#historyMenu").hide();
+	if($("#personInfo").is(":hidden")){
+		$("#personInfo").show();
+	}else{
+		$("#personInfo").hide();
+	}
+}
+function tuichu(){
+	location.href=$$pageContextPath+"logoff";
+}
+$(document).bind("click",function(event){
+	var e = event || window.event;
+	var elem = e.srcElement||e.target;
+	while(elem)
+	{
+		if(elem.id == "personInfo")
+		{
+			return;
+		}
+		elem = elem.parentNode;
+	}
+
+	$('#personInfo').hide();
+});
+function changepwd() {
+	location.href=$$pageContextPath+"framework/frameapp/changePwd/?appCode=SYS_10&bdId=undefined&helpCode=Help_Menu_SYS_10&multitaskMenuFlag=true&multitaskMenuId=1"
+}
+</script>
+</html>

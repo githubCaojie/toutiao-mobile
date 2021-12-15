@@ -2,7 +2,7 @@
   <div class="gantt">
     <module-header>
       <el-image slot="icon" :src="require('../../../assets/img/home/todo_icon.png')"/>
-      <span slot="name">待办事项审批</span>
+      <span slot="name">工作计划</span>
     </module-header>
     <div ref="gantt" class="left-container"/>
   </div>
@@ -102,7 +102,6 @@ export default {
     gantt.config.row_height = 47
 
     // 初始化
-    console.log(this.tasks)
     gantt.init(this.$refs.gantt)
     // 数据解析
     gantt.parse(this.tasks)

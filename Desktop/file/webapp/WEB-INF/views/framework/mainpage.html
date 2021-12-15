@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<template th:substituteby="framework/pageset.html"></template>
+
+</head>
+<style>
+	
+	* {
+		margin: 0;
+		padding: 0;
+		font-size: 12px;
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		-o-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+	}
+
+	.container {
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+	
+	.contain_div {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		background: #ECF3F9;
+	}
+
+	.part1_div {
+		width: calc(50% - 10px);
+		height: 100%;
+		float: left;
+	}
+
+	.part1_div .block_div {
+		width: 100%;
+		height: calc(45% - 10px);
+		overflow: hidden;
+		position: relative;
+		background: white;
+		padding: 0 10px;
+	}
+
+	.part1_div .block_div .title {
+		height:40px;
+		line-height:40px;
+		width:100%;
+		color:black;
+		font-size:15px;
+		border-bottom: 1px solid #EAEAEA;
+	}
+
+	.part1_div .block_div .title img {
+		height: 20px;
+		float: left;
+		margin: 10px 10px 0 0;
+	}
+	
+	.part1_div .top_div .table_div {
+		width: 100%;
+		height: calc(100% - 40px);
+	}
+
+	.part1_div .bottom_div .table_div {
+		width: 100%;
+		height: calc(100% - 40px);
+	}
+
+	.part2_div {
+		width: calc(50% - 10px);
+		height: 100%;
+		float: right;
+	}
+
+	.part2_div .block_div {
+		width: 100%;
+		height: calc(45% - 10px);
+		overflow: hidden;
+		position: relative;
+		background: white;
+		padding: 0 10px;
+	}
+
+	.part2_div .block_div .title {
+		height:40px;
+		line-height:40px;
+		width:100%;
+		color:black;
+		font-size:15px;
+		border-bottom: 1px solid #EAEAEA;
+	}
+
+	.part2_div .block_div .title img {
+		height: 20px;
+		float: left;
+		margin: 10px 10px 0 0;
+	}
+
+	.part2_div .top_div .table_div {
+		width: 100%;
+		height: calc(100% - 40px);
+	}
+	
+	.part2_div .bottom_div .contact_div {
+		width: 100%;
+		height: calc(100% - 40px);
+		/*overflow-y: scroll;*/
+		
+	}
+
+	.part2_div .bottom_div .contact_div .left_div {
+		width: 50%;
+		height: 100%;
+		float: left;
+		position: relative;
+	}
+	
+	.part2_div .bottom_div .contact_div .left_div .tel_div {
+		height:60px;
+		float: left;
+		margin: 10% 0 0 20%;
+	}
+	
+	.part2_div .bottom_div .contact_div .left_div .tel_div img {
+		height:60px;
+		float: left;
+	}
+	
+	.part2_div .bottom_div .contact_div .left_div .tel_div .word_div {
+		height:60px;
+		float: left;
+		margin-left: 15px;
+	}
+	
+	.part2_div .bottom_div .contact_div .left_div .tel_div .word_div p {
+		height:30px;
+		line-height: 40px;
+		color: black;
+		font-size: 18px;
+	}
+	
+	.part2_div .bottom_div .contact_div .left_div .tel_div .word_div h3 {
+		height:30px;
+		line-height: 30px;
+		color: black;
+		font-size: 18px;
+	}
+	
+</style>
+
+<body >
+	<div id="app" class="container">
+	<div class="contain_div">
+		<div class="part1_div">
+			<div class="block_div top_div" style="height: calc(55% - 10px);">
+				<div class="title">
+					<img src="images/main/shouye_1.png"/>
+					我的待办
+				</div>
+				<div class="table_div">
+					<iframe height="100%" width="100%" src="jt/app/curTask/todo" style="border: none;"></iframe>
+				</div>
+			</div>
+			<div style="width: 100%; height: 20px;"></div>
+			<div class="block_div bottom_div">
+				<div class="title">
+					<img src="images/main/shouye_2.png"/>
+					站内消息
+				</div>
+				<div class="table_div">
+					<iframe height="100%" width="100%" src="main/mseeage/" style="border: none;"></iframe>
+				</div>
+			</div>
+		</div>
+		<div class="part2_div">
+			<div class="block_div top_div" style="height: calc(55% - 10px);">
+				<div class="title">
+					<img src="images/main/shouye_3.png"/>
+					预警消息
+				</div>
+				<div class="table_div">
+					<iframe height="100%" width="100%" src="main/warn/" style="border: none;"></iframe>
+				</div>
+			</div>
+			<div style="width: 100%; height: 20px;"></div>
+			<div class="block_div bottom_div">
+				<div class="title">
+					<img src="images/main/shouye_4.png"/>
+					技术支持
+				</div>
+				<div class="contact_div">
+					<div class="left_div">
+						<div class="tel_div">
+							<img src="images/main/shouye_zhiliang.png"/>
+							<div class="word_div">
+								<p>质量控制</p>
+    							<h3>188-888</h3>
+							</div>
+						</div>
+						
+						<div style="width: 100%; height: 1px; float: left;"></div>
+						
+						<div class="tel_div">
+							<img src="images/main/shouye_chai1.png"/>
+							<div class="word_div">
+								<p>征拆管理（BIM平台）</p>
+    							<h3>188-888</h3>
+							</div>
+						</div>
+						
+					</div>
+					
+					<div class="left_div">
+					
+						<div class="tel_div" style="margin: 10% 0 0 20px;">
+							<img src="images/main/shouye_touzi.png"/>
+							<div class="word_div">
+								<p>投资控制</p>
+    							<h3>188-888</h3>
+							</div>
+						</div>
+						
+						<div style="width: 100%; height: 1px; float: left;"></div>
+						
+						<div class="tel_div" style="margin: 10% 0 0 20px;">
+							<img src="images/main/shouye_chai2.png"/>
+							<div class="word_div">
+								<p>征拆管理（管理平台）</p>
+    							<h3>188-888</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<script th:inline="javascript">
+	</script>
+</body>
+
+</html>

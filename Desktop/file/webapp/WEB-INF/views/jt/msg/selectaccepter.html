@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+			<hy-filllayout rows="35,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea  >
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-form id="myform" name="dataWrap" 
+					label-position="left" :labelwidth="120" 
+					label-suffix="：" :cols="2" size="normal" > 
+					<hy-formgroup title="添加接收实体">
+						<hy-formselect id="acceptTypeId" name="acceptType" label="接收实体类型":rules="{ required: true}" dropname="HR.ACCEPT_TYPE" @change = "typechange"></hy-formselect> 
+						  <hy-formdroptree label="角色"  name="role" :readonly="roleRead" @change="getRoleName"
+			                   :highlight-current="true" default-expand-all size="large" id="roleId"
+			                   valueprovider="com.haiyisoft.jt.right.tree.RoleTree" :dynamic="true" :expandlevel="2"> 
+						</hy-formdroptree> 
+						 <hy-forminputbutton name="dept" label="部门"  id="busiTree"   v-model="orgUuid"   @click="selectOrg" :readonly="deptRead"
+							labelprovider="com.haiyisoft.hr.org.labelprovider.OrgNameLabel"> </hy-forminputbutton>
+						<hy-forminputbutton name="person" label="人员"  @click="selectPerson" v-model="perId" :readonly="perRead"
+							labelprovider="com.haiyisoft.hr.per.labelprovider.PersonNameLabel"> </hy-forminputbutton> 
+						<hy-forminputbutton name="addMan" label="添加人"  @click="selectPerson2" v-model="perId2" 
+							labelprovider="com.haiyisoft.hr.per.labelprovider.PersonNameLabel"> </hy-forminputbutton> 
+							<hy-formdatepicker name="addTime" label="添加时间" ></hy-formdatepicker>
+					</hy-formgroup>
+				 </hy-form> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var warnUuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				perId : null,
+				perId2 : null,
+				roleRead : true,
+				deptRead : true,
+				perRead : true,
+				 Judge1:'block',
+				 orgUuid : null
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				warnUuid = response.getParameter("warnUuid");
+				 	var record = myform.getRecord();
+				 var type = record.get("acceptType");
+			        if(type==1){
+						this.roleRead = true;
+						this.deptRead = true;
+						this.perRead = false;
+			        }else if(type==2){
+						this.roleRead = false;
+						this.deptRead = true;
+						this.perRead = true;
+			        }else if(type==3){
+						this.roleRead = true;
+						this.deptRead = false;
+						this.perRead = true;
+			        }
+			},
+			methods : {				
+				typechange : function(){
+					 var type = acceptTypeId.getSelectedValue();
+					 	var record = myform.getRecord();
+					 	record.set("person","");
+					 	record.set("dept","");
+					 	record.set("role","");
+					 	myform.setRecord(record);
+				        if(type==1){
+							this.roleRead = true;
+							this.deptRead = true;
+							this.perRead = false;
+				        }else if(type==2){
+							this.roleRead = false;
+							this.deptRead = true;
+							this.perRead = true;
+				        }else if(type==3){
+							this.roleRead = true;
+							this.deptRead = false;
+							this.perRead = true;
+				        }			
+				},
+				selectOrg : function(){
+					$.showModalDialog($$pageContextPath + 'jt/right/selectOrg/oneOrg', "选择部门", vm.selectOrgComp, null, 600, 400,
+							0);
+				},
+		        selectOrgComp : function(data){
+					var record = myform.getRecord();
+					 record.set("dept",data.partyId);
+			     myform.setRecord(record);
+				},
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+				    		var dataArr = [];
+				    		dataArr.push(formData);
+				    		$.request({
+				    			url : $$pageContextPath +"jt/msg/comAccepter/save",
+				    			data : dataArr,
+				    			params:{'warnUuid':warnUuid},
+				    			success : vm.onsavecomplete
+				    		});
+						}	
+					});
+				},
+				onsavecomplete : function(response){
+					setRM('success',response.getMessage(),function(){$.close(true);}) ;
+				},
+				selectPerson : function(){
+					$.showModalDialog($$pageContextPath + "jt/right/selectPer/onePer", "选择人员", vm.selectPersonComp, null, 800, 460, 0);
+				},
+				selectPersonComp : function(data){
+					this.perId = data.partyId;
+				},
+				selectPerson2 : function(){
+					$.showModalDialog($$pageContextPath + "jt/right/select/onePer", "选择人员", vm.selectPersonComp2, null, 800, 460, 0);
+				},
+				selectPersonComp2 : function(data){
+					this.perId2 = data.perUuid;
+				},
+				getRoleName : function(){
+					var node = roleId.getSelectedNode();
+					if(node!=null){
+						myform.getRecord().set("accepterName",node.label);
+					}
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

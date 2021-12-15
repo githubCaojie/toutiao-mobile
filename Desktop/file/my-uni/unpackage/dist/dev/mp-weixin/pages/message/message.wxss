@@ -1,0 +1,22 @@
+page.data-v-a91f51d4 {
+  background-color: #f2f4f7;
+}
+.msg .search.data-v-a91f51d4 {
+  background-color: #ffffff;
+  padding-bottom: 24rpx;
+}
+.msg .search .uni-searchbar.data-v-a91f51d4 {
+  padding: 0 32rpx;
+}
+.msg .search .uni-searchbar.data-v-a91f51d4 .uni-searchbar__box {
+  border: unset;
+  padding: 0 20rpx;
+  height: 72rpx;
+}
+.msg .search .uni-searchbar.data-v-a91f51d4 .uni-searchbar__box .uni-searchbar__text-placeholder {
+  font-size: 28rpx;
+}
+.msg .search .uni-searchbar.data-v-a91f51d4 .uni-searchbar__box .uni-searchbar__box-search-input {
+  font-size: 28rpx;
+}
+

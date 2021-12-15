@@ -1,0 +1,37 @@
+@CHARSET "UTF-8";
+.msg-message-bg{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: #395A9C;
+	display: none;
+	z-index: 99999;
+}
+
+.msg-message{
+	position: absolute;
+	line-height: 30px;
+	padding-right: 5px;
+	padding-left: 25px;
+	z-index: 100000;
+	display: none;
+}
+
+.msg-success{
+	border: 1px solid #999999;
+	background: url('./success.gif') no-repeat 5px center;
+	background-color: #FFFFFF;
+}
+
+.msg-error{
+	border: 1px solid #CD0A0A;
+	background: url('./error.gif') no-repeat 5px center;
+	background-color: #FFFFFF;
+}
+.msg-alert{
+	border: 1px solid #CD0A0A;
+	background: url('./alert.png') no-repeat 5px center;
+	background-color: #FFFFFF;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="220,*" id="mainArea">
+			<hy-fillarea>
+				<hy-tree v-model="tacheId" valueprovider="com.haiyisoft.jt.app.tree.JtAppTacheTree"  id="tacheNoTree" :expandlevel="2" @nodeclick="query" :rootcode="formId" :rootvisible="true" :onlyselectleaf="true"></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea id="subArea" :href="sub">
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			formId:'',
+			tacheId:'',
+			sub:''
+		},
+		mounted : function(){
+			this.sub = $$pageContextPath + "jt/app/jtAppExtTacheform/?formId=" + this.formId + "&tacheId=" + this.tacheId + "&t="+new Date();
+		},
+		methods : {		
+			query : function(){
+				vm.sub = $$pageContextPath + "jt/app/jtAppExtTacheform/?formId=" + vm.formId + "&tacheId=" + vm.tacheId + "&t="+new Date();
+			}	
+		}
+	});
+	</script>
+</body>
+</html>

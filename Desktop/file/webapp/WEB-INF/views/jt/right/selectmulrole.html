@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="1000,130,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout cols="200,*" :showborder="true" :showpadding="false">
+					<hy-fillarea>
+						 <hy-tree v-model="roleTypeClassTree" id="orgTree" @nodeclick="query"
+							 valueprovider="com.haiyisoft.jt.ep.tree.RolesTree"> 
+						</hy-tree>
+					</hy-fillarea> 
+				 	<hy-fillarea>
+		          		<hy-table border name="dataWrap" id="grid1" showpage :readonly="true" 
+		          			height="100%" @queryfunc="query" titlealign="center" style="width: 98%">
+							<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+							<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+							<hy-table-column title="角色名称" name="roleName" align="center"	width="150"></hy-table-column> 
+							<hy-table-column title="角色代码" name="roleCode" align="center"	width="80"></hy-table-column> 
+							<hy-table-column title="角色类型" name="roleTypeCode" align="center" width="150" type="drop" dropname="RIT.ROLE_TYPE"></hy-table-column> 
+							<hy-table-column title="单位类型" name="orgType" align="center" width="150" type="drop" dropname="ZL.TABLE_ORG"></hy-table-column> 
+							<hy-table-column title="上级角色"  name="roleParentCode" align="center" width="150" type="drop" dropname="RIT.ROLE_LIST"></hy-table-column> 
+						</hy-table> 
+					</hy-fillarea>
+				</hy-filllayout>
+      		</hy-fillarea>
+	      	<hy-fillarea>
+		      	<table style="height: 155px; margin-top: 45px;">
+					<tr><td><hy-button text="添加选中" @click="addChecked()" width="80"/></td></tr>
+					<tr><td><hy-button text="移除选中" @click="delChecked()" width="90"/></td></tr>
+					<tr><td><hy-button text="添加全部" @click="addAll()" width="90"/></td></tr>
+					<tr><td><hy-button text="移除全部" @click="delAll()" width="90"/></td></tr>
+					<tr><td><hy-button text="确定" @click="ok()" width="90"/></td></tr>
+					<tr><td><hy-button text="取消" @click="cancel()" width="90"/></td></tr>
+				</table>
+	      	</hy-fillarea>
+	      	<hy-fillarea >
+	      		<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+		      	 	<hy-fillarea title="已选角色">
+		          		<hy-table border name="selectedDataWrap" id="grid2" :readonly="true" 
+							height="100%" :showpage="false" titlealign="center" style="width: 100%">
+							<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+							<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+							<hy-table-column title="角色名称" name="roleName" align="center"	width="150"></hy-table-column> 
+							<hy-table-column title="角色代码" name="roleCode" align="center"	width="80"></hy-table-column> 
+							<hy-table-column title="角色类型" name="roleTypeCode" align="center" width="140" type="drop" dropname="RIT.ROLE_TYPE"></hy-table-column> 
+							<hy-table-column title="单位类型" name="orgType" align="center" width="140" type="drop" dropname="ZL.TABLE_ORG"></hy-table-column>
+							<hy-table-column title="上级角色"  name="roleParentCode" align="center" width="150" type="drop" dropname="RIT.ROLE_LIST"></hy-table-column> 
+						</hy-table> 
+					</hy-fillarea>
+				</hy-filllayout>
+      		</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	    var mainUuid;
+	    var type;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				roleTypeClassTree : '0'  
+			},
+			mounted : function(){
+				grid1.setData(response.getAjaxDataWrap("dataWrap"));
+				grid2.setData(response.getAjaxDataWrap("selectedDataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var roleParentCode =  this.roleTypeClassTree;
+					if(roleParentCode == "")
+						roleParentCode = 0;
+					var gridData = grid1.collectData(true) ;
+					var gridData2 = grid2.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					dataArr.push(gridData2) ;
+					$.request({
+						url : $$pageContextPath + 'jt/right/selectRole/queryMulRole',
+						data : dataArr,
+						params : {
+							"partyId" : vm.partyId,
+							"type" : vm.type,
+							"roleParentCode" : roleParentCode
+						},
+						success : function(response){
+							grid1.setData(response.getAjaxDataWrap("dataWrap"));
+							grid2.setData(response.getAjaxDataWrap("selectedDataWrap"));
+						}
+					});					
+				},
+				addChecked:function () {
+					var records = grid1.getCheckedRecords();
+					if(records.length > 0) {
+						$.confirm("提示","确定要添加所选角色？",function(){
+							var roleCodes = "";
+							if (records.length > 0) {
+								 for(var i = 0;i<records.length;i++){
+									 roleCodes += ',' + records[i].get("roleCode");
+								 }
+								 if(records.length >= 1){
+									 roleCodes = roleCodes.substring(1);
+								 }
+							}
+							$.request({
+								url : $$pageContextPath + 'jt/right/selectRole/saveAddRole',
+								params :　{
+									"partyId" : vm.partyId,
+									"type" : vm.type,
+									"roleCodes" : roleCodes
+								}, 
+								success : function(response){
+									grid2.addRecords(records);
+									grid1.delCheckedRecords();
+								}
+							});
+					　　	},function(){
+						});
+					} else {
+						setRM("alert", "请选择要添加的角色!");
+					}
+				},
+				addAll:function () {
+					var records = grid1.getAllRecords();
+					if(records.length > 0) {
+						$.confirm("提示","确定要添加左侧全部角色？",function(){
+							var roleCodes = "";
+							if (records.length > 0) {
+								 for(var i = 0;i<records.length;i++){
+									 roleCodes += ',' + records[i].get("roleCode");
+								 }
+								 if(records.length >= 1){
+									 roleCodes = roleCodes.substring(1);
+								 }
+							}
+							$.request({
+								url : $$pageContextPath + 'jt/right/selectRole/saveAddRole',
+								params :　{
+									"partyId" : vm.partyId,
+									"type" : vm.type,
+									"roleCodes" : roleCodes
+								}, 
+								success : function(response){
+									grid2.addRecords(records);
+									for(var i=0;i<records.length;i++){
+										grid1.delRecord(records[i]);
+									}
+								}
+							});
+					　　	},function(){
+						});
+					} else {
+						setRM("alert", "左侧无角色!");
+					}
+				},
+				delChecked:function () {
+					var records = grid2.getCheckedRecords();
+					if(records.length > 0) {
+						$.confirm("提示","确定要移除所选角色？",function(){
+							var roleCodes = "";
+							if (records.length > 0) {
+								 for(var i = 0;i<records.length;i++){
+									 roleCodes += ',' + records[i].get("roleCode");
+								 }
+								 if(records.length >= 1){
+									 roleCodes = roleCodes.substring(1);
+								 }
+							}
+							$.request({
+								url : $$pageContextPath + 'jt/right/selectRole/saveDelRole',
+								params :　{
+									"partyId" : vm.partyId,
+									"type" : vm.type,
+									"roleCodes" : roleCodes
+								}, 
+								success : function(response){
+									grid1.addRecords(records);
+									grid2.delCheckedRecords();
+								}
+							});
+					　　	},function(){
+						});
+					} else {
+						setRM("alert", "请选择要移除的角色!");
+					}
+				},
+				delAll:function () {
+					var records = grid2.getAllRecords();
+					if(records.length > 0) {
+						$.confirm("提示","确定要移除右侧全部角色？",function(){
+							var roleCodes = "";
+							if (records.length > 0) {
+								 for(var i = 0;i<records.length;i++){
+									 roleCodes += ',' + records[i].get("roleCode");
+								 }
+								 if(records.length >= 1){
+									 roleCodes = roleCodes.substring(1);
+								 }
+							}
+							$.request({
+								url : $$pageContextPath + 'jt/right/selectRole/saveDelRole',
+								params :　{
+									"partyId" : vm.partyId,
+									"type" : vm.type,
+									"roleCodes" : roleCodes
+								}, 
+								success : function(response){
+									grid1.addRecords(records);
+									for(var i=0;i<records.length;i++){
+										grid2.delRecord(records[i]);
+									}
+								}
+							});
+					　　	},function(){
+						});
+					} else {
+						setRM("alert", "右侧无角色!");
+					}
+				},
+				ok :function () {
+					$.request({
+						url : $$pageContextPath + 'jt/right/selectRole/queryAllRole',
+						params : {
+							"partyId" : vm.partyId,
+							"type" : vm.type
+					  	},
+						success : function(response){
+							var roleCodes = response.getParameter("roleCodes");
+							setRM(function(){
+								$.close({"roleCodes": roleCodes})
+							})
+						}
+					});
+				},
+				cancel:function () {
+					$.request({
+						url : $$pageContextPath + 'jt/right/selectRole/queryAllRole',
+						params : {
+							"partyId" : vm.partyId,
+							"type" : vm.type
+					  	},
+						success : function(response){
+							var roleCodes = response.getParameter("roleCodes");
+							$.close({"roleCodes": roleCodes})
+						}
+					});
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

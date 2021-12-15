@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true" :showpadding="false">
+
+			<hy-fillarea :display="editFlag=='N'?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+				<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+			</hy-fillarea>
+			
+			<hy-fillarea> 
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120"
+					:readonly="editFlag=='N'?true:false" :cols="2" size="normal">
+					<hy-formgroup title="基本信息">
+						<hy-formselect label="学历"  name="eduLevel" :rules="{ required: true}" dropname="HR.EDU_LEVEL" ></hy-formselect> 
+						<hy-forminput label="专业"  name="specialty" :maxlength="50" :rules="{ required: true}"></hy-forminput> 
+						<hy-formdatepicker label="开始时间" name="fromDate" :rules="{ required: true}"></hy-formdatepicker>
+						<hy-formdatepicker label="结束时间" name="thruDate" :rules="{ required: true}"></hy-formdatepicker>
+						<hy-formselect label="专业类别"  name="specialtyType" clearable dropname="HR.RY_SYS_TYPE"></hy-formselect> 
+						<!-- <hy-formselect label="专业分类" clearable name="specialtySort" dropname="" ></hy-formselect> -->
+						<hy-forminput label="毕业学校"  name="graduCollage" :maxlength="50" ></hy-forminput> 
+						<hy-formselect label="学位" name="degree" clearable :items="degreeDrop" ></hy-formselect>
+						<hy-formselect label="学校类别" clearable name="schoolType" :items="schoolTypeDrop" ></hy-formselect>
+						<hy-formselect label="学制" clearable name="eduSystem" :items="eduSystemDrop" ></hy-formselect>
+						<hy-forminput label="毕业证书号"  name="certificateNo" :maxlength="50" ></hy-forminput> 
+						<hy-forminput label="学位证书号"  name="degreeNo" :maxlength="50" ></hy-forminput>
+						<hy-forminput label="年份"  name="eduYear" :maxlength="50" ></hy-forminput>
+						<hy-formselect label="是否最高学历" clearable name="ifHighest" dropname="UEP.YES_OR_NO" ></hy-formselect>
+						<hy-formselect label="是否是第一学历" clearable name="ifFirst" dropname="UEP.YES_OR_NO"  ></hy-formselect>
+						<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="255" ></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+</body>
+<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					if(!compareDate(myform.getValue("fromDate"),myform.getValue("thruDate"))){
+						return setRM("alert","开始时间必须小于结束时间")
+					}
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'per/personEduInfo/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(response){$.close('')});
+								}
+							});	
+						}	
+					});
+				} 
+			}
+		});
+	</script>
+
+</html>

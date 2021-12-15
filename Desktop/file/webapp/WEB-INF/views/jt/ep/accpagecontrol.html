@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="300,100,*">
+			<hy-fillarea title="设置权限">
+				 <hy-tree id="orgTree" v-model="ControlTypeClassTree" :multiple="true" :checkstrictly="true" :rootcode="loginId"  
+					  default-expand-all dataprovider="com.haiyisoft.jt.ep.tree.LoginControlUnauthTree"> 
+				</hy-tree>
+			</hy-fillarea>
+			<hy-fillarea>
+				<table>
+					<br><br><br><br><br><br><br><br><br>
+		      		<tr ><td width="100" align="center"><hy-button text="添加->>" @click="add" :pkain="true" style="width:100%"></hy-button></td></tr>
+					<tr height="10"></tr>
+		      		<tr ><td width="100" align="center"  ><hy-button text="删除<<-"  @click="remove" :pkain="true" style="width:100%"></hy-button></td></tr>
+	      		</table>
+			</hy-fillarea>
+		
+			<hy-fillarea title="账户所属的权限对象">
+				<hy-tree v-model="MyControlTypeClassTree" :multiple="true" :rootcode="loginId" :checkstrictly="true"
+						 id="myOrgTree" default-expand-all valueprovider="com.haiyisoft.jt.ep.tree.MyLoginControlTree"> 
+				</hy-tree>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		 var vm = new Vue({
+			el : "#app",
+			data : {
+				ControlTypeClassTree : "",
+				MyControlTypeClassTree : ""
+			},
+			mounted : function(){
+			},
+			methods : {				
+				remove : function(){
+					var checkNodes = myOrgTree.getCheckedNodes();
+					if(checkNodes.length == 0)
+						return setRM("alert","请选择要删除的记录!");
+					$.confirm("提示","确定要删除选中的记录？",function(){
+						var rtn = "";
+						for(var i=0; i<checkNodes.length; i++){
+							rtn += checkNodes[i].code + ",";
+						}
+						$.request({
+							url :$$pageContextPath + 'jt/ep/userAccount/removeControl',
+							params : {
+								loginId : vm.loginId,
+								removeNodes : rtn
+							},
+							success : vm.onsavecomplete
+						});
+					},function(){});
+				}, 
+				add : function(){
+					var rootCode = orgTree.getRootCode();
+					var checkNodes = orgTree.getCheckedNodes();
+					if(checkNodes.length == 0)
+						return setRM("alert","请选择要添加的记录!");
+					$.confirm("提示","确定要添加选中的记录？",function(){
+						var rtn = "";
+						for(var i=0; i<checkNodes.length; i++){
+							if(rootCode != checkNodes[i].code){
+								rtn += checkNodes[i].code + ",";
+							}
+							var parentNodes = orgTree.getParentCascade(checkNodes[i].code);
+							for(var j=0; j<parentNodes.length; j++){
+								if(rootCode != parentNodes[j].code){
+									rtn += parentNodes[j].code + ",";
+								}
+							}
+						}
+						$.request({
+							url :$$pageContextPath + 'jt/ep/userAccount/addControl',
+							params : {
+								loginId : vm.loginId,
+								addNodes : rtn
+							},
+							success : vm.onsavecomplete
+						});
+					},function(){});
+				}, 
+				onsavecomplete : function(response){
+					setRM("success",response.getMessage(),new function(){
+						debugger;
+						setTimeout(function(){
+							document.location.reload();
+						},3000);
+						//orgTree.refreshRootNode();		
+						//myOrgTree.refreshRootNode();		
+					});
+				}
+			}
+		});  
+	</script>
+</body>
+</html>

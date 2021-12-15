@@ -1,6 +1,6 @@
 <template>
   <div class="nav">
-    <p class="name">模块入口</p>
+    <p class="name">统一入口</p>
     <el-row :gutter="20">
       <el-col :span="6">
         <el-button @click="szydbtn">
@@ -17,7 +17,7 @@
         </el-button>
       </el-col>
       <el-col :span="6">
-        <el-button>
+        <el-button @click="zzjgbtn">
           <p class="img">
             <el-image :src="require('../../../assets/img/home/zuzhijigouxitong_btn.jpg')"/>
           </p>
@@ -38,7 +38,10 @@
 export default {
   methods: {
     szydbtn() {
-      window.open('http://124.232.137.239:55555/szyd/templates/maincopy.html')
+      window.open('http://222.244.147.108:12345/szyd/templates/maincopy.html')
+    },
+    zzjgbtn() {
+      window.open('http://222.244.147.108:12345/xmjgpt/templates/MessageWarning/main.html')
     }
   }
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea  :display="(editFlag=='N')?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="80" :readonly="editFlag=='N'?true:false"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-forminput label="单位名称"  name="unitName" :maxlength="32" :rules="{ required: true}"></hy-forminput> 
+					<hy-forminput label="地址"  name="address" :maxlength="64" ></hy-forminput> 
+					<hy-forminput label="联系人"  name="linkMan" :maxlength="32"  ></hy-forminput> 
+					<hy-forminput label="联系电话"  name="linkTel" :maxlength="32" :rules="{pattern: /(^1\d{10}$)|(^\d{7}$)|(\d{4}-\d{7})/, message: '请输入正确的联系方式'}" ></hy-forminput> 
+					<hy-forminput label="法人"  name="lawMan" :maxlength="32" ></hy-forminput> 
+					<hy-forminput label="排序号"  name="orderSn" :maxlength="5"  :rules="[{ required: true}, {pattern: /^[1-9]\d*$/, message: '只能为数字'}]"></hy-forminput> 
+					<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="32" ></hy-forminput>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function(){
+			myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+		},
+		methods : {		
+			save : function(){
+				myform.validate(function(data){
+					if(data){
+						formData = myform.collectData();
+						var dataArr = [];
+						dataArr.push(formData);
+						$.request({
+							url : $$pageContextPath + 'gc/pmGcUnit/save',
+							data : dataArr,
+							success : function(response){
+								setRM(function(){$.close('')});
+							}
+						});	
+					}	
+				});
+			}
+		}
+		
+	});
+	</script>
+</body>
+</html>

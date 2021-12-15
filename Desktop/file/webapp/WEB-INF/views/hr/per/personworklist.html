@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea  >
+				<table>
+	              <tr>
+	                <td align="right" width="80px">姓名</td>
+	                <td width="120px" align="left"><hy-input name="personName"  :upload="true"></hy-input>
+	                </td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				<hy-button text="添加" @click="add"></hy-button>	
+				<hy-button text="删除" @click="remove"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column title="姓名"  name="personName" align="center"	width="120"></hy-table-column> 
+<!-- 						<hy-table-column title="单位名称"  name="orgName" align="center"	width="180"></hy-table-column>  -->
+<!-- 						<hy-table-column title="身份证号"  name="idCard" align="center"	width="160"></hy-table-column>  -->
+						<hy-table-column title="手机号"  name="linkmenPhone" align="center" width="160"></hy-table-column> 
+						<hy-table-column title="人员状态"  name="partyStatus" align="center" width="100" type="drop" dropname="ORG.EMP_STATE" ></hy-table-column> 
+<!-- 						<hy-table-column title="政治面貌"  name="politicalStatus" align="center" width="100" type="drop" dropname="PER.POLITY" ></hy-table-column>  -->
+<!-- 						<hy-table-column title="出生日期"  name="personBirthday" align="center" width="100" type="date" ></hy-table-column>  -->
+						<hy-table-column title="角色"  name="roleCodes"  :items="roleDrop" multiple align="center" width="460" type="drop" ></hy-table-column> 
+						<hy-table-column
+					      title="操作"
+					      width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'per/person/queryList',
+						data : dataArr,
+						params : {"orgId": vm.orgId,
+								"partyType" : vm.partyType},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.popWindow({
+						title:"详情",
+						url:$$pageContextPath + 'per/person/gcUnitQueryOne?partyId='+row.partyId+"&uuid="+row.uuid+"&editFlag=Y",
+						callback:vm.query,
+						button:0,
+						css:{width:1000, height:400},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				add : function(){
+					$.popWindow({
+						title:"添加",
+						url:$$pageContextPath + 'per/person/gcUnitAdd?editFlag=Y&partyType='+vm.partyType+'&orgId='+vm.orgId,
+						callback:vm.query,
+						button:0,
+						css:{width:1000, height:400},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'per/person/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+					
+				},
+				
+				onsavecomplete : function(response){
+					setRM(vm.query());
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

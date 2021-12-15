@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-tabs  id="tabpanel"    :showtabbar="true" type="card" v-model="selectedindex" >
+			    <hy-tab-pane  title="执行列表" id="tab0">
+			    	<hy-filllayout rows="35,*" :showborder="true"  :showpadding="false"> 
+						<hy-fillarea >
+							工单号：{{appAppNo }}
+						</hy-fillarea> 
+						<hy-fillarea >
+					          <hy-table border name="dataWrap"
+									id="ajaxgrid" :showpage="false" :readonly="true" height="100%"
+									titlealign="center" style="width: 100%">
+									<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+									<hy-table-column title="环节名称"  name="activityName" align="center"	width="150"></hy-table-column> 
+									<hy-table-column title="办理情况" width="80" align="center">
+								      <template scope="scope">
+								     	 <a href="javascript:void(0)" @click="gotoDetail(scope.row)">详细信息</a>&nbsp;
+								      </template>
+								    </hy-table-column>
+									<hy-table-column title="办理意见"  name="sendAdvice" align="center"	width="180"></hy-table-column> 
+									<hy-table-column title="办理人"  name="taskCommiter" align="center"	 type="drop" dropname="UEP.ACCOUNT_NAME"width="100"></hy-table-column> 
+									<hy-table-column title="开始办理时间"  name="taskReachTime" align="center" width="150" type="datetime" ></hy-table-column> 
+									<hy-table-column title="结束办理时间"  name="taskCommitTime" align="center" width="150" type="datetime" ></hy-table-column> 
+								</hy-table> 
+					      </hy-fillarea>
+					</hy-filllayout>
+			    </hy-tab-pane>
+			    <hy-tab-pane id="tab1"  :title="tacheName"  :href="showTacheUrl"> </hy-tab-pane>
+			    <hy-tab-pane id="tab2"  title="流程图展示" > 
+			    	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+						<hy-fillarea >
+							<div  id="container" style="height:100%;overflow:auto"> 
+						  	 <iframe id="svgframe" src="about:blank" height="100%" width="100%"  frameborder="0">
+						   </iframe>
+						  </div> 
+						</hy-fillarea>
+					</hy-filllayout>
+			    </hy-tab-pane>
+			</hy-tabs>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action,appTemplateNo ,appVersionNo,appInstanceId,appBusiUuid,prtActiveNo,openMode,appTaskId,confirmTask;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				selectedindex : 1,
+				tacheName : "",
+				showTacheUrl : "",
+				appAppNo : ""
+			},
+			created : function(){
+				action = response.getParameter("action");
+				prtActiveNo = response.getParameter("prtActiveNo");
+				this.tacheName = response.getParameter("tacheName");
+// 				this.showTacheUrl = response.getParameter("showTacheUrl");
+				this.appAppNo = response.getParameter("appAppNo");
+				if (action == 'showTache') {
+					this.selectedindex = 1;
+				} else {
+					this.selectedindex = 0;
+				}
+				if(appTemplateNo == ""){
+					return ;
+				}
+// 				flowSvg.showSvg(appTemplateNo, appVersionNo, appInstanceId,
+// 						prtActiveNo==""?"-1":prtActiveNo);
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+				$("#svgframe").attr("src",$$pageContextPath+"FlowSVG?templateNo="+this.appTemplateNo+"&versionNo="+this.appVersionNo + "&instanceId=" + this.appInstanceId);
+			},
+			methods : {				
+				gotoDetail : function(cell){
+					$.request({
+						url : $$pageContextPath + 'jt/app/taskExecInfo/insertLog',
+						params :{"appInstanceId" :$("#appInstanceId").val(),"appTaskId" :cell.taskId,"tacheName" : cell.activityName,"openMode" :$("#openMode").val(),"appBusiUuid":$("#appBusiUuid").val()},
+						success : function(response){
+							if (!!cell.tacheUrl) {
+								vm.showTacheUrl = cell.tacheUrl;
+								vm.tacheName = cell.activityName
+								vm.selectedindex = 1;
+							}
+						}
+					});
+				},
+				save : function(){
+					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

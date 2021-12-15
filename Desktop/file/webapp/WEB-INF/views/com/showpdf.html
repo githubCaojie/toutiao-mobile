@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*">
+			<hy-fillarea>
+			<iframe :src="['../../plugin/pdf/viewer.html?file=/jtfile/api/v1/file/download?uuid='+uuid]"
+				style="width: 100%; height: 100%"></iframe>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+
+
+</body>
+</html>
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+
+		},
+		mounted : function() {
+
+		},
+		methods : {
+
+		}
+	});
+</script>

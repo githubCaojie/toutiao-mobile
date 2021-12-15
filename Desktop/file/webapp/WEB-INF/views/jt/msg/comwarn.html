@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="40,*" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea  >
+		    	<div style="text-align:left">
+					<hy-button text="保存" @click="save"></hy-button>	
+				</div>
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="预警名称" name="warnName" :rules="{ required: true}" ></hy-forminput>
+						<hy-forminput label="代码" name="warnCode"  ></hy-forminput>
+						<hy-forminput label="列名1" name="colName1" :maxlength="64"></hy-forminput>
+						<hy-forminput label="列名2" name="colName2" :maxlength="64"></hy-forminput>
+						<hy-forminput label="列名3" name="colName3" :maxlength="64"></hy-forminput>
+						<hy-forminput label="列名4" name="colName4" :maxlength="64"></hy-forminput>
+						<hy-forminput label="列名5" name="colName5" :maxlength="64"></hy-forminput>
+						<hy-formselect label="消息类型" name="msgType" dropname="JT.MSG_TYPE"></hy-formselect>
+						<hy-forminput label="预警描述" name="describe" :rowspan="2" :colspan="2" :maxlength="64" type="textarea"></hy-forminput>
+						<hy-forminput label="备注" name="remark" :rowspan="2" :colspan="2" :maxlength="128" type="textarea"></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				sendFormData: null
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/comWarn/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close("true")});
+								}
+							});	
+						}	
+					});
+				},
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<script type="text/javascript" th:inline="javascript">
+   $$pageContextPath = [[${contextPath}]] + "/" ;
+   var popwindowOverMultitask = [[${popwindowOverMultitask}]] + "";
+</script>
+<script th:src="@{/framework/js/jquery-1.12.0.min.js}"></script>
+<script th:src="@{/framework/js/jquery-migrate-1.3.0.min.js}"></script>
+<script th:src="@{/vue/vendors.js}"></script>
+<script th:src="@{/framework/js/frameworkUtil.js}"></script>
+<script th:src="@{/framework/js/property.js}"></script>
+<script th:src="@{/framework/js/popwindow.js}"></script>
+<script th:src="@{/framework/js/ajaxdatawrap.js}"></script>
+<script th:src="@{/vue/vuecomponent.js}"></script>
+<link th:href="@{/vue/vuecomponent.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/framework/css/popwindow.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/framework/css/common3.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/plugin/msg/msg.css}" rel="stylesheet" type="text/css">
+<script th:src="@{/plugin/msg/msg.js}"></script>
+<script th:src="@{/commonUtil.js}"></script>
+<script th:src="@{/jt/file/image.js}"></script>
+<script th:src="@{/jt/file/jquery.rotate.min.js}"></script>
+<link th:href="@{/jt/file/cus.upload.css}" rel="stylesheet" type="text/css">
+<script th:inline="javascript">
+var dataCenter = [[${dataCenter}]] ;
+var response = convertJsonToDC(dataCenter) ;
+var debugMode = [[${debugMode}]] ;
+var $$devmode = debugMode ;
+var $$pageMetaData = [[${pageMetaData}]] ;
+var $$tabPaneType = [[${tabPaneType}]] ;
+var $$csrfToken = [[${csrfToken}]];
+var $$multitaskMenuFlag = [[${#httpServletRequest.getParameter('multitaskMenuFlag')}]];
+var $$multitaskMenuId = [[${#httpServletRequest.getParameter('multitaskMenuId')}]];
+var userLogin = [[${session.UserView==null?false:true}]];
+var applicationCode = [[${applicationCode}]] ;
+var editFlag;
+if(dataCenter!=null)
+	editFlag =  eval("("+dataCenter+")").editFlag;
+</script>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				工作单号  <hy-input  id="appNoId" v-model="appNo" :upload="true" width="150"></hy-input>
+				工单类型 <hy-select dropname="JT.APP_TYPE"  v-model="appType" clearable  width="150"></hy-select>
+				工单内容 <hy-input  id="contentId" v-model="content" :upload="true" width="150"></hy-input> 
+							<hy-button text="查询" @click="retrieve" />
+						</hy-fillarea>  
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="retrieve" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column title="工作单号" width="80" align="center">
+					    <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="openTaskExecInfo(scope.row)">{{scope.row.appNo}}</a>&nbsp;
+					    </template>
+					    </hy-table-column>
+						<hy-table-column name="appType" title="工作单类型" type="drop"align="center"width="120"
+							dropname="JT.APP_TYPE"></hy-table-column> 
+						<hy-table-column name="loginId" title="申请人"type="drop"
+							dropname="UEP.ACCOUNT_NAME"align="center" width="80"></hy-table-column> 
+						<hy-table-column  name="appStatus" dropname="JT.APP_STATUS" type="drop"
+							title="工单状态" align="center"width="120"></hy-table-column> 
+							<hy-table-column name="content" title="工单内容" align="center"width="360"></hy-table-column> 
+							<!-- <hy-table-column
+					      title="操作"
+					      width="120" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="editPrintTime(scope.row)">打印信息修改</a>&nbsp;
+					      </template>
+					    </hy-table-column> -->
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				appType : "",
+				appNo : "",
+				curTaskName : "",
+				content : ""
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				retrieve : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/appdatamaintain/retrieve',
+						data : dataArr,
+						params : { "appType": this.appType,
+								   "appNo" : this.appNo,
+								   "content" : this.content,
+								   "curTaskName" : this.curTaskName},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				openTaskExecInfo : function(cell){
+					$.popWindow({
+						title:ajaxgrid.getColumnLabel(cell.keyId-1,"appType") +"("+cell.appNo+")",
+						url:$$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + cell.instanceId+ "&openMode=3" ,
+						callback:vm.query,
+						button:0,
+						css:{width:document.body.clientWidth,height:document.body.clientHeight}
+					});
+				},
+				editPrintTime : function(row){
+					var editFlag = "Y";
+					if(row.appStatus == 2){
+						editFlag = "Y";
+					}
+					if(row.appStatus == 1){
+						editFlag = "N";
+					}
+					$.popWindow({
+						url:$$pageContextPath + 'jt/app/appsetprinttime/?appInstanceId='+row.instanceId+ "&editFlag=" + editFlag,
+						title: "打印信息修改",	
+						callback: null,
+						css:{width:900,height:750},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				CallBack : function(response){
+					setRM("success",response.getMessage(),vm.retrieve);
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

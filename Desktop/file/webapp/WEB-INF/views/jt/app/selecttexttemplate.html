@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="33,*" :showborder="true"  :showpadding="false">  
+			<hy-fillarea >
+				<hy-button text="确定"  @click="sure"></hy-button>	
+				<hy-button text="添加模板"  @click="addTemplate"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"@dbSelectRow="selectRow"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" type="index"></hy-table-column>
+						<hy-table-column  align="center" width="50" type="singleselection"></hy-table-column> 
+						<hy-table-column title="模板内容" name="textTemplate" width="425":maxlength="2000"></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	    var templateType;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+				 templateType = response.getParameter("templateType");
+				 templateContent = response.getParameter("templateContent");
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/selecttexttemplate/query',
+						data : dataArr,
+						params : {"templateType" : templateType},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				sure : function(){
+					var textTemplate = "";
+					var records = ajaxgrid.getCheckedRecords();
+					if(records.length > 0) {
+						textTemplate = records[0].data.textTemplate;
+					 $.close( textTemplate);
+					}
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.sure();
+				},
+				addTemplate :function (){
+					$.popWindow({
+						url:$$pageContextPath + 'jt/app/selecttexttemplate/add?templateType=' + templateType +"&initContent="+templateContent,
+						title: "设置模板内容",	
+						callback: vm.onsavecomplete,
+						arguments:response,
+						css:{width:600,height:400}, 
+						button:0,
+						isRunCallback :true
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					vm.query();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

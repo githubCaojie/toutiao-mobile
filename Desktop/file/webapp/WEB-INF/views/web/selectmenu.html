@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,35">
+			<hy-filllayout cols="200,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+		  		<hy-tree id="treeview" @nodeclick="treeClick" v-model="slTreeCode" :rootcode="menuClass"
+		  			valueprovider="com.haiyisoft.web.tree.WpMenuTree" :dynamic="false"></hy-tree>
+	        </hy-fillarea>
+			<hy-fillarea >
+				<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="查询条件" >
+						<table>
+			              <tr>
+			                <td align="right" width="80px">目录类型</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.menuType" dropname="" :upload="true"  ></hy-select> </td>
+			                <td align="right" width="80px">目录名称</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.menuName"  :upload="true" ></hy-input> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="singleselection"></hy-table-column> 
+								<hy-table-column title="目录类型"  name="menuType" align="center"	width="100"></hy-table-column> 
+								<hy-table-column title="目录代码"  name="menuCode" align="center"	width="100"></hy-table-column> 
+								<hy-table-column title="目录名称"  name="menuName" align="center" width="200" ></hy-table-column> 
+								<hy-table-column title="目录url"  name="menuUrl" align="center" width="260"   ></hy-table-column> 
+								<hy-table-column title="是否叶子节点"  name="isLeaf" align="center" width="100" type="drop" dropname="UEP.YES_OR_NO"  ></hy-table-column> 
+								<hy-table-column title="排序号"  name="orderSn" align="center" width="80"   ></hy-table-column> 
+								<hy-table-column  title="操作"  width="80" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+			<hy-fillarea >
+				 <hy-row>
+					<hy-col :span="9"> </hy-col>
+					<hy-col :span="3"  > <hy-button text="确定" @click="ok()" ></hy-button> </hy-col>
+					<hy-col :span="3"  > <hy-button text="取消" onclick="$.close()" ></hy-button> </hy-col>
+				</hy-row>
+			</hy-fillarea>
+		</hy-filllayout>
+		
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'web/wpMenu/query',
+						data : dataArr,
+						//params : {"upUuid":vm.slTreeCode,"menuClass":vm.menuClass},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				refreshTree : function(response){
+					if(!!vm.slTreeCode){
+						var treeBean = treeview.getNodeByCode(vm.slTreeCode);
+						treeview.refreshNode(treeBean);
+					}else{
+						treeview.refreshRootNode();
+					}
+					this.query();
+				},
+				treeClick : function(){
+					vm.query();
+				},
+				ok : function(){
+					 var records =  ajaxgrid.getCheckedRecords();
+					 if(records.length>0){
+						 $.close(records[0].data.uuid);
+					 }
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.ok();
+				}
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="35,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-button text="添加" @click="add"></hy-button>	
+				<hy-button text="删除" @click="remove"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" :showpage="false" :readonly="true" height="100%"
+						@queryfunc="query" >
+				    <hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+				    <hy-table-column name="doTime" title="处理时间" align="center"type="datetime"	width="150"></hy-table-column> 
+					<hy-table-column name="doDesc" title="简述" width="270"  align="center"></hy-table-column> 
+					<hy-table-column name="doMan" title="处理人员" align="center" type="drop"dropname="ORG.PERSON_NAME"	width="100"></hy-table-column> 
+					<hy-table-column  dropname="UEP.YES_OR_NO" name="status" title="状态"  align="center" type="drop"	width="80"></hy-table-column>
+					<hy-table-column
+				      title="操作" width="80" align="center">
+				      <template scope="scope">
+				     	<a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+				      </template>
+				    </hy-table-column>
+				</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/taskProc/list',
+						data : dataArr,
+						params:{"taskUuid":vm.taskUuid},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.popWindow({
+						url:$$pageContextPath + 'jt/taskProc/pageGet?uuid='+row.uuid,
+						title: "详细",	
+						callback: vm.onsavecomplete,
+						css:{width:700,height:500},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				add : function(){
+					$.popWindow({
+						url:$$pageContextPath + 'jt/taskProc/pageGet?taskUuid='+vm.taskUuid,
+						title: "添加",	
+						callback: vm.onsavecomplete,
+						css:{width:700,height:500},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							ajaxgrid.delCheckedRecords();
+							var gridData = ajaxgrid.collectData(true, "update");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'jt/taskProc/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+					
+				},
+				onsavecomplete : function(response,b,c){
+					vm.query();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

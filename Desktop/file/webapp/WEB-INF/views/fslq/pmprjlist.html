@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hytreetable.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件" >
+				<table>
+	              <tr>
+	                <td align="right" width="60px">项目编号</td>
+	                <td width="120px" align="left"><hy-input name="dataWrap.query.prjNo_LIKE" :upload="true"></hy-input> </td>
+	                <td align="right" width="60px">项目名称</td>
+	                <td width="120px" align="left"><hy-input name="dataWrap.query.prjName_LIKE" :upload="true"></hy-input> </td>
+	                <td align="right" width="100px">建设单位名称</td>
+	                <td width="120px" align="left"><hy-input name="dataWrap.query.consUnit_LIKE" :upload="true"></hy-input> </td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea>
+				<hy-button text="添加" @click="add"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%" >
+						<hy-table-column type="expand" >
+							<template scope="props">
+								<hy-table titlealign="center" :showpagebar ="false" 
+									:data="props.row.subs" :height="250" v-if="props.row.leftFlag=='Y'">
+									<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+									<hy-table-column title="项目编号" name="prjNo" align="center" width="100"></hy-table-column> 
+									<hy-table-column title="项目法人" name="legalPer" align="center" width="100"></hy-table-column> 
+									<hy-table-column title="项所属集团公司" name="beGroup" type="drop" dropname="PRJ.BE_GROUP" align="center" width="120"></hy-table-column> 
+									<hy-table-column title="项目名称" name="prjName" align="center" width="180"></hy-table-column> 
+									<hy-table-column title="实际开工日期" name="beginDate" type="date" align="center" width="110"></hy-table-column> 
+									<hy-table-column title="实际竣工日期" name="relaEndDate" type="date" align="center" width="110"></hy-table-column> 
+									<hy-table-column title="工程概算额(亿元)" name="budgetCost" align="center" width="120"></hy-table-column> 
+									<hy-table-column title="工程预算额(亿元)" name="designCost" align="center" width="120"></hy-table-column> 
+									<hy-table-column title="工程结算(亿元)" name="cost" align="center" width="120"></hy-table-column> 
+					          		<hy-table-column title="操作" width="240" align="center">
+								      <template scope="scope">
+								     	 <a href="javascript:void(0)" @click="prjZnd(scope.row)">项目重难点&nbsp;</a>
+								     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情&nbsp;</a>
+<!-- 								     	 <a href="javascript:void(0)" @click="prjWork(scope.row)">项目工程量&nbsp;</a> -->
+								     	 <a href="javascript:void(0)" @click="prjYearTz(scope.row)">项目工程量&nbsp;</a>
+					     	 			 <a href="javascript:void(0)" @click="person(scope.row)">人员管理&nbsp;</a>
+								     	 <a href="javascript:void(0)" @click="remove(scope.row)">删除&nbsp;</a>
+								      </template>
+								    </hy-table-column>
+					          	</hy-table>
+							</template>
+						</hy-table-column>
+						<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+						<hy-table-column title="项目编号" name="prjNo" align="center" width="100"></hy-table-column> 
+<!-- 						<hy-table-column title="项目法人" name="legalPer" align="center" width="100"></hy-table-column>  -->
+						<hy-table-column title="所属省份" name="province" align="center" width="100"></hy-table-column> 
+						<hy-table-column title="项所属集团公司" name="beGroup" type="drop" dropname="PRJ.BE_GROUP" align="center" width="200"></hy-table-column> 
+						<hy-table-column title="项目名称" name="prjName" align="center" width="200"></hy-table-column> 
+						<hy-table-column title="建设单位名称" name="consUnit" align="center" width="200"></hy-table-column> 
+						<hy-table-column title="实际开工日期" name="beginDate" type="date" align="center" width="110"></hy-table-column> 
+						<hy-table-column title="实际竣工日期" name="relaEndDate" type="date" align="center" width="110"></hy-table-column> 
+						<hy-table-column title="工程概算额(元)" name="budgetCost" align="center" width="120"></hy-table-column> 
+						<hy-table-column title="工程预算额(元)" name="designCost" align="center" width="120"></hy-table-column> 
+						<hy-table-column title="工程结算(元)" name="cost" align="center" width="120"></hy-table-column> 
+						<hy-table-column title="是否存在子项目" name="leftFlag" type="drop" dropname="UEP.YES_OR_NO" align="center" width="120"></hy-table-column> 
+						<hy-table-column title="操作" width="320" align="center">
+					      <template scope="scope">
+					      	 <a href="javascript:void(0)" @click="prjZnd(scope.row)">项目重难点&nbsp;</a>
+					     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情&nbsp;</a>
+					     	 <a href="javascript:void(0)" @click="addSub(scope.row)" v-if="scope.row.leftFlag=='Y'">添加子项目&nbsp;</a>
+<!-- 					     	 <a href="javascript:void(0)" @click="prjWork(scope.row)">项目工程量&nbsp;</a> -->
+							 <a href="javascript:void(0)" @click="prjYearTz(scope.row)">项目工程量&nbsp;</a>
+					     	 <a href="javascript:void(0)" @click="person(scope.row)">人员管理&nbsp;</a>
+					     	 <a href="javascript:void(0)" @click="remove(scope.row)">删除&nbsp;</a>
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {	
+				query : function() {
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pmPrj/list',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});	
+				},
+				detail : function(row){
+					$.popWindow({
+						title:"详细",
+						url:$$pageContextPath + 'pmPrj/pageform?id='+row.id,
+						callback:vm.query,
+						button:0,
+						css:{width:1200, height:850},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				// 添加父项目
+				add : function() {
+					$.popWindow({
+						title:"添加",
+						url:$$pageContextPath + 'pmPrj/pageform?upId=-1',
+						callback:vm.query,
+						button:0,
+						css:{width:1200, height:850},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				addSub : function(row){
+					$.popWindow({
+						title:"添加",
+						url:$$pageContextPath + 'pmPrj/pageform?upId='+row.id,
+						callback:vm.query,
+						button:0,
+						css:{width:1200, height:850},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				remove : function(row){
+					$.confirm("提示", "确定要删除选中的记录？", function() {
+						$.request({
+							url : $$pageContextPath + 'pmPrj/del',
+							params : { 
+								"id": row.id
+							},
+							success : function(response){
+								setRM(vm.onsavecomplete);
+							}
+						});
+					}, function() {
+					});
+				},
+				prjWork : function(row){
+					$.showModalDialog($$pageContextPath + 'pmPrjWork/?prjId='+row.id, "项目工程量", 
+							vm.onsavecomplete, null, 1000, 600, 0);
+				},
+				prjYearTz : function(row){
+					$.showModalDialog($$pageContextPath + 'pmXmYearTz/?prjId='+row.id, "项目工程量", 
+							vm.onsavecomplete, null, 1000, 600, 0);
+				},
+				prjZnd : function(row){
+					$.showModalDialog($$pageContextPath + 'pmXmZnd/?prjId='+row.id, "项目重难点", 
+							vm.onsavecomplete, null, 1000, 600, 0);
+				},
+				onsavecomplete : function(response){
+					vm.query();
+				},
+				person : function(row) {
+					$.showModalDialog($$pageContextPath + 'pmPrjPerReal/?prjPartyId='+row.partyId+'&realType='+vm.realType, 
+							"人员管理", vm.onsavecomplete, null, 1200, 800, 0);
+				}
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="600,120,500">
+				<hy-fillarea title="企业人员账号">
+		<hy-filllayout rows="queryh,*" :showborder="true"  :showpadding="false" > 
+			<hy-fillarea >
+				 <table>
+	              <tr> 
+					<td align="right" width="90px">企业名称</td>
+	                <td width="200px" align="left">
+						<hy-input id="orgName" v-model="orgName" :upload="true" ></hy-input>
+					</td>
+					<td align="right" width="80px">标签</td>
+	                <td width="200px" align="left">
+						<hy-select id="tag" v-model="tag" :upload="true" :clearable="true" dropname="QY.PER_TAG"></hy-select>
+					</td>
+					<td align="right" width="80px">姓名</td>
+	                <td width="100px" align="left"><hy-input id="personName" v-model="input"></hy-input></td>
+           		  	<td align="right" width="80"><hy-button text="查询" @click="queryQyPeople"></hy-button></td>
+           		  </tr>
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap2" id="ajaxgrid2" showpage :readonly="true" height="100%"
+						@queryfunc="queryPeople" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+					    <hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+						<hy-table-column title="账号代码"  name="loginCode" align="center" ></hy-table-column> 
+						<hy-table-column title="企业名称"  name="orgName" align="center" ></hy-table-column> 
+						<hy-table-column title="人员名称"  name="partyId" align="center"  type="drop" dropName="ORG.PERSON_NAME" ></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+			</hy-fillarea>
+			<hy-fillarea>
+			<table>
+				<br><br><br><br><br>
+				<tr ><td width="100"  align="center"><hy-button text="全部添加->>" @click="addAllZH" :pkain="true" style="width:100%"></hy-button></td></tr>
+				<tr height="10"></tr>
+	      		<tr ><td width="100"  align="center"><hy-button text="添加->>" @click="addZH" :pkain="true" style="width:100%"></hy-button></td></tr>
+				<tr height="10"></tr>
+	      		<tr ><td width="100" align="center"  ><hy-button text="删除<<-"  @click="remove" :pkain="true" style="width:100%"></hy-button></td></tr>
+	      		<tr height="10"></tr>
+	      		<tr ><td width="100" align="center"  ><hy-button text="全部删除<<-"  @click="removeAll" :pkain="true" style="width:100%"></hy-button></td></tr>
+      		</table>
+			</hy-fillarea>
+			<hy-fillarea title="群组账号">
+				   <hy-table border name="dataWrap1" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+					    <hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+						<hy-table-column title="账号代码" name="loginCode" align="center"	></hy-table-column> 
+						<hy-table-column title="企业名称"  name="orgName" align="center" ></hy-table-column> 
+						<hy-table-column title="人员名称" name="partyId" align="center"  type="drop" dropName="ORG.PERSON_NAME" ></hy-table-column> 
+					</hy-table> 
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		 var vm = new Vue({
+			el : "#app",
+			data : {
+				input : "",
+				uuid : '',
+				orgName : '',
+				tag : ''
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap1"));
+				ajaxgrid2.setData(response.getAjaxDataWrap("dataWrap2"));
+				this.uuid = response.getParameter("uuid");
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true);
+					var dataArr = [];
+					dataArr.push(gridData);
+					$.request({
+						url : $$pageContextPath + 'jt/com/group/flushQyAll',
+						data : dataArr,
+					 	params:{
+					 		uuid : vm.uuid
+					 	}, 
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap1"));
+						}
+					});					
+				},
+				remove : function(response,b,c){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						setRM("alert", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url :$$pageContextPath + 'jt/com/group/removeQyZH',
+								data : dataArr,
+								params : {
+									uuid : vm.uuid
+								},
+								success : vm.onsavecomplete
+							});
+					　　　},function(){});
+					}
+				}, 
+				addZH : function(response,b,c){
+					var checked = ajaxgrid2.getCheckedRecords();
+					if (checked.length <= 0) {
+						setRM("alert", "请选择要添加的记录!");
+					}else{
+						$.confirm("提示","确定要添加选中的记录？",function(){
+							var gridData = ajaxgrid2.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url :$$pageContextPath + 'jt/com/group/addQyZH',
+								data : dataArr,
+								params : {
+									uuid : vm.uuid
+								},
+								success : vm.onsavecomplete
+							});
+					　　　},function(){});
+					}
+				}, 
+				//根据条件全部添加人员
+				addAllZH : function(){
+					var orgName = vm.orgName;
+					var tag = vm.tag;
+					$.confirm("提示","确定要添加符合条件的所有记录？",function(){
+						$.request({
+							url :$$pageContextPath + 'jt/com/group/addAllQyZH',
+							params : {
+								uuid : vm.uuid,
+						 		orgName : orgName,
+						 		personName : this.input,
+						 		tag : tag
+							},
+							success : vm.onsavecomplete
+						});
+				　　　},function(){});
+				},
+				//移除所有群组人员
+				removeAll : function(){
+					$.confirm("提示","确定要删除选中的记录？",function(){
+						$.request({
+							url :$$pageContextPath + 'jt/com/group/removeAllQyZH',
+							params : {
+								uuid : vm.uuid
+							},
+							success : vm.onsavecomplete
+						});
+				　　　},function(){});
+				},
+				onsavecomplete : function(response){
+					if('success' == response.getMessage()){
+						setRM("success",'操作成功',vm.flushAll());
+					}else{
+						setRM("error",response.getMessage(),vm.flushAll());
+					}
+					
+				},
+				queryQyPeople : function(){
+					var gridData = ajaxgrid2.collectData(true) ;
+					var dataArr = [];
+					var orgName = vm.orgName;
+					var tag = vm.tag;
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/com/group/queryQyPeople',
+						data : dataArr,
+					 	params:{
+					 		uuid : vm.uuid,
+					 		orgName : orgName,
+					 		personName : this.input,
+					 		tag : tag
+					 	}, 
+						success : function(response){
+							ajaxgrid2.setData(response.getAjaxDataWrap("dataWrap2"));
+						}
+					});		
+				},
+				flushAll : function(){
+					$.request({
+						url : $$pageContextPath + 'jt/com/group/flushQyAll',
+					 	params:{
+					 		uuid : vm.uuid
+					 	}, 
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap1"));
+							ajaxgrid2.setData(response.getAjaxDataWrap("dataWrap2"));
+						}
+					});	
+				}
+			}
+		});  
+	</script>
+</body>
+</html>

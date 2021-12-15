@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,toolh" :showborder="true" :showpadding="false" >
+		<hy-fillarea>
+			<hy-form id="myform" name="dataWrap" :labelwidth="100" :readonly="false" :cols="1" size="normal">
+					<hy-forminput label="人员名称" name="person.personName" :readonly="true"></hy-forminput>
+					<hy-forminput label="所在部门" name="person.orgName" :readonly="true"></hy-forminput>
+					<hy-forminput label="登录账号" name="loginCode" :rules="{ required: true}"></hy-forminput>
+	   		</hy-form> 
+	  </hy-fillarea> 
+		<hy-fillarea >  
+			<hy-button text="保存" @click="save"></hy-button>
+		</hy-fillarea> 
+	</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function() {
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+			},
+			methods : {
+				save : function() {
+					myform.validate(function(data) {
+						if (data) {
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/ep/userAccount/saveLoginCode',
+								data : dataArr,
+								success : function(response) {
+									setRM(function() { $.close(response) })
+								}
+							});
+						}
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

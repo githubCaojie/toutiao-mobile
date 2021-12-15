@@ -1,0 +1,363 @@
+.contaner {
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	display: flex;
+	background: url(../images/screem/bg.png) center no-repeat;
+	background-size: 100% 100%;
+	position: absolute;
+}
+
+.cont {
+	width: 98%;
+	height: 99%;
+	left: 1%;
+	top: 0px;
+	display: flex;
+	border: 2px solid #077eff;
+	position: absolute;
+}
+
+.left_contaner {
+	margin-left: 10px;
+	width: 335px;
+	height: 691.2px;
+	float: left;
+}
+
+.center_contaner {
+	margin-left: 10px;
+	width: 656px;
+	height: 691.2px;
+	float: left;
+}
+
+.right_contaner {
+	margin-left: 5px;
+	width: 341px;
+	height: 691.2px;
+	float: left;
+}
+
+.introduction {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(30% - 30px);
+}
+
+.img1 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction2 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(40% - 30px);
+}
+
+.img2 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu1.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction3 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(33% - 30px);
+}
+
+.img3 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu1.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction4 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(23% - 30px);
+}
+
+.img4 {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	background: url(../images/screem/zs.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction5 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(75% - 5px);
+}
+
+.img5 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/zxn.png) no-repeat;
+	background-size: 100% 100%;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.introduction6 {
+	margin-top: 20px;
+	width: 98%;
+	height: 39%;
+}
+
+.img6 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu1.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction7 {
+	margin-top: 20px;
+	width: 98%;
+	height: 25%;
+}
+
+.img7 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.introduction8 {
+	margin-top: 20px;
+	width: 98%;
+	height: calc(25% + 7px);
+}
+
+.img8 {
+	width: 100%;
+	height: 100%;
+	background: url(../images/screem/qietu.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.tetel {
+	width: 100%;
+	height: 10%;
+	margin-top: 2%;
+	margin-left: 1%;
+	font-size: 16px;
+	color: white;
+}
+
+.gsjj {
+	width: 92%;
+	height: 80%;
+	margin-left: 4%;
+	margin-right: 3%;
+	font-size: 10px;
+	color: #00d4e0;
+}
+
+option {
+	/* Whatever color  you want */
+	background-color: black;
+}
+
+#left_bt {
+	position: absolute;
+	top: 38%;
+	width: 33px;
+	height: 70px;
+	float: left;
+	left: 26.4%;
+	background: url(../images/screem/bt1.png) no-repeat;
+}
+
+#right_bt {
+	position: absolute;
+	top: 40%;
+	width: 20px;
+	height: 70px;
+	float: right;
+	right: 26.4%;
+	background: url(../images/screem/bt2.png) no-repeat;
+}
+
+#down_bt {
+	position: absolute;
+	width: 70px;
+	height: 30px;
+	float: top;
+	left: 45%;
+	background-image: url(../images/screem/bt3.png);
+	background-size: 100% 100%;
+	bottom: 17.5%;
+}
+
+#table {
+	width: 14%;
+	height: 5%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 3%;
+	left: 42%;
+	justify-content: space-around;
+	align-items: center;
+	display: flex;
+}
+
+#table1 {
+	width: 25%;
+	height: 28%;
+	z-index: 999;
+	background: url(../images/screem/shangxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 1%;
+	left: 1%;
+	opacity: 0.9;
+}
+
+#table2 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 31.5%;
+	left: 1%;
+	background: url(../images/screem/zhongxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table3 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 65%;
+	left: 1%;
+	background: url(../images/screem/xiaxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table4 {
+	width: 25%;
+	height: 28%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 1%;
+	right: 1%;
+	background: url(../images/screem/shangxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table5 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 31.5%;
+	right: 1%;
+	background: url(../images/screem/zhongxm.png) center no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+#table6 {
+	width: 25%;
+	height: 30%;
+	z-index: 999;
+	padding: 5px;
+	float: right;
+	position: absolute;
+	top: 65%;
+	right: 1%;
+	background: url(../images/screem/xiaxm.png) center no-repeat;
+	background-size: 100% 100%;
+	opacity: 0.9;
+}
+/* #table7{ */
+/* 	width:97.5%; height:15.5%; z-index:999; background: #0c1848; */
+/* 	padding:5px; float: right;position:absolute; top:82.5%;right:1% */
+/* } */
+.p1 {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-weight: bold;
+	font-size: 16px;
+	font-style: normal;
+	color: white; /*字体颜色*/
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+.tb {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 20px;
+	font-weight: bold;
+	font-style: normal;
+	float: left;
+	margin-left: 10px;
+	margin-top: 7px;
+}
+
+.t {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 14px;
+	font-weight: bold;
+	font-style: normal;
+	float: left;
+	margin-left: 5px;
+	margin-top: 13px;
+}
+
+.p2 {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 13px;
+	font-style: normal;
+	color: white; /*字体颜色*/
+	float: left;
+	margin-left: 8px;
+	margin-top: 9px;
+}
+
+.p3 {
+	font-family: "宋体", "仿宋", sans-serif;
+	/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+	font-size: 12px;
+	font-style: normal;
+	color: white; /*字体颜色*/
+	float: left;
+	margin-left: 10px;
+	margin-top: 12px;
+}

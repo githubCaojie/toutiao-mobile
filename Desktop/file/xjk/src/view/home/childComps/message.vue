@@ -15,12 +15,6 @@
                   <span>{{childItem.time}}</span>
                 </el-link>
               </el-col>
-              <el-col class="information-col" v-for="childItem in item.childData" :key="childItem.id" :span="99">
-                <el-link class="information-link" :underline="false">
-                  <span>{{childItem.name}}</span>
-                  <span>{{childItem.time}}</span>
-                </el-link>
-              </el-col>
             </el-row>
           </div>
         </el-tab-pane>
@@ -85,6 +79,7 @@ export default {
       /deep/ .el-tabs__content {
         height: 100%;
         overflow-y: scroll;
+        padding-right: 10px;
       }
       .information-col {
         width: 100%;

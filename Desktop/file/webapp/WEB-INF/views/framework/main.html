@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head> 
+		<title th:text="${applicationName}"></title>
+		<template th:substituteby="framework/pageset.html"></template>
+		<link rel="stylesheet" type="text/css" href="framework/template1/css/home3.css">
+		<link rel="stylesheet" type="text/css" href="framework/template1/css/hymultitask.css">
+		<link href="plugin/menu/css/menu.css" rel="stylesheet" type="text/css">
+		<link href="framework/template1/css/menu_cus.css" rel="stylesheet" type="text/css">
+		<link href="framework/template1/css/defaultmain.css" rel="stylesheet" type="text/css">
+		<script src="vue/hymultitask.js"></script> 
+		<script src="framework/template1/js/multitask.js"></script>  
+		<!-- <script src="framework/js/importjs.js"></script> -->
+		<script src="plugin/menu/masonry.js"></script>
+		<script src="plugin/jqueryscrollbar/jquery.nicescroll.js"></script>
+		<script src="framework/template1/js/menu_cus.js"></script> 
+		<script src="jt/websocket.js"></script>
+		<!-- 二维码用的 -->
+		<script src="framework/js/qrcode.min.js"></script>
+	</head>
+    <script>
+		 //默认关闭第一个多任务项。Y:是，N:否
+		
+		 //var $$pageContextPath = importjs.data.dir.substring(0,importjs.data.dir.length - 7); //这个很重要
+		 /*console.log(window.location.href);
+		 console.log($$pageContextPath);
+		 console.log(importjs.data.dir);*/
+		 
+		// var strFullPath=window.document.location.href;
+		
+		 //return(prePath+postPath);
+		 //console.log(prePath);
+		 //console.log(postPath);
+		//  $(document).ready(function(){
+		//      UepLogin.init();
+		    
+		//  });
+		
+	 </script>
+	<body>
+	 	<div id="iframe" style="padding-left: 0px;padding-right: 0px;width: 100%;height: 100%;box-sizing:border-box">
+			<iframe height="100%" width="100%" src="main/"></iframe>
+		</div> 
+    	<div id="_DialogBGDiv" class="popWindow grid-blockOverlay" style="display:none;position:absolute;z-index:2001;"></div>
+		<div id="moveMask" style="display:none"></div>
+		<div id="moveProxy" style="display:none"></div>
+		<div id="masklayerDiv" class="grid-blockOverlay1">
+		   <div class="grid-blockWaitMask"></div>
+		</div>
+		<div class="ewm" style="height:100px;width:100px;position:absolute;left:0px;top:35px;z-index:10000;display:none;"></div>
+		<div class="ewm-zzc" style="height:100%;width:100%;position:absolute;left:0px;top:0px;z-index:9000;display:none;background:rgba(0,0,0,0.4);"></div>
+	  	<div id="app" style="padding-left: 0px;padding-right: 0px;width: 100%;height: 100%;box-sizing:border-box">		
+	  		<div id="menuBar">
+				<span id="curMenu">首页</span>
+				<div id="menuRel"></div>
+			</div>
+			<div class="right">
+				<div style="width:22px;">
+					<img src="images/main/head2.png" onclick="showPersonInfo(event)" style="width:22px; height:22px; border-radius:50%;"/>
+					<div id="personInfo">
+						<div th:text="${session.UserView.employee.personName}"></div>
+						<div id="phone">[[${session.UserView.userLogin.loginCode}]]（[[${session.UserView.employee.personName}]]）</div>
+						<div id="orgName">[[${session.UserView.organization.groupName}]]</div>
+						<div onclick="tuichu()">
+							<img src="images/main/logoff2.png"/>
+							<span>退出</span>
+						</div>
+					</div>
+				</div>
+				<div style="width:25px;">
+					<img src="images/main/weather.png" style="width:25px;" onclick="showWeather(event)"/>
+					<div id="weatherInfo">
+						<iframe scrolling="no" src="https://tianqiapi.com/api.php?style=ya&skin=yahoo" frameborder="0" width="400" height="150" allowtransparency="true"></iframe>
+						<iframe scrolling="no" src="https://tianqiapi.com/api.php?style=tj&skin=yahoo" frameborder="0" width="480" height="62" allowtransparency="true"></iframe>
+					</div>
+				</div>
+<!-- 				<div> -->
+<!-- 					<img src="images/main/menu2.png" onclick="showHistory(event)"/> -->
+<!-- 					<ul id="historyMenu"> -->
+<!-- 						<li><img src="images/main/menu2.png"/><span>历史记录</span></li> -->
+<!-- 					</ul> -->
+<!-- 				</div> -->
+				
+				<div style="width: auto; border-radius: 0px; margin-top: 20px;" onclick="showMsg()">
+					<img src="images/main/mainimg3.png" style="position: relative;"/>
+					<hy-badge :value="0" class="msg_count">
+					<span style="color: white;">消息</span>
+					</hy-badge>
+				</div>
+				
+				<div>
+					<hy-droptree style="width: 100%" :clearable="false" id="prjTree" :rootvisible="false" dataprovider="com.haiyisoft.fslq.tree.PrjSectTree" v-model="bdId" @nodeclick="handleNodeClick"></hy-droptree>
+				</div>
+			</div>
+			<div class="i-layout-relative layout-div i-layout-full home-container">
+				<div class="layout-div i-layout-absolute main-title-container" 
+				th:style="'
+				width:100%;
+				top:0px;
+				height:70px;
+				background: url(images/main/mainimg1.png);
+    			background-size: 100% 100%;'">
+ 					<div class="left">
+						<!-- <img th:src="@{/images/main/logo.png}"/> -->
+						<div style="margin-top: 15px;">
+							<!-- <div>佛山路桥项目管理</div> -->
+							<img src="images/main/mainimg2.png" style="height: 35px; margin-left: 0px; margin-top: 0px;"/>
+						</div>
+					</div>
+				</div>
+				<div id="fillarea_1" class="fill-layout-relative i-layout-full layout-div i-layout-showborder">
+				 	<div id="switch" onclick="showMenu()">
+						<img th:src="@{/images/main/switch.png}" style="transform:rotate(180deg)"/>
+					</div>
+					<div class="leftNav">
+						<div>
+							<div id="leftMenu"></div>
+						</div>
+					</div>
+					<div class="leftNavSlide"></div>
+					<div id="multitaskApp" style="height:100%">
+						<hy-multitask :multitasktype="multitasktype" :maxtabnum="maxtabnum"></hy-multitask>
+					</div>				
+				</div> 				
+			 </div>
+	 	</div>
+		<script th:inline="javascript">
+	    var websocketUrl = [[${websocketUrl}]]+ [[${session.UserView.userLogin.partyId}]];
+	    var multitasktype = [[${multiTaskType}]] ;
+		var maxtabnum = [[${maxMultiTaskNumber}]] ;
+		var shortcutTitle = [[#{homeleft.shortcut}]];
+		var modifyPwdTitle = [[#{homeleft.modifyPwd}]];
+		var changePwdTitle =  [[#{main.changePwd}]];
+		var loginCode =[[${session.UserView.userLogin.loginCode}]];
+		var pd =[[${session.UserView.userLogin.password}]];
+		
+		var bdIdStr;
+		var prjIdStr;
+		retrieveUnReadCount();
+		function showHistory(e){
+			e = e || window.event;
+			if (e.stopPropagation) {//W3C阻止冒泡方法
+				e.stopPropagation();
+			} else {
+				e.cancelBubble = true;
+				//IE阻止冒泡方法
+			}
+			$("#personInfo").hide();
+			$("#weatherInfo").hide();
+			if($("#historyMenu").is(":hidden")){
+				$("#historyMenu").fadeIn();
+			}else{
+				$("#historyMenu").fadeOut();
+			}
+		}
+		function tuichu(){
+			location.href="logoff";
+		}
+		function showPersonInfo(e){
+			e = e || window.event;
+			if (e.stopPropagation) {//W3C阻止冒泡方法
+				e.stopPropagation();
+			} else {
+				e.cancelBubble = true;
+				//IE阻止冒泡方法
+			}
+			$("#historyMenu").hide();
+			$("#weatherInfo").hide();
+			if($("#personInfo").is(":hidden")){
+				$("#personInfo").show();
+			}else{
+				$("#personInfo").hide();
+			}
+		}
+		function showWeather(e){
+			e = e || window.event;
+			if (e.stopPropagation) {//W3C阻止冒泡方法
+				e.stopPropagation();
+			} else {
+				e.cancelBubble = true;
+				//IE阻止冒泡方法
+			}
+			$("#historyMenu").hide();
+			$("#personInfo").hide();
+			if($("#weatherInfo").is(":hidden")){
+				$("#weatherInfo").show();
+			}else{
+				$("#weatherInfo").hide();
+			}
+		}
+		function creatEwm(ewm,left,top){
+        	var $popUp1 = $('<div id="popupcontent1"><div id="qrcode1"></div></div>');
+        	$('.ewm').html($popUp1);
+        	var qrcode = new QRCode("qrcode1", {
+        	    text: ewm,
+        	    width: 200,
+        	    height: 200,
+        	    colorDark : "#000000",
+        	    colorLight : "#ffffff",
+        	    correctLevel : QRCode.CorrectLevel.H
+        	});
+        	$(".ewm").css("top",top).css("left",left);
+        	$(".ewm-zzc").show();
+        	$(".ewm").show();
+        }
+		$('.ewm-zzc').click(function(event) {
+			window.top.$("#popupcontent1").remove();
+			window.top.$(".ewm").hide();
+			window.top.$(".ewm-zzc").hide();
+	    });
+		
+		function retrieveUnReadCount() {
+	        $.ajax({
+				url : $$pageContextPath + "jt/msgPer/noReadCount",
+				success : function(data){
+					var unReadCount = data.parameters.count;
+					$(".msg_count").find("sup[class='el-badge__content is-fixed']").html(unReadCount);
+				}
+			});
+		}
+		function showMsg() {
+			$.popWindow({
+				title:"我的消息",
+				url:$$pageContextPath + "jt/msgPer/myMsgList",
+				callback:function() {
+					retrieveUnReadCount();
+				},
+				button:0,
+				css:{width:1000, height:600},
+				button:0,
+				isRunCallback :true
+			});
+		}
+		
+		setTimeout(function () {
+			connectSocket();
+		}, 10);
+		
+		</script>	
+		<script src="plugin/menu/menu_1.js"></script>
+	    <script src="plugin/menu/searchmenu.js"></script> 
+	    
+       <script src="framework/template1/js/main.js"></script> 
+	</body>
+</html>

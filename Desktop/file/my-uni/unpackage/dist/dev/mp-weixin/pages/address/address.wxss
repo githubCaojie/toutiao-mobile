@@ -1,0 +1,47 @@
+page.data-v-db675620 {
+  background-color: #f2f4f7;
+  border-bottom: 2rpx solid #e3e6e8;
+}
+.search.data-v-db675620 {
+  background-color: #ffffff;
+  padding-bottom: 24rpx;
+}
+.search .uni-searchbar.data-v-db675620 {
+  padding: 0 32rpx;
+}
+.search .uni-searchbar.data-v-db675620 .uni-searchbar__box {
+  border: unset;
+  padding: 0 20rpx;
+  height: 72rpx;
+}
+.search .uni-searchbar.data-v-db675620 .uni-searchbar__box .uni-searchbar__text-placeholder {
+  font-size: 28rpx;
+}
+.search .uni-searchbar.data-v-db675620 .uni-searchbar__box .uni-searchbar__box-search-input {
+  font-size: 28rpx;
+}
+.unit-collapse.data-v-db675620 .uni-collapse-item__title-text {
+  color: #415261;
+  font-size: 36rpx;
+}
+.unit-collapse.data-v-db675620 .uni-collapse-item__title-img {
+  width: 64rpx;
+  height: 64rpx;
+}
+.unit-collapse .content .collapse-item.data-v-db675620 {
+  width: 668rpx;
+  padding-left: 82rpx;
+}
+.unit-collapse .content .collapse-item.data-v-db675620 .uni-list-item__icon-img {
+  width: 20rpx;
+  height: 20rpx;
+}
+.unit-collapse .content .collapse-item.data-v-db675620 .uni-list-item__content-title {
+  color: #415261;
+  font-size: 36rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+

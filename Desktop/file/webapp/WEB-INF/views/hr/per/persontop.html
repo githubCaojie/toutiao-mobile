@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" :customlayout="true"
+					label-position="left" :labelwidth="80" :readonly="true"
+					 size="normal"> 
+					 <hy-row>
+					 	  <hy-col :span="1" type="left" :height="100"> 
+					      </hy-col>
+					      <hy-col :span="2" type="left" :height="100"> 
+					           <img id="pic" :src="photoPath"  onerror="this.onerror='';this.src='../../images/hr/000.jpg'" width="80px" height="100%">
+					      </hy-col>   
+					      <hy-col :span="6" type="left" :height="33"> 
+					           <hy-forminput label="姓名" name="personName" ></hy-forminput> 
+					      </hy-col>
+					      
+					      <hy-col :span="6" type="left" :height="33"> 
+					          	<hy-formdatepicker label="出生日期" name="personBirthday"></hy-formdatepicker>
+					      </hy-col>   
+					      <hy-col :span="6" type="left" :height="33"> 
+					           <hy-formselect label="民族" clearable name="nation" dropname="HR.PER_NATION" ></hy-formselect>
+					      </hy-col>   
+					      
+					      <hy-col :span="6" type="left" :height="33"> 
+					           <hy-formselect label="性别"  name="gender" :rules="{ required: true}" dropname="ORG.GENDER"></hy-formselect> 
+					      </hy-col>
+					      
+					      <hy-col :span="6" :height="33"> 
+					          <hy-formselect label="婚姻状态" clearable name="maritalStatus" dropname="PER.MARRIAGE" ></hy-formselect>
+					      </hy-col>   
+					      <hy-col :span="6" :height="33"> 
+					           <hy-forminput label="身份证号"  name="idCard" :maxlength="20" ></hy-forminput> 
+					      </hy-col>   
+					      <hy-col :span="6" :height="33"> 
+					           <hy-formselect label="政治面貌" clearable name="politicalStatus" dropname="PER.POLITY" ></hy-formselect>
+					      </hy-col>
+					      <hy-col :span="12" :height="33"> 
+					        	<hy-forminput label="部门名称"  name="orgName" :maxlength="20"  ></hy-forminput> 
+					      </hy-col>   
+					  </hy-row>
+				</hy-form> 
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				debugger;
+			 	$("img[id='pic']").click(
+			  		function(){
+			 			$(parent.frames[0].document).find("#showphoto").toggle();
+			 			$(parent.frames[0].document).find("#closeDiv").toggle();
+				 });
+			},
+			methods : {				
+			}
+			
+		});
+	</script>
+</body>
+</html>

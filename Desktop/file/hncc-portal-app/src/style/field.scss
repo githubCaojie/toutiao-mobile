@@ -1,0 +1,17 @@
+@mixin list-selected($color: 'green', $size: 15px) {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-width: $size ;
+  border-color: $color $color transparent transparent;
+  border-style: solid;
+}
+@mixin list-selected-content($content, $fontcolor) {
+  content: $content;
+  position: absolute;
+  top: 0;
+  right: 3px;
+  z-index: 1;
+  color: $fontcolor;
+}

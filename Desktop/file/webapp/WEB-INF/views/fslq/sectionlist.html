@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hytreetable.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件" >
+				<table>
+	              <tr>
+	                <td align="right" width="100px">管理处名称</td>
+	                <td width="120px" align="left"><hy-input name="dataWrap.query.sectionName_LIKE" :upload="true"></hy-input> </td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea>
+				<hy-button text="添加" @click="add"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%" >
+									<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+									<hy-table-column title="所属集团公司" name="proId" type="drop" dropname="PRJ.BE_GROUP" align="center" width="300"></hy-table-column> 
+									<hy-table-column title="管理处名称" name="sectionName" align="center" width="300"></hy-table-column> 
+									<hy-table-column title="备注" name="remark" align="center" width="200"></hy-table-column> 
+					          		<hy-table-column title="操作" width="240" align="center">
+								      <template scope="scope">
+								     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情&nbsp;</a>
+								     	 <a href="javascript:void(0)" @click="remove(scope.row)">删除&nbsp;</a>
+								      </template>
+								    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {	
+				query : function() {
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'section/list',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});	
+				},
+				detail : function(row){
+					$.popWindow({
+						title:"详细",
+						url:$$pageContextPath + 'section/pageform?id='+row.uuid,
+						callback:vm.query,
+						button:0,
+						css:{width:600, height:250},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				// 添加父项目
+				add : function() {
+					$.popWindow({
+						title:"添加",
+						url:$$pageContextPath + 'section/pageform',
+						callback:vm.query,
+						button:0,
+						css:{width:600, height:250},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				addSub : function(row){
+					$.popWindow({
+						title:"添加",
+						url:$$pageContextPath + 'section/pageform?upId='+row.id,
+						callback:vm.query,
+						button:0,
+						css:{width:600, height:250},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				remove : function(row){
+					$.confirm("提示", "确定要删除选中的记录？", function() {
+						$.request({
+							url : $$pageContextPath + 'section/removeRela',
+							params : { 
+								"id": row.uuid
+							},
+							success : function(response){
+								vm.query();
+							}
+						});
+					}, function(){
+					});
+				},
+			}
+		});
+	</script>
+</body>
+</html>

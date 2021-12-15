@@ -1,0 +1,229 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<template th:substituteby="framework/pageset.html"></template>
+<title>大屏中心</title>
+</head>
+<style>
+* {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+}
+
+html body {
+	width: 100%;
+	height: 100%;
+	background: url(../images/index/bg.png) center no-repeat;
+	background-size: 100% 100%;
+	overflow: hidden;
+	position: relative;
+}
+
+ul,li {
+	list-style: none;
+}
+
+.title_div {
+	width: 100%;
+	height: 100px;
+	background: url(../images/index/head1.png) no-repeat center;
+	background-size: 100% 100%;
+}
+
+.title_div .title_h2 {
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	text-align:center;
+	font-size: 30px;
+	float: left;
+	margin-top: 30px;
+	color: white;
+	position: relative;
+}
+
+.title_div .title_h2 .date_p {
+	font-size: 15px;
+	color: white;
+	position: absolute;
+	left: 50px;
+	top: 0;
+}
+
+.title_div .title_h2 .temperature_p {
+	font-size: 15px;
+	color: white;
+	position: absolute;
+	right: 50px;
+	top: 0;
+}
+
+.bottom_word {
+	width: 100%;
+	height: 20px;
+	line-height: 20px;
+	position: absolute;
+	bottom: 20px;
+	text-align:center;
+	font-size: 15px;
+	color: white;
+}
+
+.contain_div {
+	width: 98%;
+	height: calc(100% - 100px);
+	margin-left: 1%;
+	position: relative;
+}
+
+.contain_div .center {
+	height: 54%;
+	width: 82%;
+	margin: 7% auto 0 auto;
+}
+
+.contain_div .center .item_div {
+	width: 21%;
+	height: 100%;
+	float: left;
+	margin-left: 5%;
+	background: url(../images/index/item1.png);
+	background-size: 100% 100%;
+	overflow: hidden;
+	position: relative;
+	cursor: pointer;
+}
+
+.contain_div .center .item_div:first-child {
+	margin-left: 0;
+}
+
+.contain_div .center .item_div .word_p{
+	position:absolute; 
+	bottom:40px; 
+	color:#fff;
+	width:100%; 
+	height:30px; 
+	line-height:30px;
+	text-align: center;
+	font-size: 20px;
+	transition: all 0.2s linear;
+}
+
+.contain_div .center .item_div:hover .word_p{
+	transform: scale(1.1);
+}
+
+</style>
+<body>
+		<div class="title_div">
+			<div class="title_h2">
+				<p class="date_p" id="time"></p>
+				智慧路桥综合信息化管控平台
+				<p class="temperature_p"></p>
+			</div>
+		</div>
+	    <div class="contain_div">
+	        <div class="center">
+	        	 <div class="item_div"  onclick="openDP()">
+		                <p class="word_p">作战指挥中心</p>
+		            </div>
+		            <div class="item_div" style="background: url(../images/index/item3.png); background-size: 100% 100%;margin-left: 5%;" onclick="openBim()">
+		                <p class="word_p">BIM展示平台</p>
+		            </div>
+	               <div class="item_div"   style="background: url(../images/index/item2.png); background-size: 100% 100%;" onclick="hide()">
+		                <p class="word_p">项目管理平台</p>
+		            </div>
+		            <div class="item_div" style="background: url(../images/index/zhgd.png); background-size: 100% 100%;margin-left: 5%;"  onclick="openZhgd()">
+		                <p class="word_p">智慧工地</p>
+		            </div>
+		           
+	             <a    target="_top" id="exita">
+		           
+	            </a>
+	        </div>
+	    </div>
+	    <div class="bottom_word">技术支持：佛山市交通科技有限公司</div>
+	    </hy-fillarea>
+	    </hy-filllayout>
+	</div>    
+</body>
+	<script >
+	window.parent.$("#app").hide();
+	setInterval(function () {
+		var date = new Date();//获得当前时间
+		var yy = date.getFullYear();//年份
+		var mm = date.getMonth() + 1;//获得月份
+		mm = (mm < 10 ? "0" + mm : mm);//月份小于10时，前面加个0(例如9 ->09)天，小时，分钟，秒同理
+		var dd = (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());//天
+		var hours = (date.getHours() < 10 ? "0" + date.getHours() : date.getHours());//小时
+		var minutes = (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes());//分钟
+		var seconds = (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds());//秒
+		document.getElementById("time").innerHTML = yy + '年' + mm + "月" + dd + "日 " + hours + ':' + minutes + ':' + seconds;
+		}, 1000);
+	
+	function hide(){
+		debugger;
+		window.parent.$("#iframe").hide();
+		window.parent.$("#app").show();
+	}
+	
+	function openBim(){
+		debugger;
+		$.request({
+			url : $$pageContextPath+'main/openBim',
+			success : function(response){ 
+				debugger;
+				var url = response.parameters.url;
+				window.open(url);
+			}
+		});	
+	}
+	function openZhgd(){
+		var url = "/smartcs/main/";
+		window.open(url);
+	}
+	
+	function openDP(){
+		var url2 = "main/screem";
+		//判断是否打开
+		if (window.child == null || window.child.closed) {
+			window.child = window.open($$pageContextPath+url2);
+		} else {
+			window.child.location.replace($$pageContextPath+url2);
+		}
+		/*$.request({
+			url : $$pageContextPath+'main/getType',
+			success : function(response){
+				debugger;
+				var type = response.parameters.type;
+				if(type=="1"){
+				var url2 = "main/screem";
+				
+		           //判断是否打开 
+		         if (window.child == null || window.child.closed) { 
+		        	 window.child = window.open($$pageContextPath+url2); 
+		         } else { 
+		        	 window.child.location.replace($$pageContextPath+url2); 
+		         } 
+		         window.child.focus(); 
+				}else{
+					var url2 = "main/proscreem";
+			           //判断是否打开 
+			         if (window.child == null || window.child.closed) { 
+			        	 window.child = window.open($$pageContextPath+url2); 
+			         } else { 
+			        	 window.child.location.replace($$pageContextPath+url2); 
+			         } 
+			         window.child.focus(); 
+				}
+			}
+		});*/
+	}
+</script>
+</html>

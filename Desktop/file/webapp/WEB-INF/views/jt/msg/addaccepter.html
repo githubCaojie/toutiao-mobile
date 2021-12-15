@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+			<hy-filllayout rows="40,*" :showborder="false"  :showpadding="false"> 
+			 <hy-fillarea  :display="editFlag=='Y'?'block':'none'" >
+				<hy-button text="添加" @click="addAccepter"></hy-button>	
+				<hy-button text="删除" @click="deleteAccepter"></hy-button>	
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="accepterDataWrap"
+						id="ajaxgrid" :showpage="false" :readonly="true" height="100%"
+						 titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center"  type="selection"></hy-table-column> 
+						<hy-table-column name="acceptType" title="接收实体类型" align="center" width="150"type="drop" dropname="HR.ACCEPT_TYPE"  ></hy-table-column> 
+						<hy-table-column title="实体名称"  name="accepterName" align="center" width="250" ></hy-table-column> 
+					    <hy-table-column
+					      title="操作"
+					      width="100" align="center">
+					      <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+<!-- 						<hy-table-column  title="添加人" name="addMan" align="center" width="150"type="drop"dropname="RIGHT.RIGHT1_PER" ></hy-table-column>  -->
+<!-- 						<hy-table-column title="添加时间"  name="addTime" align="center" type="date"width="150" ></hy-table-column>  -->
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("accepterDataWrap"));
+			},
+			methods : {	
+				detail : function(row){
+					$.popWindow({
+						url:$$pageContextPath + 'jt/msg/comAccepter/queryOne?editFlag=N&uuid='+row.uuid,
+						title: "详细",
+						callback: vm.onsavecomplete,
+						css:{width:750,height:350},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				deleteAccepter : function(){
+					var records = ajaxgrid.getCheckedRecords();
+					if(records.length==0){
+						$.alert("请选择记录！");
+						return ;
+					}
+					var ids = "";
+					for(var i=0;i<records.length;i++){
+						ids += records[i].data.uuid;
+						ids +=",";
+					}
+					var gridData = ajaxgrid.collectData(records);
+					var dataArr = [];
+					dataArr.push(gridData);
+					$.confirm("提示","确定删除选择的记录?",function(){
+						$.request({
+							url : $$pageContextPath + 'jt/msg/comAccepter/remove',
+							data : dataArr,
+							params:{'ids':ids.substring(0,ids.length-1)},
+							success : vm.onsavecomplete
+						});
+					})				
+				},
+				onsavecomplete : function(response){
+					if(!!response){
+						setRM('success',response.getMessage(),vm.callback) ;
+					}else{
+						vm.callback
+					}
+				},
+				addAccepter : function(){
+					$.popWindow({
+						url:$$pageContextPath +"jt/msg/comAccepter/add?editFlag=Y&warnUuid="+vm.warnUuid,
+						title: "选择接受人",
+						callback: vm.callback,
+						css:{width:850,height:350},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				callback : function(){
+					$.request({
+						url : $$pageContextPath +"jt/msg/comAccepter/query",
+						params:{'warnUuid':vm.warnUuid},
+						success : function(response){
+							var dataList = response.getAjaxDataWrap("accepterDataWrap");
+							ajaxgrid.setData(dataList);
+						}
+					});
+					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

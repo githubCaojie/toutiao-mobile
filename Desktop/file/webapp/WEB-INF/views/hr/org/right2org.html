@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	
+	<hy-filllayout rows="45,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-button text="保存" @click="save"></hy-button>	
+				<hy-button text="设置管理单位" @click="setBusi" :visible="setVisible"></hy-button>	
+				<hy-button text="取消管理单位" @click="cancelBusi" :visible="cancelVisible"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="false"
+					label-suffix="：" :cols="3" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="组织名称"  name="groupName" :rules="{ required: true}" :maxlength="255" :readonly="true"></hy-forminput> 
+						<hy-forminput label="编号"  name="groupCode" :maxlength="64"  :rules="{ required: true}"  :readonly="false"></hy-forminput> 
+						<hy-forminput label="拼音名"  name="nameSpell" :maxlength="255"  :readonly="true" ></hy-forminput> 
+						<hy-formselect label="级别" clearable name="groupLevel" dropname="ORG.GROUP_LEVEL"  :readonly="true"></hy-formselect>
+						<hy-forminput label="排序号"  name="sortCode" :maxlength="10"   :readonly="true"></hy-forminput> 
+						<hy-formselect label="管理单位" clearable name="busiCode" dropname="RIGHT.RIGHT2_BUSI"  :readonly="true"></hy-formselect>
+					
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var partyId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				setVisible : false,
+				cancelVisible : false
+			},
+			mounted : function(){
+				partyId = response.getAjaxDataWrap("dataWrap").getData().data.partyId;
+				if(response.getAjaxDataWrap("dataWrap").getData().data.groupLevel != 312){
+					this.setVisible = true;
+					this.cancelVisible = false;
+				}else{
+					this.setVisible = false;
+					this.cancelVisible = true;
+				}
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {				
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'org/right2Org/save',
+								data : dataArr,
+								success : function(response){
+									$.close(response);
+								}
+							});	
+						}	
+					});
+				},
+				setBusi : function(){
+					var formData = myform.collectData();
+					var dataArr = [];
+					dataArr.push(formData);
+					$.request({
+						url : $$pageContextPath + 'org/right2Org/setBusi',
+						data : dataArr,
+						success : function(response){
+							$.close(response);
+						}
+					});	
+				},
+				cancelBusi : function(){
+					var formData = myform.collectData();
+					var dataArr = [];
+					dataArr.push(formData);
+					$.request({
+						url : $$pageContextPath + 'org/right2Org/cancelBusi',
+						data : dataArr,
+						success : function(response){
+							$.close(response);
+						}
+					});	
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

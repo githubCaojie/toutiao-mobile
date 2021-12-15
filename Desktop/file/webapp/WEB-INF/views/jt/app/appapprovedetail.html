@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:jt="http://www.w3.org/1999/xhtml">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,180,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea :display="areaVisible">
+				<hy-button text="审批" @click="save"></hy-button>
+			</hy-fillarea>
+			<hy-fillarea title="审批结果">
+				<hy-form id="myform" name="dataWrap" style="width:95%"
+					labelposition="right" :labelwidth="120" :readonly="formRead"
+					label-suffix="：" :cols="1" size="normal"> 
+						<hy-forminput label="工作单号"  name="appNo" :rules="{required: true}" :readonly="true" ></hy-forminput>
+						<hy-formradio  label="是否同意" dataprovider="UEP.YES_OR_NO"  name="agreeFlag"  :rules="{required: true}" ></hy-formradio>
+						<hy-forminput label="审批意见"  name="verifyOpinion" :rowspan="2" :colspan="2" type="textarea" placeholder="单击图标选择模版信息"
+  							icontype="icon-link"  @iconclick="searchTemplate"></hy-forminput>
+				</hy-form> 
+		    </hy-fillarea>
+			<hy-fillarea title="审批过程">
+				 <hy-table border name="dataWrapList"
+					id="ajaxgrid" :showpage="false" :readonly="true" height="100%"
+					titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+					<hy-table-column title="环节名称"  name="activityName" align="center"	width="150"></hy-table-column> 
+					<hy-table-column title="办理意见"  name="sendAdvice" align="center"	width="180"></hy-table-column> 
+					<hy-table-column title="办理人"  name="taskCommiter" align="center"	 type="drop" dropname="UEP.ACCOUNT_NAME"width="100"></hy-table-column> 
+					<hy-table-column title="开始办理时间"  name="taskReachTime" align="center" width="150" type="datetime" ></hy-table-column> 
+					<hy-table-column title="结束办理时间"  name="taskCommitTime" align="center" width="150" type="datetime" ></hy-table-column> 
+				</hy-table> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				areaVisible : "block",
+				formRead : false,
+				detailVisible : "none",
+				detailHref : ""
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrapList"));
+			},
+			methods : {				
+				save : function(){
+					$.confirm("提示", "确定审批？", function() {
+						myform.validate(function(data){
+							if(data){
+								var formData = myform.collectData();
+								var dataArr = [];
+								dataArr.push(formData);
+								$.request({
+									url : $$pageContextPath + 'jt/app/appApproval/save',
+									data : dataArr,
+									success : vm.saveSuccess
+								});	
+							}	
+						});
+					}, function() {
+					});
+					
+					
+				},
+				saveSuccess : function(response) {
+					$.close(true);
+// 					setRM("success",response.getMessage(),function(){
+// 					})
+				},
+	 			searchTemplate : function() {
+	 				var templateContent = myform.getRecord().data.verifyOpinion;
+	 				$.popWindow({
+						url:$$pageContextPath + 'jt/app/selecttexttemplate/?templateType=1' + '&templateContent='+templateContent,
+						title: "选择模板",	
+						callback: vm.callback,
+						arguments:response,
+						css:{width:600,height:400}, 
+						button:0,
+						isRunCallback :true
+					});
+	 			},
+	 			callback : function(response) {
+	 				myform.getRecord().set("verifyOpinion",response);
+	 			}
+	 			
+			}
+
+			
+		});
+	</script>
+</body>
+</html>

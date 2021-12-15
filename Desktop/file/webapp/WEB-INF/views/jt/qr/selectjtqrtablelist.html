@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,*,40" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件">
+				 <table>
+		              <tr>
+		                <td align="right" width="100">表名</td>
+						<td width="100"><hy-input name="dataWrap.query.tableValue_LIKE" :upload="true" ></hy-input></td>
+		                <td align="right" width="100">实体</td>
+						<td width="300"><hy-input name="dataWrap.query.entityValue_LIKE"  v-model="entityClass" :upload="true" ></hy-input></td>
+						<td align="right"width="80"><hy-button text="查询" @click="query"></hy-button></td>
+		              <tr />
+		            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" @rowdblclick="dbSelectRow"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+						<hy-table-column title="操作"  width="120" align="center">
+					      <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+						<hy-table-column title="对象名称"  name="tableName" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="备注"  name="remark" align="center" width="150" ></hy-table-column> 
+					</hy-table>  
+		      </hy-fillarea>
+		      <hy-fillarea >
+				<table width="100%"><tr>
+					<td align="center"> <hy-button text="确定" @click="ok"></hy-button>
+				<hy-button text="取消" @click="cancel"></hy-button></td>	</tr></table>
+			</hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var perUuid;
+	var vm = new Vue({
+		el : "#app",
+		data : {
+			entityClass:''
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {				
+			query : function(){
+				var gridData = ajaxgrid.collectData(true) ;
+				var dataArr = [];
+				dataArr.push(gridData) ;
+				$.request({
+					url : $$pageContextPath + 'jt/jtQrTable/query',
+					data : dataArr,
+					success : function(response){
+						ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+					}
+				});					
+			},
+			detail : function(row){
+				$.popWindow({
+					url:$$pageContextPath + 'jt/jtQrTable/queryOne?editFlag=N&id='+row.id,
+					title: "详细",
+					callback: vm.onsavecomplete,
+					css:{width:800,height:400},
+					button:0,
+					isRunCallback :true
+				});
+			},
+			onsavecomplete : function(response,b,c){
+				vm.query();
+			},
+			ok : function(){
+				 var record =  ajaxgrid.getSelectedRecord();
+				 $.close(record);
+			},
+			dbSelectRow : function(row){
+				vm.ok();
+			},
+			cancel : function() {
+				$.close();
+			}
+		}
+		
+	});
+	</script>
+</body>
+</html>

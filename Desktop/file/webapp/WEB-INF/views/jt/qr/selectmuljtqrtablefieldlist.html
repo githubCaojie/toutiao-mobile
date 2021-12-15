@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,40" :showborder="true"  :showpadding="false"> 
+<!-- 			<hy-fillarea title="查询条件"> -->
+<!-- 				 <table> -->
+<!-- 		              <tr> -->
+<!-- 						<td align="right" width="100">字段名称</td> -->
+<!-- 						<td width="100"><hy-input  name="dataWrap.query.fieldName_LIKE" :upload="true"/></td> -->
+<!-- 						<td align="right"width="80"><hy-button text="查询" @click="query"></hy-button></td> -->
+<!-- 		              <tr /> -->
+<!-- 		            </table> -->
+<!-- 			</hy-fillarea>  -->
+			<hy-fillarea >
+		          <hy-table border name="dataWrap" id="ajaxgrid"  readonly height="100%" :showpage="false" @rowdblclick="dbSelectRow"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection" />
+						<hy-table-column  title="操作"  width="60" align="center">
+					      <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+						<hy-table-column title="字段名称"  name="fieldName" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="字段"  name="fieldCode" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="类型"  name="fieldType" type="drop" dropname="JT.FIELD_TYPE" align="center" width="100" ></hy-table-column> 
+						<hy-table-column title="输入方式"  name="inputForm" type="drop" dropname="JT.INPUT_FORM" align="center" width="100" ></hy-table-column> 
+						<hy-table-column title="下拉名"  name="extCode1" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="显示字段名"  name="extCode2" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="字表字段"  name="extCode3" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="是否可导出"  name="isExport" align="center" width="100"  type="drop" dropname="UEP.YES_OR_NO"></hy-table-column> 
+						<hy-table-column title="是否可作为查询条件"  name="isSearch" align="center" width="100"  type="drop" dropname="UEP.YES_OR_NO"></hy-table-column> 
+					</hy-table>  
+		      </hy-fillarea>
+		      <hy-fillarea >
+				<table width="100%"><tr>
+					<td align="center"> <hy-button text="确定" @click="ok"></hy-button>
+				<hy-button text="取消" @click="cancel"></hy-button></td>	</tr></table>
+			 </hy-fillarea> 
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var perUuid;
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/jtQrTableField/query',
+						data : dataArr,
+						params:{tableId:vm.tableId},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.popWindow({
+						url:$$pageContextPath + 'jt/jtQrTableField/queryOne?editFlag=N&id='+row.id,
+						title: "详细",
+						callback: vm.onsavecomplete,
+						css:{width:800,height:450},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					if(c!=0)
+						setRM("success",response.getMessage(),vm.query());
+				},
+				ok : function(){
+					debugger;
+					 var ids = "";
+					 var records = ajaxgrid.getCheckedRecords();
+					 if(!!records && records.length > 0){
+						for(var i=0; i<records.length; i++){
+							ids += records[i].data.id + ",";
+						}						 
+					 }
+					 $.close(ids);
+				},
+				dbSelectRow : function(row){
+					vm.ok();
+				},
+				cancel : function() {
+					$.close();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

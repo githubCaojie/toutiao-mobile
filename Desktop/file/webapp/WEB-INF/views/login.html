@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+<script src="framework/js/jquery-1.7.js"></script>
+<script src="framework/js/jquery.easing.1.3.js"></script>
+<script src="framework/js/qrcode.min.js"></script>
+<link href="framework/css/login.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title th:text="#{login.title}">Login</title>
+<style>
+#xiazai{width:140px;
+	position:absolute; top:40%; left:0; z-index:10;  cursor: pointer;
+}
+#xiazai-btn{
+	width:100%;  height:35px; line-height: 30px; border:1px solid #6baef2; padding:0 5px;
+}
+#xiazai-btn img{height:25px; vertical-align: middle; margin-left:10px;}
+#xiazai-btn span{font-size:14px; color:#fff; vertical-align: middle;}
+#erwei{
+	width:100%; height:auto; position:absolute; top:37px; left:-150px; z-index:10; background:#fff;
+	padding:5px; 
+}
+#androidew{width:100%; height:140px;}
+#erwei .img-ctain img{width:100%;}
+#erwei .img-ctain a{display:inline-block; width:100%; text-align:center; line-height:30px;
+	font-size:14px; text-decoration: none;}
+</style>
+<template th:substituteby="framework/crypto/rsa.html"></template>
+<script th:inline="javascript">
+	$(function() {
+		// 回车控制输入登录
+		$("#username").keyup(function(){
+			if(event.keyCode == 13){
+				$("#password").focus();
+			}
+		});
+		$("#password").keyup(function(){
+			if(event.keyCode == 13){
+				if($("#valicode").length>0){
+					$("#valicode").focus() ;
+				}else{
+					$(".btn").trigger("click");
+				}
+				
+			}
+		});
+		
+	 	$("#xiazai-btn").toggle(function() {
+	        $("#erwei").animate({left:0}, 800,'easeOutBounce');
+        }, function() {
+        	$("#erwei").animate({left:-150}, 800,'easeOutBounce');
+        }); 
+		
+		initewm();
+		function initewm(){
+	 		var padUrl ='http://124.71.44.188:8081/sysconfig/ngfile/fslq.apk';
+			$popUp1 = $('<div id="popupcontent1"><div id="qrcode1"></div></div>');
+			$('#androidew').append($popUp1);
+			$("#androidA").attr("href",padUrl)
+			var qrcode = new QRCode("qrcode1", {
+			    text: padUrl,
+			    width: 100,
+			    height: 100,
+			    colorDark : "#000000",
+			    colorLight : "#ffffff",
+			    correctLevel : QRCode.CorrectLevel.H
+			});
+		}
+		
+		$("#valicode").keyup(function(){
+			if(event.keyCode == 13){
+				$(".btn").trigger("click");
+			}
+		});
+		
+		$("#username").focus();
+		$('input[name="sessionKey"]').val(new Date().getTime());
+
+		$("#outBtn").bind("click", function() {
+			if (confirm("注意：即将退出业务系统！")) {
+				window.opener = null;
+				window.open("", "_self");
+				window.close();
+			}
+		});
+
+		$("#validateImg").click(function() {
+			$(this).attr("src", "framework/validateCode?height=28&time=" + (new Date().getTime()));
+		});
+
+		$(".errorMessage").fadeOut(300);
+		$(".errorMessage").fadeIn(300);
+		
+		if ($("#locale").length) {
+			setLanguage();
+		}
+		if("1"==[[${showValidate}]]){
+			$("#inputValidate").show();
+			$("#validateImg").attr("src", "framework/validateCode?height=28&time=" + (new Date().getTime()));
+		}
+	})
+	
+	function setLanguage() {
+		var localeKey = "org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE";
+		var cookieArray, reg = new RegExp("(^| )" + localeKey + "=([^;]*)(;|$)");
+		if (cookieArray = document.cookie.match(reg)) {
+			var cookieLocale = cookieArray[2];
+			//console.log("cookieLocale: ", cookieLocale);
+			
+			if (cookieLocale && cookieLocale != 'undefined') {
+				$("#locale").val(cookieLocale);
+				localStorage.locale = cookieLocale;
+			}
+		}
+		
+		if (!localStorage.locale) {
+			var navigatorLang = "en-US";
+			if (navigator.browserLanguage) {//IE
+				navigatorLang = navigator.browserLanguage;
+			} else if (navigator.language) {//FF,Chrome
+				navigatorLang = navigator.language;
+			}
+			
+			//console.log("navigatorLang: ", navigatorLang);
+			var locale = $("#locale option[alias="+navigatorLang+"]").attr('value');
+			localStorage.locale = locale;
+			window.location.href = "?locale=" + locale;
+		}
+		
+		$("#locale").bind('change', function() {
+			localStorage.locale = $(this).val() ;
+			window.location.href = "?locale="+$(this).val();
+		});
+	}
+	
+	function $login() {
+		var fullValue = "off";
+		if (document.getElementById("theFullScreenFlag").checked) {
+			fullValue = "on";
+		}
+		
+		var validcode = $("#valicode").val();
+		var userValue = $("#username").val();
+		if (userValue == "") {
+			//alert([[#{login.userNameRequired}]]);
+			$("#errorArea").text([[#{login.userNameRequired}]]);
+			$("#username").focus();
+			return;
+		}
+		
+		var pwdValue = $("#password").val();
+		if (document.getElementById("encryptLoginInfo")) {
+			var publicKey = $("#publicKey").val();
+			var orginString = userValue + ";;" + pwdValue;
+			var encrypt = doRSAEncrypt(publicKey, orginString);
+			document.forms[0].encryptLoginInfo.value = encrypt;
+		} else {
+			document.forms[0].identity.value = userValue;
+			document.forms[0].ticket.value = pwdValue;
+		}
+		
+		document.forms[0].validateCode.value = validcode;
+		document.forms[0].fullScreenFlag.value = fullValue;
+		document.forms[0].buttonlogin.value = "Y" ;//表明点击登录按钮
+		//window.open("","login","fullscreen=yes")
+		//document.forms[0].target = "login"
+		document.forms[0].submit();
+	}
+
+	function checkKeydown(cell,event){
+		if (event.keyCode!=13)
+		    return;
+		
+		if ($(cell).attr("id")=="username") {
+		  	var pwd = $("#password")
+		    $(pwd).focus();
+		    $(pwd).select();
+		} else if ($(cell).attr("id")=="password") {
+		  	var vc = $("*[name=theValidateCode]");
+		    if ($(vc).length>0) {
+		  		$(vc).focus();
+		    	$(vc).select();
+		  	} else {
+				$login();
+		    }
+		} else if ($(cell).attr("name")=="theValidateCode") {
+			$login();
+		}
+	}
+	function checkValidate(){
+		$.post("rest/checkvalidateCode",{loginCode:$("#username").val()},function(result){
+			console.log(result);
+			if("1" == result){
+				$("#inputValidate").show();
+				$("#validateImg").attr("src", "framework/validateCode?height=28&time=" + (new Date().getTime()));
+			}else{
+				$("#inputValidate").hide();
+			}
+			
+		});
+	}
+</script>
+</head>
+
+<body>
+<div class="main">
+	<div class="localearea" style="position:absolute;right:30px;top:20px;">
+		<select id="locale" name="locale" th:if="${supportI18N}">
+			<option value="zh_CN" alias="zh-CN">简体中文</option>
+			<option value="en_US" alias="en-US">English(US)</option>
+			<option value="zh_TW" alias="zh-TW">中文繁体</option>
+		</select>
+	</div>
+	<div class="logoBox">
+		<!-- <div class="logo"></div> -->
+		<img class="logo_img" src="images/main/logintitle2.png"></img>
+		<!-- <div class="name">佛山项目</div> -->
+	</div>
+	
+	<div class="mainBg">	
+	    <div class="login">  
+	    	<div class="login-title">用户登录</div>
+	        <form action="login" method="post">
+	            <input type="hidden" name="buttonlogin"/>
+	        	<input type="hidden" name="fullScreenFlag"/>
+				<input type="hidden" name="validateCode"/>
+				<input type="hidden" name="sessionKey" th:value="${new java.util.Date().getTime()}"/>
+				<input type="hidden" name="encryptLoginInfo" id="encryptLoginInfo" th:if="${encryptLogin}"/>
+				<input type="hidden" id="publicKey" th:value="${rsaPublicKey}"  th:if="${encryptLogin}"/>
+				<input type="hidden" name="identity" th:unless="${encryptLogin}"/>
+				<input type="hidden" name="url" th:value="${url}"/>
+				<input type="hidden" name="ticket" th:unless="${encryptLogin}"/>
+							
+	                <div class="input-group">
+	                    <div class="user left"></div>
+	                    <input type="text" id="username" class="message" th:value="${loginCode}" placeholder="请输入用户名"  onchange="checkValidate()">
+		            </div>
+		            <div class="input-group2">
+		                <div class="pwd left"></div>
+		                <input type="password" id="password" class="message" placeholder="请输入密码">
+		            </div>
+			        <div class="input-group3" id="inputValidate" style="display: none;">
+			        	<input type="text" name="theValidateCode" id="valicode" class="dl input" onkeydown="checkKeydown(this,event)" placeholder="请输入验证码"/>
+						<img id="validateImg" src="framework/validateCode?" alt="看不清楚,请点击我"></img>
+			        </div>
+	            
+	            
+	            <div class="errormessage">用户名或密码错误，请重新输入</div>
+	            <div class="form-group">
+	                <span class="left">
+	                    <!-- <input type="checkbox" id="rememberMe" value="true"/>
+	                    <i></i>
+	                    <label for="rememberMe" th:text="#{login.rememberMe}">记住密码</label> -->
+	                    <!-- <hy-checkbox v-model="true" checkboxlabel></hy-checkbox> -->
+	                    <hy-button type="primary" text="主要按钮"></hy-button>
+	                </span>
+	                <span class="forget">                   
+	                   <input type="checkbox" name="theFullScreenFlag" id="theFullScreenFlag" />
+	                </span>
+	            </div>
+	            <button type="button" onclick="$login()" class="btn">登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+	        </form>
+	        <div class="s2errormessage">
+				<p id="errorArea" th:text="${error}"></p>	
+		    </div>	
+	    </div>  
+  	</div>
+  		<div id="xiazai">
+		<div id="xiazai-btn">
+			<img src="images/login/android.png"/>
+			<span>下载客户端</span>
+		</div>
+		<div id="erwei">
+			<div class="img-ctain">
+				<div id="androidew">
+				</div>
+				<a id="androidA">手机下载</a>
+			</div>
+		</div>
+		
+	</div>
+     <div class="foot" >
+    	使用谷歌浏览器或火狐浏览器;推荐分辨率1280*960以上
+    </div>
+</div>
+
+</body>
+</html>

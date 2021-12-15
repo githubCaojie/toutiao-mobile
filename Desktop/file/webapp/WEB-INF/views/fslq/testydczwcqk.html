@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<template th:substituteby="framework/pageset.html"></template>
+<title>作战指挥中心</title>
+</head>
+<body style="background-color: transparent;">
+	<div id="testDiv" style="width: 1500px;height:800px;"></div>
+</body>
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+	getChart();
+})
+
+function getChart() {
+	$.request({
+		url : $$pageContextPath + 'hyOpcomctrApi/ydczwcqk?prjId=103',
+		success : function(response){
+			var data = response.parameters.data;
+			var bdList = data.bdList;
+			var sjczList = [];
+			var jhczList = [];
+// 			var sjczList = data.sjczList;
+// 			var jhczList = data.jhczList;
+			for(var i=0; i<bdList.length; i++) {
+				jhczList.push(i*2);
+				sjczList.push(i*5);
+			}
+			var wcl = data.wcl;
+			var ljWcl = data.ljWcl;
+			var byWccz = data.byWccz;
+			var dom = document.getElementById("testDiv");
+			var myChart = echarts.init(dom);
+			var option = {
+			    title: {
+			        text: '月度产值完成情况'
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data: ['计划产值', '实际产值']
+			    },
+			    xAxis: [
+			        {
+			            type: 'category',
+			            data: bdList
+			        }
+			    ],
+			    yAxis: [
+			        {
+			            type: 'value'
+			        }
+			    ],
+			    series: [
+			        {
+			            name: '计划产值',
+			            type: 'bar',
+			            data: jhczList
+			        },
+			        {
+			            name: '实际产值',
+			            type: 'bar',
+			            data: sjczList
+			        }
+			    ]
+			};
+			myChart.setOption(option)
+		}
+	})
+}
+</script>
+</html>

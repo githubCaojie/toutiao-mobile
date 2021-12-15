@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+			     <hy-formgroup title="附件" >
+					<div id="upload"></div>
+				</hy-formgroup>
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function(){
+			cusUpload('upload',this. objId,this. objType, this.editFlag,this.extTypes);
+		},
+		methods : {		
+		}
+	});
+	</script>
+</body>
+</html>

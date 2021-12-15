@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+    	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" :showpage="false" :readonly="true" height="100%" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+						<hy-table-column title="工作单号" name="appNo" width="80" align="center"></hy-table-column>
+						<hy-table-column title="流程名"  name="appType" dropname = "JT.APP_TYPE" type = "drop" align="center"	width="150"></hy-table-column> 
+						<hy-table-column title="申请时间"  name="appTime" align="center" width="150" type="datetime" ></hy-table-column> 
+						<hy-table-column title="工单状态"  name="appStatus" type="drop" dropname="JT.APP_STATUS" align="center"	width="80"></hy-table-column> 
+						<hy-table-column
+					      title="操作"
+					      width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">查看流程</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				detail : function(cell){
+					$.showModalDialog($$pageContextPath+"jt/app/taskExecInfo/?openMode=2&appInstanceId=" + cell.appNo, "工单情况",
+							null, null, 1285, 590, 0);
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

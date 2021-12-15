@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*,35" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件">
+				<table>
+					<tr>
+					<td width="40px" style="text-align: right;">部门</td>
+					<td width="200px">
+						<hy-droptree id="orgTree"  v-model="orgId" valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree" 
+							name="dataWrap.query.orgId" :upload="true" :rootvisible="false" ></hy-droptree> </td>
+					<td width="30px" style="text-align: right;">姓名</td>
+					<td width="160px"><input type="text" style="width: 100%" id="personNameId"/></td>
+					<td align="center" width="120px"><hy-button text="查询" @click="query" /></td>
+					</tr>
+				</table> 
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"  @rowclick="selectRow"  @rowdblclick="dbSelectRow"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" width="60" type="selection"></hy-table-column> 
+						<hy-table-column name="partyId" title="姓名" align="center" width="150"type="drop" dropname="ORG.PERSON_NAME"  ></hy-table-column> 
+						<hy-table-column name="orgId" title="部门" align="center" width="250"type="drop" dropname="ORG.ORG_PARTY_NAME" ></hy-table-column> 
+					</hy-table> 
+		      </hy-fillarea>
+		      <hy-fillarea >
+				 <hy-row>
+					<hy-col :span="9"> </hy-col>
+					<hy-col :span="3"  > <hy-button text="确定" @click="ok()" ></hy-button> </hy-col>
+					<hy-col :span="3"  > <hy-button text="取消" onclick="$.close()" ></hy-button> </hy-col>
+				</hy-row>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	    var carUuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				orgId : ""
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var personName = $("#personNameId").val();
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/right/selectPer/query',
+						data : dataArr,
+						params : {"orgId" : this.orgId,
+								  "personName" : personName},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				ok : function(){
+					debugger;
+					var partyIds = "";
+					var personNames = "";
+					var orgIds="";
+					 var records =  ajaxgrid.getCheckedRecords();
+					 if(records.length>0){
+						 for(var i = 0;i<records.length;i++){
+							 partyIds+=','+records[i].get("partyId");
+							 personNames+=','+records[i].get("personName");
+							 orgIds+=','+records[i].get("orgId");
+						 }
+						 if(records.length>=1){
+							 partyIds = partyIds.substring(1);
+							 personNames = personNames.substring(1);
+							 orgIds=orgIds.substring(1);
+						 }
+						 $.close({"partyIds": partyIds, "personNames": personNames,"orgIds":orgIds});
+					 }
+				},
+				selectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+				},
+				dbSelectRow : function(row){
+					ajaxgrid.setRowChecked(row.keyId-1);
+					vm.ok();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

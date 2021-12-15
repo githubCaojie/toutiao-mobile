@@ -5,13 +5,9 @@
         <el-image :src="require('../../assets/img/home/logo.png')"/>
       </div>
       <div class="right">
-        <!-- <div class="website-btn" @click="goWebsite">
-            <el-image :src="require('../../assets/img/home/website_icon.png')"/>
-            进入官网
-        </div> -->
         <el-dropdown trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
-            <div class="img"><el-image :src="require('../../assets/img/home/user_default_head.png')"/></div>您好<i class="el-icon-arrow-down el-icon--right"></i>
+            <div class="img"><el-image :src="require('../../assets/img/home/user_default_head.png')"/></div>{{$store.getters.userInfo.personName}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item icon="el-icon-remove" command="logout">退出登录</el-dropdown-item>
@@ -19,38 +15,42 @@
         </el-dropdown>
       </div>
     </el-header>
-    <el-main>
+    <el-main class="main">
       <div class="content">
-        <class-list :classNavData="classNavData"/>
+        <class-list :classNavData="classNavData" @classBtnHandlel="classBtnHandlel" />
         <div class="office-list">
-          <el-row :gutter="24">
-            <el-col :span="12">
-              <backlog />
+          <el-row>
+            <el-col :span="24">
+              <backlog :classNavData="classNavData" @updateFocusHandlel="updateFocusHandlel" />
             </el-col>
-            <el-col :span="12">
-              <message :informationData="informationData" :informationIndex="informationIndex" />
+            <el-col :span="24">
+              <focus :focusData="focusData" @handleCurrentChange="handleCurrentChange" />
             </el-col>
-            <el-col :span="12">
-              <focus :focusData="focusData"/>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <message :informationData="informationData"/>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
               <gantt class="left-container"/>
             </el-col>
           </el-row>
         </div>
       </div>
-      <div class="float float1">
-        <el-image :src="require('../../assets/img/home/btn9.png')"/>
-      </div>
-      <div class="float float2">
-        <el-image :src="require('../../assets/img/home/btn10.png')"/>
-      </div>
-      <div class="float float3">
-        <div>
-          <el-image :src="require('../../assets/img/home/btn11.png')"/>
+      <div class="float-box">
+        <div class="float float1">
+          <el-image :src="require('../../assets/img/home/btn9.png')"/>
         </div>
-        <div>
-          <el-image :src="require('../../assets/img/home/btn12.png')"/>
+        <div class="float float2">
+          <el-image :src="require('../../assets/img/home/btn10.png')"/>
+        </div>
+        <div class="float float3">
+          <div>
+            <el-image :src="require('../../assets/img/home/btn11.png')"/>
+          </div>
+          <div>
+            <el-image :src="require('../../assets/img/home/btn12.png')"/>
+          </div>
         </div>
       </div>
     </el-main>
@@ -62,7 +62,6 @@ import classList from './childComps/classList.vue'
 import backlog from './childComps/backlog.vue'
 import message from './childComps/message.vue'
 import focus from './childComps/focus.vue'
-
 import Gantt from './childComps/gantt.vue'
 
 export default {
@@ -78,62 +77,9 @@ export default {
     return {
       classNavData: [
         {
-          id: '1',
-          title: '决策类',
-          childNavData: [
-            {
-              id: '1-1',
-              name: '决策支持',
-              iconUrl: 'img/home/btn1.png'
-            }
-          ]
-        },
-        {
           id: '2',
           title: '经营生产管理类',
-          childNavData: [
-            {
-              id: '2-1',
-              name: '项目运营管理',
-              iconUrl: 'img/home/btn2.png'
-            },
-            {
-              id: '2-2',
-              name: '采购管理',
-              iconUrl: 'img/home/btn3.png'
-            },
-            {
-              id: '2-3',
-              name: '人力资源',
-              iconUrl: 'img/home/btn4.png'
-            },
-            {
-              id: '2-4',
-              name: '安全管理',
-              iconUrl: 'img/home/btn5.png'
-            },
-            {
-              id: '2-5',
-              name: '资产管理',
-              iconUrl: 'img/home/btn6.png'
-            },
-          ]
-        },
-        {
-          id: '3',
-          title: '日常管理类',
-          childNavData: [
-            {
-              id: '3-1',
-              name: '智慧党建',
-              iconUrl: 'img/home/btn7.png'
-            },
-            {
-              id: '3-2',
-              name: '行政管理',
-              iconUrl: 'img/home/btn8.png'
-            }
-          ]
+          childNavData: []
         }
       ],
       informationData: [
@@ -221,46 +167,185 @@ export default {
           ]
         }
       ],
-      focusData: [
-        {
-          id: '1',
-          name: '省交通运输厅',
-          time: '2021-06-18'
-        },
-        {
-          id: '2',
-          name: '省交通运输厅',
-          time: '2021-06-18'
-        },
-        {
-          id: '3',
-          name: '省交通运输厅',
-          time: '2021-06-18'
-        },
-        {
-          id: '4',
-          name: '省交通运输厅',
-          time: '2021-06-18'
-        },
-        {
-          id: '5',
-          name: '省交通运输厅',
-          time: '2021-06-18'
-        },
-        {
-          id: '6',
-          name: '省交通运输厅',
-          time: '2021-06-18'
+      focusData: {
+        list: [],
+        pageInfo: {
+          allPageNum: 0,
+          allRowNum: 0,
+          curPageNum: 0,
+          rowOfPage: 0
         }
-      ]
+      },
+      focusType: '',
     }
   },
+  mounted() {
+    this.getRole()
+  },
   methods: {
-      // 进入官网
-    goWebsite() {
-      window.open('http://www.hncc-china.com/')
+    // 获取经营生产管理类按钮
+    getRole() {
+      let params = {
+        mobile: this.$store.getters.userInfo.linkmenPhone
+      }
+      this.request.post(
+        this.api.getRole,
+        params,
+      )
+      .then(res => {
+        let _this = this
+        if(res.status == 200) {
+          this.classNavData[0].childNavData = res.data
+          let navData = res.data
+          navData.forEach(e => {
+            if(e.id === "purchase") {
+              this.getTodoListCountNum('purchaseService').then(res => {
+                if(res > 0){
+                  e.countNum = res
+                }
+              })
+            }
+            if(e.id === "oms") {
+              this.getTodoListCountNum('omsService').then(res => {
+                if(res > 0){
+                  e.countNum = res
+                }
+              })
+            }
+            if(e.id === "tf_main_web") {
+              this.getTodoListCountNum('hrService').then(res => {
+                if(res > 0){
+                  e.countNum = res
+                }
+              })
+            }
+          });
+          setTimeout(() => {
+            this.classNavData[0].childNavData = []
+            this.classNavData[0].childNavData = navData
+          }, 1000);
+          this.getTodoList('', 1, 10)
+        }else {
+          return this.$message.error({
+            message: '对不起，服务器开了点小差，请重新登录',
+            onClose: function () {
+              _this.logOut()
+            }
+          })
+        }
+      })
     },
-    // 监听用户按钮的点击
+    // 获取待办数量
+    async getTodoListCountNum (type) {
+      let num = ''
+      let params = {
+        loginId: this.$store.getters.userInfo.loginId,
+        partyId: this.$store.getters.userInfo.partyId,
+        type
+      }
+      await this.request.get(
+        this.api.getlistCount,
+        params
+      )
+      .then(res => {
+        let _this = this
+        if(res.status == 200) {
+          num = res.data
+        }else {
+          return this.$message.error({
+            message: '对不起，服务器开了点小差，请重新登录',
+            onClose: function () {
+              _this.logOut()
+            }
+          })
+        }
+      })
+      return num
+    },
+    // 获取待办列表
+    getTodoList(type, curPageNum, rowOfPage) {
+      let params = {
+        loginId: this.$store.getters.userInfo.loginId,
+        partyId: this.$store.getters.userInfo.partyId,
+        type,
+        curPageNum,
+        rowOfPage
+      }
+      this.request.get(
+        this.api.getTodoList,
+        params,
+      )
+      .then(res => {
+        let _this = this
+        if(res.status == 200) {
+          this.focusData = res.data
+        }else {
+          return this.$message.error({
+            message: '对不起，服务器开了点小差，请重新登录',
+            onClose: function () {
+              _this.logOut()
+            }
+          })
+        }
+      })
+    },
+    // 点击待办事项审批
+    updateFocusHandlel(id) {
+      switch (id) {
+        case 'purchase':
+          this.getTodoList('purchaseService', 1, 10)
+          this.focusType = 'purchaseService'
+          break;
+        case 'oms':
+          this.getTodoList('omsService', 1, 10)
+          this.focusType = 'omsService'
+          break;
+        case 'tf_main_web':
+          this.getTodoList('hrService', 1, 10)
+          this.focusType = 'hrService'
+          break;
+        default:
+          this.focusType = ''
+          this.focusData = {
+            list: [],
+            pageInfo: {
+              allPageNum: 0,
+              allRowNum: 0,
+              curPageNum: 0,
+              rowOfPage: 0
+            }
+          }
+          break;
+      }
+    },
+    // 点击待办列表分页
+    handleCurrentChange(val) {
+      this.getTodoList(this.focusType, val, 10)
+    },
+    // 点击经营生产管理类按钮
+    classBtnHandlel(id) {
+      let params = {
+        id
+      }
+      this.request.post(
+        this.api.openPurchase,
+        params
+      )
+      .then(res => {
+        let _this = this
+        if(res.status == 200) {
+          document[id].submit()
+        }else {
+          return this.$message.error({
+            message: '对不起，服务器开了点小差，请重新登录',
+            onClose: function () {
+              _this.logOut()
+            }
+          })
+        }
+      })
+    },
+    // 监听右上角用户按钮的点击
     handleCommand(command) {
       // 退出登录
       if(command === "logout") {
@@ -269,13 +354,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '已成功退出!',
-          });
-          this.$router.push({
-            path: 'user/login'
-          })
+          this.logOut()
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -284,11 +363,38 @@ export default {
         });
       }
     },
+    // 退出登录
+    logOut() {
+      let params = {
+        token: this.$store.getters.token,
+        mobile: this.$store.getters.userInfo.linkmenPhone
+      }
+      this.request.post(
+        this.api.logOut,
+        params
+      )
+      .then(res => {
+        if(res.status == 200) {
+          localStorage.removeItem("userInfo")
+          localStorage.removeItem("token")
+          this.$store.commit('handleUserInfo', '')
+          this.$store.commit('handleToken', '')
+          this.$message({
+            type: 'success',
+            message: '已成功退出!',
+          });
+          return this.$router.push({
+            path: 'login'
+          })
+        }
+      })
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
+@max768: ~"(max-width: 768px)";
 .home {
   background: url('../../assets/img/home/home_bg.png') center center / 100% 100% no-repeat;
   position: relative;
@@ -301,6 +407,9 @@ export default {
     align-items: center;
     justify-content: space-between;
     padding: 0;
+    @media @max768 {
+      margin: 0 2%
+    }
     .logo {
       height: 45px;
       .el-image {
@@ -310,7 +419,7 @@ export default {
     .right {
       display: flex;
       .website-btn {
-        color: var(--white-color);
+        color: #ffffff;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -339,91 +448,120 @@ export default {
       }
     }
   }
-  .content {
-    margin: 0 7.37vw;
-    // height: calc(100vh - 156px);
-    background: var(--white-color);
-    padding: 24px;
-    overflow: scroll;
-    background-image: url('../../assets/img/home/bg.png');
-    background-size: 100% 100%;
-    background-position: bottom right;
-    position: relative;
-    .office-list {
-      height: 100%;
-      .el-row {
+  .main {
+    padding: 0;
+    overflow: unset;
+    .content {
+      margin: 0 7.37vw;
+      // height: calc(100vh - 156px);
+      background: #ffffff;
+      padding: 24px;
+      background-image: url('../../assets/img/home/bg.png');
+      background-size: 100% 100%;
+      background-position: bottom right;
+      position: relative;
+      @media @max768 {
+        margin: 0 2%;
+        padding: 2%;
+      }
+      .office-list {
         height: 100%;
-        .el-col {
-          // height: calc(100% / 2);
-          height: 327px;
+        display: flex;
+        justify-content: space-between;
+        @media @max768 {
+          flex-direction: column;
+          justify-content: unset;
         }
-      }
-      .name {
-        height: 48px;
-        display: flex;
-        align-items: center;
-        font-size: var(--the-title-font-size);
-        color: #415261;
-        background: linear-gradient(90deg, rgba(214, 232, 243) 0%, rgba(247, 250, 252) 100%);
-        margin-top: 23px;
-        .img {
-          margin: 0 8px 0 12px;
-        } 
-      }
-      .link-item {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 48px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: #415261;
-        position: relative;
-        /deep/ .el-link {
-          position: relative;
-          width: 100%;
-          .el-link--inner {
-            padding: 0 6px;
-            display: flex;
-            justify-content: space-between;
-            width: calc(100% - 12px);
-            span:first-child {
-              overflow: hidden;
-              text-overflow: ellipsis;
+        .el-row {
+          width: 49.5%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          @media @max768 {
+            margin: unset !important;
+            width: 100%;
+          }
+          .el-col {
+            // height: calc(100% / 2);
+            height: 327px;
+            @media @max768 {
+              width: 100%;
+              padding: 0 !important;
             }
           }
         }
-        /deep/ .el-link::before {
-          content: "";
-          width: 4px;
-          height: 4px;
-          background: #415261;
-          position: absolute;
-          top: 50%;
-          left: 0;
-          transform: translateY(-50%);
+        .name {
+          height: 48px;
+          display: flex;
+          align-items: center;
+          font-size: 16px;
+          color: #415261;
+          background: linear-gradient(90deg, rgba(214, 232, 243) 0%, rgba(247, 250, 252) 100%);
+          margin-top: 23px;
+          .img {
+            margin: 0 8px 0 12px;
+          } 
+        }
+        .link-item {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          height: 48px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          color: #415261;
+          position: relative;
+          /deep/ .el-link {
+            position: relative;
+            width: 100%;
+            .el-link--inner {
+              padding: 0 6px;
+              display: flex;
+              justify-content: space-between;
+              width: calc(100% - 12px);
+              span:first-child {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+          }
+          /deep/ .el-link::before {
+            content: "";
+            width: 4px;
+            height: 4px;
+            background: #415261;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+          }
         }
       }
     }
   }
-  .float {
-    position: fixed;
-    font-size: 0;
-    cursor: pointer;
-    width: 60px;
-  }
-  .float1 {
-    top: 60%;
-    right: 0px;
-  }
-  .float2 {
-    top: 30%;
-    left: 0px;
-  }
-  .float3 {
-    top: 50%;
-    left: 0px;
+  .float-box {
+    @media @max768 {
+      display: none;
+    }
+    .float {
+      position: fixed;
+      font-size: 0;
+      cursor: pointer;
+      width: 60px;
+    }
+    .float1 {
+      top: 60%;
+      right: 0px;
+    }
+    .float2 {
+      top: 30%;
+      left: 0px;
+    }
+    .float3 {
+      top: 50%;
+      left: 0px;
+    }
   }
 }
 </style>

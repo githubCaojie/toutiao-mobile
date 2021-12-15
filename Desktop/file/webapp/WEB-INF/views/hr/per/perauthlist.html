@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="260, *" :showborder="true" :showpadding="false">
+		
+			<hy-fillarea title="部门" :collapse="true">
+				<hy-tree valueprovider="com.haiyisoft.hr.org.tree.HrRightOrgTree" 
+					id="orgTree" v-model="orgId" @nodeclick="query()"></hy-tree>
+			</hy-fillarea>
+			
+			<hy-fillarea>
+				<hy-filllayout rows="40,35,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="查询条件" >
+						<table>
+			              <tr>
+			                <td align="right" width="90">修改时间</td>
+							<td width="160"><hy-datepicker name="dataWrap.query.updateTime_egt" type="date" :upload="true" ></hy-datepicker></td>
+							<td align="right" width="20">~</td>
+							<td width="160"><hy-datepicker name="dataWrap.query.updateTime_elt" type="date" :upload="true" ></hy-datepicker></td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+						<!-- <hy-button text="添加" @click="add"></hy-button>	 -->
+						<hy-button text="保存" @click="save"></hy-button>	
+						<hy-button text="删除" @click="remove"></hy-button>	
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" :showpage="false" :readonly="false" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column type="inputbutton" name="orgPartyId" title="部门" align="center" width="150"
+									labelprovider="com.haiyisoft.hr.org.labelprovider.OrgNameLabel" :readonly="true"/>
+								<hy-table-column type="inputbutton" name="posId" title="职务" align="center" width="200"
+									labelprovider="com.haiyisoft.hr.pos.labelprovider.HrRecruitPositionLabel" :readonly="true"/>
+								<hy-table-column title="人数" name="perNum" align="center" width="100" 
+									:rules="[{ required: true},{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]" ></hy-table-column>
+								<hy-table-column title="修改人" name="updateMan" align="center" width="150" type="drop" dropname="ORG.PERSON_NAME" :readonly="true"></hy-table-column>
+								<hy-table-column title="修改时间" name="updateTime" align="center" width="150" type="datetime" :readonly="true"></hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+			</hy-fillarea>
+		</hy-fillayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				orgId : null
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'per/perAuth/query',
+						data : dataArr,
+						params : {
+							orgPartyId : vm.orgId
+						},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					//是否选择树。
+					var node = vm.orgId;
+					if(node == null || node == '0')
+						return setRM("alert","请选择左侧部门后添加！");
+					$.request({
+						url : $$pageContextPath + 'per/perAuth/add',
+						params : {
+							"orgPartyId" : node
+						},
+						success : function(response){
+							ajaxgrid.addRecord(response.getAjaxDataWrap("dataWrap").getData(),0);
+						}
+					});	
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'per/perAuth/delete',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				},
+				save : function(){
+					if(ajaxgrid.isValid()){
+						var gridData = ajaxgrid.collectData(true, "update");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'per/perAuth/save',
+							data : dataArr,
+							success : function(response){
+								setRM(vm.query());
+							}
+						});
+					}
+				},
+				onsavecomplete : function(response){
+					setRM(vm.query());
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

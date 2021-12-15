@@ -18,8 +18,10 @@
   </div>
 </template>
 <script>
-  import gantt from 'dhtmlx-gantt'  // 引入模块
-  import 'dhtmlx-gantt/codebase/skins/dhtmlxgantt_terrace.css' //皮肤
+  // 引入模块
+  import gantt from 'dhtmlx-gantt'  
+  import 'dhtmlx-gantt/codebase/skins/dhtmlxgantt_terrace.css'
+  import './locale_cn'  // 本地化
 
   export default {
     name: 'gantt',
@@ -31,43 +33,38 @@
       }
     },
     methods: {
-      //开始时间-结束时间参数
-      DateDifference (strDateStart, strDateEnd) {
-        var begintime_ms = Date.parse(new Date(strDateStart.replace(/-/g, '/'))) //begintime 为开始时间
-        var endtime_ms = Date.parse(new Date(strDateEnd.replace(/-/g, '/')))   // endtime 为结束时间
-        var date3 = endtime_ms - begintime_ms //时间差的毫秒数
-        var days = Math.floor(date3 / (24 * 3600 * 1000))
-        return days
-      },
       initData () {
         this.tasks.data = [
           {
             text: '决策任务一', // 任务名
-            start_date: '2021-07-19', // 开始时间
+            start_date: '19-07-2021', // 开始时间
             id: 1, // 任务id
             duration: 4, // 任务时长，从start_date开始计算
+            progress: 0.6,
             type: 1
           },
           {
             text: '管理任务一', // 任务名
-            start_date: '2021-07-19', // 开始时间
+            start_date: '19-07-2021', // 开始时间
             id: 2, // 任务id
             duration: 3, // 任务时长，从start_date开始计算
-            type: 2
+            type: 2,
+            progress: 0.3,
           },
           {
             text: '监测任务一', // 任务名
-            start_date: '2021-07-19', // 开始时间
+            start_date: '18-07-2021', // 开始时间
             id: 3, // 任务id
             duration: 5, // 任务时长，从start_date开始计算
             type: 3
           },
           {
             text: '追责任务一', // 任务名
-            start_date: '2021-07-19', // 开始时间
+            start_date: '20-07-2021', // 开始时间
             id: 4, // 任务id
             duration: 6, // 任务时长，从start_date开始计算
-            type: 4
+            type: 4,
+            progress: 0.1,
           },
         ].map(function(current, ind, arry) {
           var newObj = {}
@@ -105,10 +102,7 @@
       gantt.config.show_task_cells = true
 
       //设置x轴日期
-      gantt.config.scale_unit = 'day'
-      gantt.config.step = 1
-      // gantt.config.date_scale = '周' + '%D'
-      gantt.config.date_scale = '%D'
+      gantt.config.date_scale = '周' + '%D'
 
       //当task的长度改变时，自动调整图表坐标轴区间用于适配task的长度
       gantt.config.fit_tasks = true

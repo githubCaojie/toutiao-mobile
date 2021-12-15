@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .home {
+            background-color: #faf6f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .home .top {
+            width: 100%;
+            margin: 0 auto;
+            height: calc(60% - 16px);
+            display: flex;
+            justify-content: space-between;
+        }
+        .home .top .top-left {
+          width: calc(65% - 8px);
+          background: #fff url('./img/homeGraphBg.png') center center / 80% 80% no-repeat;
+          border-radius: 10px;
+        }
+
+        .home .top .top-right {
+          width: calc(35% - 8px);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .home .top .top-right .top-right-top, .home .top .top-right .top-right-bottom {
+          height: calc(50% - 8px);
+          background-color: #ffffff;
+          border-radius: 10px;
+        }
+        
+        .home .bottom {
+            width: 100%;
+            margin: 0 auto;
+            background-color: #ffffff;
+            height: 40%;
+            border-radius: 10px;
+        }
+        
+        .title {
+            width: calc(100% - 20px);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 10px;
+            border-bottom: 1px solid #cecece;
+        }
+        
+        .title .name {
+            color: #000000;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .title .more, .title .btn {
+            cursor: pointer;
+            color: #6f6f6f;
+            font-size: 12px;
+            display: flex;
+        }
+
+        .title .btn span {
+          padding: 0 5px;
+          border-right: 1px solid #000;
+        }
+
+        .title .btn span.active {
+          color: #ff8b68;
+        }
+        
+        .title .btn span:last-child {
+          border: unset;
+        }
+        
+        .title .date {
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="home">
+        <div class="top">
+          <div class="top-left">
+            <div id="table1" style="width: 100%;height: 100%;"></div>
+          </div>
+          <div class="top-right">
+            <div class="top-right-top">
+              <div class="title">
+                <div class="name">GP表TOP10</div>
+                <div class="more">查看更多</div>
+              </div>
+              <div id="table2" style="width: 100%;height: calc(100% - 38px);"></div>
+            </div>
+            <div class="top-right-bottom">
+              <div class="title">
+                <div class="name">资源监控</div>
+                <div class="btn">
+                  <span>近30日</span>
+                  <span class="active">近7日</span>
+                </div>
+              </div>
+              <div id="table3" style="width: 100%;height: calc(100% - 38px);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="title">
+              <div class="name">
+                  资源概况
+              </div>
+              <div class="btn">
+                <span class="active">总表数</span>
+                <span>表存储量</span>
+                <span>消耗计算量</span>
+              </div>
+          </div>
+          <div id="table4" style="width: 100%;height: calc(100% - 38px);"></div>
+        </div>
+    </div>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script type="text/javascript">
+        var myChartMain1 = echarts.init(document.getElementById('table1'));
+        optionMian1 = {
+            color: '#ff774d',
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            grid: {
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                containLabel: true
+            },
+            series: [{
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 70,
+                label: {
+                    show: true,
+                    position: 'bottom'
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    fontSize: 40,
+                },
+                color: '#565656',
+                data: [
+                  {
+                    name: '中台',
+                    x: 550,
+                    y: 500,
+                    symbol: 'image://./img/zt.png',
+                    label: {
+                      show: false
+                    }
+                  },
+                  {
+                    name: 'OA库(MySql)',
+                    x: 550,
+                    y: 0,
+                    symbol: 'image://./img/oa.png'
+                  },
+                  {
+                    name: '财务系统库(SqlServer)',
+                    x: 950,
+                    y: 100,
+                    symbol: 'image://./img/cw.png'
+                  },
+                  {
+                    name: '国资监管库(Oracle)',
+                    x: 1500,
+                    y: 300,
+                    symbol: 'image://./img/gz.png'
+                  },
+                  {
+                    name: '人资系统库(MySql)',
+                    x: 150,
+                    y: 100,
+                    symbol: 'image://./img/rz.png'
+                  },
+                  {
+                    name: '三重一大库(MySql)',
+                    x: 1500,
+                    y: 700,
+                    symbol: 'image://./img/sy.png'
+                  },
+                  {
+                    name: '监督追责库(Oracle)',
+                    x: -400,
+                    y: 300,
+                    symbol: 'image://./img/zz.png'
+                  },
+                  {
+                    name: '综合维稳库(MySql)',
+                    x: 150,
+                    y: 900,
+                    symbol: 'image://./img/ww.png',
+                    label: {
+                      position: 'top'
+                    }
+                  },
+                  {
+                    name: '资产管理库(MySql)',
+                    x: -400,
+                    y: 700,
+                    symbol: 'image://./img/zc.png'
+                  },
+                  {
+                    name: '产权管理库(SqlServer)',
+                    x: 950,
+                    y: 900,
+                    symbol: 'image://./img/cq.png',
+                    label: {
+                      position: 'top'
+                    }
+                  },
+                  {
+                    name: '审计系统库(SqlServer)',
+                    x: 550,
+                    y: 1000,
+                    symbol: 'image://./img/sj.png',
+                    label: {
+                      position: 'top'
+                    }
+                  }
+                ],
+                links: [
+                  {
+                    source: '审计系统库(SqlServer)',
+                    target: '中台'
+                  },
+                  {
+                    source: '产权管理库(SqlServer)',
+                    target: '中台'
+                  },
+                  {
+                    source: '资产管理库(MySql)',
+                    target: '中台'
+                  }, 
+                  {
+                    source: '财务系统库(SqlServer)',
+                    target: '中台'
+                  },
+                  {
+                    source: '国资监管库(Oracle)',
+                    target: '中台'
+                  },
+                  {
+                    source: '人资系统库(MySql)',
+                    target: '中台'
+                  },
+                  {
+                    source: 'OA库(MySql)',
+                    target: '中台',
+                  },
+                  {
+                    source: '三重一大库(MySql)',
+                    target: '中台'
+                  },
+                  {
+                    source: '监督追责库(Oracle)',
+                    target: '中台'
+                  },
+                  {
+                    source: '综合维稳库(MySql)',
+                    target: '中台'
+                  }
+                ],
+                lineStyle: {
+                    opacity: 1,
+                    width: 2,
+                    curveness: 0,
+                    color: '#ff9839'
+                }
+            }]
+        };
+        myChartMain1.setOption(optionMian1);
+
+        var myChartMain4 = echarts.init(document.getElementById('table4'));
+        optionMian4 = {
+            color: '#ff8058',
+            xAxis: {
+                type: 'category',
+                data: ['08-09', '08-10', '08-11', '08-12', '08-13', '08-14', '08-15']
+            },
+            grid: {
+                top: '10',
+                left: '10',
+                right: '10',
+                bottom: '10',
+                containLabel: true
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                barWidth: '70',
+                data: [120, 200, 150, 80, 70, 110, 130],
+                type: 'bar',
+            }]
+        };
+        myChartMain4.setOption(optionMian4);
+
+        var myChartMain2 = echarts.init(document.getElementById('table2'));
+        optionMain2 = {
+            color: '#3f7ab9',
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                top: '10',
+                left: '10',
+                right: '10',
+                bottom: '10',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+                type: 'category',
+                position: 'right',
+                axisLabel: {
+                  textStyle: {
+                    align: 'left'
+                  }
+                },
+                data: [
+                  'bdms.ods_nation', 'bdms.ods_customer', 'dim.dim_part_infor', 'dws.easydesion_demo_test02', 'dws.easydesign_demo_test', 'dws.dws_orderssupp_infor', 'dws.dws_orderspart_infor', 'dim.dim_supp_infor', 'dim.dim_partsup_infor', 'dws.dws_custloca_infor'
+                ]
+            },
+            series: [{
+                type: 'bar',
+                data: [
+                  0.9, 1.1, 1.9, 2.1, 3.2, 4.0, 4.9,
+                  {
+                    value: 6.0,
+                    itemStyle: {
+                      color: '#ff9938'
+                    }
+                  },
+                  {
+                    value: 7.1,
+                    itemStyle: {
+                      color: '#ff774d'
+                    }
+                  },
+                  {
+                    value: 8.0,
+                    itemStyle: {
+                      color: '#de1718'
+                    }
+                  },
+                ]
+            }]
+        };
+        myChartMain2.setOption(optionMain2);
+
+        var myChartMain3 = echarts.init(document.getElementById('table3'));
+        optionMian3 = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['日消耗CPU峰值', '日消耗内存峰值']
+            },
+            grid: {
+                top: '20',
+                left: '10',
+                right: '10',
+                bottom: '10',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: true,
+                data: ['08-09', '08-10', '08-11', '08-12', '08-13', '08-14', '08-15']
+            },
+            yAxis: {
+                type: 'value',
+            },
+            series: [{
+                name: '日消耗CPU峰值',
+                type: 'line',
+                itemStyle: {
+                  color: '#3f7ab9'
+                },
+                data: [0.9, 1, 0.8, 0.6, 0.85, 1.4, 2.2]
+            }, {
+                name: '日消耗内存峰值',
+                type: 'line',
+                itemStyle: {
+                  color: '#ff774d'
+                },
+                data: [1.8, 1.85, 1.6, 2.2, 2.3, 3.8, 4.4]
+            }]
+        };
+        myChartMain3.setOption(optionMian3);
+    </script>
+</body>
+
+</html>

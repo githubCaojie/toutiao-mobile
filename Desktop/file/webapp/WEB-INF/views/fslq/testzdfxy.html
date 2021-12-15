@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<template th:substituteby="framework/pageset.html"></template>
+<title>作战指挥中心</title>
+</head>
+<body style="background-color: transparent;">
+	<div id="testDiv" style="width: 1500px;height:800px;"></div>
+</body>
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+	getChart();
+})
+
+function getChart() {
+	$.request({
+		url : $$pageContextPath + 'hyOpcomctrApi/zdfxy?prjId=103',
+		success : function(response){
+			var data = response.parameters.data;
+			var list = data.list;
+			var bd = [];
+			var count = [];
+			for(var i=0; i<list.length; i++) {
+				bd.push(list[i].bd);
+				count.push(list[i].count);
+			}
+			var gbpCount = data.gbpCount;
+			var qlCount = data.qlCount;
+			var sdCount = data.sdCount;
+			var dom = document.getElementById("testDiv");
+			var myChart = echarts.init(dom);
+			var option = {
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+			            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+			        }
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    xAxis: [
+			        {
+			            type: 'category',
+			            data: bd,
+			            axisTick: {
+			                alignWithLabel: true
+			            }
+			        }
+			    ],
+			    yAxis: [
+			        {
+			            type: 'value'
+			        }
+			    ],
+			    series: [
+			        {
+			            name: '数量',
+			            type: 'bar',
+			            barWidth: '20%',
+			            data: count
+			        }
+			    ]
+			};
+			myChart.setOption(option)
+		}
+	})
+}
+</script>
+</html>

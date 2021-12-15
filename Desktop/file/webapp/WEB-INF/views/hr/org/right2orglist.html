@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/vue/hytreetable.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="33,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+			 	<hy-button text="初始化组织机构" @click="initOrg()"> </hy-button>
+			</hy-fillarea>
+			<hy-fillarea >
+	          <hy-treetable id="treeTable"  sum-text="sum" index-text="#" 
+			      :columns="columns":stripe="props.stripe"  :border="props.border"
+			      :showheader="props.showHeader" :showsummary="props.showSummary"
+			      :showrowhover="props.showRowHover" :showindex="props.showIndex"
+			      :treetype="props.treeType" :expandtype="props.expandType"
+			      :selectiontype="props.selectionType" 
+			      valueprovider = "com.haiyisoft.hr.org.tree.Right2OrgTree">
+			   
+			    <template slot="option" scope="scope">
+			        <hy-button text="详细" @click="detail(scope.row.code)"> </hy-button>
+			      </template>
+			       </hy-treetable>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				props: {
+			          stripe: false,
+			          border: false,
+			          showHeader: true,
+			          showSummary: false,
+			          showRowHover: true,
+			          showIndex: false,
+			          treeType: true,
+			          expandType: false,
+			          selectionType: false,
+			        },
+		        columns: [
+		                  {
+		                    label: '组织机构名称',
+		                    prop: 'label',
+		                    width: '150px'
+		                  },
+		                  {
+		                    label: '编号',
+		                    prop: 'groupCode',
+		                    width: '80px'
+		                  },
+		                  {
+		                    label: '级别',
+		                    prop: 'groupLevelName',
+		                    width: '60px'
+		                  },
+		                  {
+		                    label: '管理单位',
+		                    prop: 'busiName',
+		                    width: '100px'
+		                  },
+		                  {
+		                    label: '操作',
+		                    prop: 'type',
+		                    width: '100px',
+		                    type: 'template',
+		                    template: 'option',
+		                  }
+		                  ]
+			},
+			mounted : function(){
+			},
+			methods : {				
+				detail : function(code){
+					if(code==0){
+						setRM("alert","根节点不允许操作！");
+						return;
+					}
+					$.showModalDialog($$pageContextPath + 'org/right2Org/queryOne?partyId='+code, "详细", vm.onsavecomplete, null, 1000, 400,
+							0);
+				},
+			    initOrg : function(){
+			    	$.request({
+			    		url : $$pageContextPath + 'org/right2Org/initOrg',
+						success: function(response) {
+							setRM("success",response.getMessage(),function(){
+								treeTable.refreshTreeGrid();
+							});
+						}
+					});
+			    },
+				onsavecomplete : function(response){
+					treeTable.refreshTreeGrid();
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

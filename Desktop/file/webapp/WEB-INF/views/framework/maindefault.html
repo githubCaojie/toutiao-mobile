@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head> 
+		<title th:text="${applicationName}"></title>
+		<template th:substituteby="framework/pageset.html"></template>
+		<template th:substituteby="framework/chatbase.html"></template>
+		<link rel="stylesheet" type="text/css" href="framework/css/home3.css">
+		<link rel="stylesheet" type="text/css" href="vue/hymultitask.css">
+		<link href="plugin/menu/css/menu.css" rel="stylesheet" type="text/css">
+		<script src="vue/hymultitask.js"></script> 
+		<script src="framework/js/multitask.js"></script>  
+		<!-- <script src="framework/js/importjs.js"></script> -->
+		<script src="plugin/menu/masonry.js"></script>
+		<script src="plugin/jqueryscrollbar/jquery.nicescroll.js"></script>
+	</head>
+    <script>
+		 //默认关闭第一个多任务项。Y:是，N:否
+		
+		 //var $$pageContextPath = importjs.data.dir.substring(0,importjs.data.dir.length - 7); //这个很重要
+		 /*console.log(window.location.href);
+		 console.log($$pageContextPath);
+		 console.log(importjs.data.dir);*/
+		 
+		// var strFullPath=window.document.location.href;
+		
+		 //return(prePath+postPath);
+		 //console.log(prePath);
+		 //console.log(postPath);
+		//  $(document).ready(function(){
+		//      UepLogin.init();
+		    
+		//  });
+		
+	 </script>
+	<body>
+    	<div id="_DialogBGDiv" class="popWindow grid-blockOverlay" style="display:none;position:absolute;z-index:2001;"></div>
+		<div id="moveMask" style="display:none"></div>
+		<div id="moveProxy" style="display:none"></div>
+		<div id="masklayerDiv" class="grid-blockOverlay1">
+		   <div class="grid-blockWaitMask"></div>
+		</div>
+		 	<div id="menuContent"style="display:block"  class="menu layout-div">							 															
+				<div id="onemenu" style="display:none"  class="first-menu-column layout-div menu-item-div" >					
+				</div>	  
+				<div id="twomenu"  style="display:none"  class=" thecond-menu-column layout-div menu-item-div">				
+				</div>														
+			   <div class="threemenu-container" id="threemenu-container" style="display:none">
+			       <div id="threemenu" class="layout-div menu-item-div ">					
+				   </div>
+			   </div>																																					
+			</div>
+			<iframe id="menuContentIframe" class="menuIframe" style="display:none">
+			</iframe>
+			
+	  	<div id="app"  style="padding-left: 0px;padding-right: 0px;width: 100%;height: 100%;box-sizing:border-box">			
+			<div class="i-layout-relative layout-div i-layout-full home-container">
+			
+				<div class="layout-div i-layout-absolute main-title-container">
+					<div class="leftMenu" id="logo-expand">
+						<!-- <hy-icon name="icon-bars" color="#8FB0E8" :size="28"></hy-icon>-->	
+						<img th:src="@{/images/framework/left_menu.png}"/>		
+					</div>
+					<div style="float:left;box-sizing:border-box;padding:13px 10px;">
+						<img th:src="@{/images/framework/logo.png}"/>
+					</div>
+					<div style="float:left;box-sizing:border-box;padding:10px 15px;">
+						<!-- <img th:src="@{/images/framework/logo_title.png}"/> -->
+						<span style="font-size:26px;color:#fff;">海颐微服务开发平台</span>		
+						<div id="mplusapp"></div>				
+					</div>
+					<div class="rightContainer">
+						<div class="right-search">
+						    <!-- <hy-input v-model="inputSearch" class="banner-search" placeholder="搜索...">
+								<template slot="append">
+								 	<img th:src="@{/images/framework/sousuo.png}" style="cursor:pointer;"/>
+									<hy-icon name="icon-search" :size="20" color="#B8E2FF"></hy-icon>
+								</template>
+							</hy-input>  -->
+							
+								<div class="search-menu" id="searchmenu"> 
+								     <div id="searchmenu_selecttable">
+								         <div  class="banner-search ">
+										    <input id="searchmenu_selectinput" autocomplete="off" th:placeholder="#{main.search}" type="text" th:title="#{maintip.searchMenu}" class="el-input__inner" 
+											name="searchmenu" value="" >
+										<!-- 	<img th:src="@{/images/framework/sousuo.png}" style="cursor:pointer;"/> -->
+										 </div>
+										 <div id='searchmenu_selectbutton' class="search-button"> </div>
+								     </div>						 							
+									<div id="searchmenu_selecthtml" class="selectcontent" style="z-index:9999;display:none;"></div>
+								 </div>
+				 
+						</div>
+						<div class="right-topBadge">
+							<div class="topBadgeBorder" id="help" th:title="#{maintip.helpSystem}">
+								<span @click="openHelp" class="help">帮助</span>
+							</div>
+						</div>
+						
+						<div class="right-menu">
+							<hy-popover                  
+								  ref="menupopover"
+								  width="340"
+								  trigger="hover">	
+								  <template>						 
+									<div> 
+										<div class="menupopover-title" th:text="#{main.commonMenu}"></div>
+										 <div class="menupopover-content">
+											<div class="menu-item" v-for="item in shortCutList" @click="openTask(1,item)"  :title="item.rightItemName" >{{item.rightItemName}}</div>										
+										</div> 
+																												            	
+										<div class="menupopover-footer" @click="whcycd()" th:text="#{main.maintainMenu}"></div>
+									</div>
+							      </template>										
+							</hy-popover>
+							<span v-popover:menupopover style="line-height:40px;margin-top:10px;float:left;">							
+								<hy-icon name="icon-appstoreo" :size="18" color="rgba(255,255,255,0.80)" style="cursor:pointer;"></hy-icon>
+							</span>							
+						</div>
+						
+						<!--消息提醒-->
+					<!--  	<div class="right-message">  
+							 <hy-popover                  
+								  ref="messagepopover"
+								  width="318"
+								  trigger="hover">	
+								  <template>						 
+									<div> 
+										<div class="messagepopover-title">消息中心</div>
+										<div class="messagepopover-content">
+											<hy-tabs type="">
+												<hy-tab-pane title="个人待办（0）">
+													<div class="message-items">
+														<div class="message-item">立项申请：34253410822456888</div>
+														<div class="message-item">项目名称：广州一体化平台设计，外包行业。。。</div>
+														<div class="message-item time">2020-09-02 10:23:34</div>
+													</div>
+												</hy-tab-pane>
+												<hy-tab-pane title="消息（0）"></hy-tab-pane>
+												<hy-tab-pane title="其他（0）"></hy-tab-pane>
+											</hy-tabs>
+										</div>
+										<div class="messagepopover-footer">更多</div>
+									</div>
+							      </template>										
+							</hy-popover> 
+						    <span v-popover:messagepopover style="line-height:40px;margin-top:10px;float:left;">
+								<hy-icon name="el2-icon-bell" :size="18" color="rgba(255,255,255,0.80)" style="cursor:pointer;"></hy-icon>
+								<hy-badge isdot v-if="msgBadge" style="left:25px;top:-3px;"></hy-badge> 
+								<span><i class="el2-icon-bell" style="font-size: 18px;cursor:pointer;"></i></span>
+								
+							 </span>		 				
+						</div>  -->
+						
+						<div class="right-name">
+							<img style="float:left;margin-top:14px;cursor:pointer;" alt="" th:src="@{/images/framework/touxiang.png}">
+							<hy-popover                  
+								  ref="namepopover"
+								  width="151"
+								  trigger="hover">	
+								  <template>			 
+									<ul class="name-popover-ul">
+								  		<li @click="changePwd" th:text="#{main.changePwd}"></li>									  	
+							  		</ul>
+							      </template>										
+							</hy-popover>
+							<div v-popover:namepopover style="float:left;line-height:40px">
+								<span style="float:right; line-height:40px;margin-top:10px;">
+						  			<hy-icon name="icon-caretdown" color="rgba(255,255,255,0.80)" style="cursor:pointer;"></hy-icon>
+						  		</span>
+						  		<span style="float:right;color:rgba(255,255,255,0.80);margin:10px 5px 0 8px;cursor:pointer;" th:text="${session.UserView.loginCode}"></span>
+						  	</div>							  		
+					  	</div>	
+					  	
+					  	<div class="right-button" th:title="#{maintip.relogon}">		
+					  	  <a href="logoff">
+					  	<!--   <hy-icon name="icon-export" :size="18" color=" rgba(255,255,255,0.80)" style="cursor:pointer;">
+					  	  </hy-icon> -->
+					  	  <img style="float:left;margin-top:18px;cursor:pointer;" alt="" th:src="@{/images/framework/logoff1.png}">
+					  	  </a>																			
+						</div>
+					  				  					 
+
+					</div>	 
+				</div>
+				
+				<div class="i-layout-absolute i-layout-div home-banner-container"  >
+	    			<!-- 当type的取值为""时，class='banner' ,当type的取值为 menu_1  menu_2,class='banner_1' -->
+					<div id="banner" class="banner_1">
+						<div class="bannerContent " id="bannerContent">
+							<!-- <div class="commonfuncbanner" id="commonFunc" @click="collapseArea">
+								<img src="images/home/zhankai-2.png" width="25px" height="25px" style="display:none" id="showLeft"/>
+								<hy-icon name="icon-rightcircleo" color="#636366" :size="25" style="display:block" id="hideLeft"></hy-icon>
+							</div>-->
+						    <!-- <div class="nwIcon" id="nwIcon">
+								<img alt="" src="images/home/nw_icon.png" />
+							</div> -->
+							
+							<div id="myMenu">
+								<!-- <hy-menu2 rootcode="0"></hy-menu2>  -->
+							</div>
+						
+						</div>
+					</div>			
+				</div>
+				
+				<div id="fillarea_1" class="i-layout-full layout-div i-layout-showborder" style="padding-top: 10px; left:0px;">
+				 
+							<div id="multitaskApp" style="height:100%">
+								<hy-multitask :multitasktype="multitasktype" :maxtabnum="maxtabnum"></hy-multitask>
+							</div>
+																					
+				</div> 				
+			 </div>
+	 	</div>
+		<script th:inline="javascript">
+	    var multitasktype = [[${multiTaskType}]] ;
+		var maxtabnum = [[${maxMultiTaskNumber}]] ;
+		var shortcutTitle = [[#{homeleft.shortcut}]];
+		var modifyPwdTitle = [[#{homeleft.modifyPwd}]];
+		var changePwdTitle =  [[#{main.changePwd}]];
+		var loginCode =[[${session.UserView.userLogin.loginCode}]];
+		var pd =[[${session.UserView.userLogin.password}]];
+		</script>	
+		<script src="plugin/menu/menu_1.js"></script>
+	    <script src="plugin/menu/searchmenu.js"></script> 
+	    
+       <script src="framework/js/main.js"></script> 
+       <template th:substituteby="framework/chatweb.html"></template>
+	 	<script th:inline="javascript">
+	 	 MConfig.serverIp = '172.20.33.25'  //172.20.33.214    172.20.200.80
+	      MConfig.serverPort = '9002'
+	      MConfig.enterpriseId = '111295684'
+	      MConfig.leaveConversationTime = 10  //离线消息获取间隔  10天
+	      MConfig.fileUploadPort = 8088 //文件上传的端口
+	      MConfig.imgViewPort = 9999 //图片观看的地址
+	      var loginInfo = {       
+	        "userPassword": encryptByDES(pd),
+	        "userName": loginCode,
+	        "intranetIp": MConfig.serverIp,
+	        "intranetPort": MConfig.serverPort,
+	        'version': undefined,
+	        'optType': undefined,
+	        'md5Password': true,
+	        'enterpriseId': MConfig.enterpriseId
+	      }
+
+	      HyWebIMClient.getInstance().login(loginInfo)
+	 	</script>
+	</body>
+</html>

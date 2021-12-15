@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea :display="(editFlag=='N')?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" :readonly="editFlag=='N'?true:false"
+					label-position="left" :labelwidth="100"  
+					label-suffix="：" :cols="1" size="normal"> 
+					<hy-formselect label="模板"  name="templateNo" readonly dropname="JT.APP_TYPE"></hy-formselect> 
+					<hy-forminput label="版本" name="versionNo"  readonly></hy-forminput> 
+					<hy-formselect label="状态" name="status"  readonly dropname="JT.PUNISH_STATUS"></hy-formselect> 
+					<hy-forminput label="排序号"  name="orderSn"  :maxlength="5" ></hy-forminput>
+					<hy-forminputbutton  label="授权角色" name="roleCodes" @click="setRole" :rules="{ required: true}" labelprovider="com.haiyisoft.jt.labelprovider.RoleNameLabel" ></hy-forminputbutton> 
+					<hy-forminput label="备注"  name="remark" :rowspan="2" :colspan="2" type="textarea" :maxlength="32" ></hy-forminput>
+				
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {		
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath + 'jt/app/jtAppExtForm/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});	
+						}	
+					});
+				},
+				getRoleCode : function(){
+					var formData = myform.collectData();
+					var dataArr = [];
+					dataArr.push(formData);
+					$.request({
+						url : $$pageContextPath + 'jt/app/jtAppExtForm/getRoleCode',
+						data : dataArr,
+						success : function(response){
+							myform.setValue("roleCodes",response.parameters.roleCodes);
+						}
+					});	
+				},
+				setRole:function(){
+					$.popWindow({
+						title:"设置角色",
+						url:$$pageContextPath + 'jt/app/jtAppExtForm/pageSetRole?editFlag=Y&formId='+myform.getRecord().get("id"),
+						callback: vm.getRoleCode,
+						button:0,
+						css:{width:1000,height:600,type:1},
+						isRunCallback:true
+					});
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,917 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<template th:substituteby="framework/pageset.html"></template>
+<title>作战指挥中心</title>
+</head>
+<style>
+.contaner{
+width:100%;
+height: 100%;
+position:relative;
+background: url(../../images/screem/bg.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+}
+.div2{
+width: 100%;
+height: 52%;
+voice-family: male;
+line-height: 45%;
+position:relative;
+}
+.div3{
+width: 100%;
+height: 46%;
+voice-family: male;
+line-height: 45%;
+position:relative;
+margin-top: 1%;
+}
+
+
+.div4 {
+
+width: 29%;
+height: 98%;
+background: url(../../images/screem/you.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 28%;
+ float:left;
+ margin-left:1%;
+  margin-top: 1%;
+
+}
+.div5 {
+width:38%;
+height: 98%;
+background: url(../../images/screem/zhong.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 38%;
+ float:left;
+ margin-left:1%;
+ margin-top: 1%;
+}
+.div6 {
+
+width: 29%;
+height: 98%;
+background: url(../../images/screem/you.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 28%;
+ float:left;
+ margin-left:1%;
+  margin-top: 1%;
+}
+
+
+.div7 {
+
+width: 48.5%;
+height: 98%;
+background: url(../../images/screem/zhong.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 28%;
+ float:left;
+ margin-left:1%;
+
+}
+.div8 {
+width:48.5%;
+height: 98%;
+background: url(../../images/screem/zhong.png) center no-repeat;
+margin:0 auto;
+background-size:100% 100%;
+voice-family: male;
+line-height: 38%;
+ float:left;
+ margin-left:1%;
+}
+ .p1 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-weight: bold;
+            font-size:18px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            width: 100%;
+            height:100%;
+            text-align: center;
+        }
+        
+ #div1{
+    float: left;
+     display: inline-block;
+     width: 27%;
+     height: 100%
+     
+}
+#div2 {
+    float: left;
+     display: inline-block;
+      width: 29%;
+     height: 100%
+}
+#div3 {
+    float: right;
+     display: inline-block;
+      width: 38%;
+     height: 100%
+}
+#div4{
+    float: left;
+     display: inline-block;
+     width: 30%;
+     height: 100%
+     
+}
+#div5 {
+    float: left;
+     display: inline-block;
+      width: 22%;
+     height: 100%
+}
+#div6 {
+    float: right;
+     display: inline-block;
+      width: 38%;
+     height: 100%
+}
+.tb {
+    font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+   font-size:14px;
+   font-weight:bold;
+   font-style: normal;
+   float:left;
+    margin-left:10px;
+   margin-top:11%;
+    }
+    
+    .t {
+    font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+   font-size:11px;
+   font-weight:bold;
+   font-style: normal;
+   float:left;
+    margin-left:5px;
+   margin-top:11%;
+    }
+     .p3 {
+            font-family: "宋体","仿宋",sans-serif;/*若电脑不支持宋体，则用仿宋，若不支持仿宋，则在sans-serif中找*/
+            font-size:14px;
+            font-style: normal;
+            color: white;/*字体颜色*/
+            float:left;
+            margin-left:10px;
+            margin-top:10%;
+        }
+</style>
+<body style="background-color: transparent;">
+	 <div class="contaner">
+	 <div class="div2">
+	 <div class="div4">
+	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">项目总体进度</p>
+	   </div>
+	<div style="height:48%;width:96%; display: inline-block;line-height:7%;margin-top:1%;margin-left:2%;"> 
+	<div style="height:13%;width:96%; display: inline-block;line-height:7%;margin-top:1%;margin-left:2%;">
+	<img  src="../../images/screem/xbttb.png"> <tb style="color:white;font-size:18px;margin-left:1%;">开工情况</tb>
+	</div>
+	<div style="height:12%;width:96%; display: inline-block;line-height:7%;margin-top:3%;margin-left:2%;voice-family: male;background-color:#02358e;text-align: center;"> 
+	<span style="color: white;margin-top:3%;margin-left:5%; font-weight: bold;float: left;">计划起止时间：</span>
+	<span style="color: white;margin-top:3%;margin-left:1%; font-weight: bold;float: left;" id="jhrq"></span>
+	</div>
+		<div style="height:50%;width:96%; display: inline-block;line-height:7%;margin-top:5%;margin-left:2%; voice-family: male;">
+		<div style="height: 80%;margin-top: 2%; width: 45%;	background: url(../../images/screem/xmjdtbj.png) center no-repeat;background-size:100% 100%;voice-family: male;float: left;">
+		 	
+		 	<div style="height:60%;width:25%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;text-align: center; ">
+	     <img src="../../images/screem/zgq.png"style="float:left;margin-left:10px;">
+	     </div>
+	     <div style="height:60%;width:60%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;">
+	   	<div style="height: 40%;text-align: left ;margin-left:10%;margin-top:8%; color:white;font-size: 14px">总工期</div>
+	    <div style="height:50%;margin-left: 8%;margin-top:5%; ">
+	    <tb style="color: #08c7f1; font-size:18px;font-weight:bold; font-style: normal;" id="zgq"></tb><tb style="color: #08c7f1; font-size:18px;font-weight:bold; font-style: normal;">天</tb>
+	    </div>
+   		</div>
+		 	</div>
+		 	<div style="height:80%;margin-top: 2%;width: 45%;	background: url(../../images/screem/xmjdtbj.png) center no-repeat;background-size:100% 100%;voice-family: male;float:right;margin-right:5%; ">
+		 	
+		 	<div style="height:60%;width:25%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;text-align: center; ">
+	     <img src="../../images/screem/xmjdkg.png"style="float:left;margin-left:10px;">
+	     </div>
+	     <div style="height:60%;width:60%; display: inline-block;margin-top:6%;margin-left:10px; vertical-align: middle;">
+	   	<div style="height: 40%;text-align: left ;margin-left:10%;margin-top:8%; color:white;font-size: 14px">已开工</div>
+	    <div style="height:50%;margin-left: 8%;margin-top:5%; ">
+	    <tb style="color:#00de43; font-size:18px;font-weight:bold; font-style: normal;" id="ykg"></tb><tb style="color: #00de43; font-size:18px;font-weight:bold; font-style: normal;">天</tb>
+	    </div>
+   		</div>
+		 	</div> 
+	</div>
+	</div>
+
+	<div style="height:38%;width:96%; display: inline-block;line-height:7%;margin-top:1%;margin-left:2%;">
+	
+	<div style="height:12%;width:96%; display: inline-block;line-height:7%;margin-top:1%;margin-left:2%;">
+	<img  src="../../images/screem/xbttb.png"> <tb style="color:white;font-size:18px;margin-left:1%;">投资情况</tb>
+	</div>
+	<div style="height:30%;width:98%; display: inline-block;line-height:7%;margin-top:3%;margin-left:1%;">
+	<div style="height:98%;width:49%; display: inline-block;line-height:7%;margin-top:1%;float: left;background: url(../../images/screem/jdbeijing.png) center no-repeat;background-size:100% 100%;">
+	  <img src="../../images/screem/xmztz.png"style="float:left;margin-left:15px;margin-top:10px;width:35px;height: 35px; ">
+	      <h class="p3">项目总投资</h>
+	      <tb class="tb" style="color: #2f6cff;" id="xmztz"></tb>
+	      <h class="t" style="color: #2f6cff;">万元</h>
+	
+	</div>
+	<div style="height:98%;width:49%; display: inline-block;line-height:7%;margin-top:1%;float: right;background: url(../../images/screem/jdbeijing.png) center no-repeat;background-size:100% 100%;">
+		  <img src="../../images/screem/ndztz.png"style="float:left;margin-left:15px;margin-top:10px;width:35px;height: 35px; ">
+	      <h class="p3">年度总投资</h>
+	      <tb class="tb" style="color: #f8b000;" id="ndztz"></tb>
+	      <h class="t" style="color: #f8b000;">万元</h>
+	
+	</div>
+	</div>
+	<div style="height:30%;width:98%; display: inline-block;line-height:7%;margin-top:3%;margin-left:1%;">
+		<div style="height:98%;width:49%; display: inline-block;line-height:7%;margin-top:1%;float: left;background: url(../../images/screem/jdbeijing.png) center no-repeat;background-size:100% 100%;">
+			  <img src="../../images/screem/xmwce.png"style="float:left;margin-left:15px;margin-top:10px;width:35px;height: 35px; ">
+	      <h class="p3">项目完成额</h>
+	      <tb class="tb" style="color: #3fc1a3;" id="xmwce"></tb>
+	      <h class="t" style="color: #3fc1a3;">万元</h>
+		</div>
+	<div style="height:98%;width:49%; display: inline-block;line-height:7%;margin-top:1%;float: right;background: url(../../images/screem/jdbeijing.png) center no-repeat;background-size:100% 100%;">
+		  <img src="../../images/screem/ndwce.png"style="float:left;margin-left:15px;margin-top:10px;width:35px;height: 35px; ">
+	      <h class="p3">年度完成额</h>
+	      <tb class="tb" style="color: #e66f2a;" id="ndwce"></tb>
+	      <h class="t" style="color: #e66f2a;">万元</h>
+	</div>
+	</div>
+	
+	 </div>
+
+
+	 </div>
+	 <div class="div5">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">重点工程完工统计</p>
+	   </div>
+	   	   <div id="px" style="width:200px;height:30px;margin-top:0.5%;margin-left:5.5%;font-size: 16px;color: white;">番海大桥 </div>
+	<div id="zdgcwgtj" style="width:100%;height:85%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 
+	 </div>
+	 <div class="div6">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">桥梁工程完工统计</p>
+	   </div>
+	 <div id="dwgcwgtj" style="width:100%;height:95%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 </div>
+	 </div>
+	 
+	 <div class="div3">
+	 <div class="div7">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1" >累计产值统计</p>
+	   </div>
+ 	<div id="ljcztj" style="width:100%;height:95%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 
+	 </div>
+	 <div class="div8">
+	 	  <div style="height:7%;width:100%; display: inline-block;text-align: center;line-height:7%">
+	   <p class="p1">各类工程进度</p>
+	   </div>
+	<div id="glgcjd" style="width:100%;height:95%;margin-top:0.5%;margin-left:0.5%"> </div>
+	 </div>
+	 </div>
+	 </div>
+	 <script type="text/javascript" src="../../framework/js/zhzx/echarts.min.js"></script>
+</body>
+<script type="text/javascript">
+$(function(){
+	var pageObj={};
+	var u = decodeURI(location.search); //获取url中"?"符后的字串 ('?modFlag=business&role=1')
+	    if ( u.indexOf( "?" ) != -1 ) {
+	      var str = u.substr( 1 ); //substr()方法返回从参数值开始到结束的字符串；
+	      var strs = str.split( "&" );
+	      for ( var i = 0; i < strs.length; i++ ) {
+	          pageObj[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+	      }
+	    }
+	var pid=pageObj.pid;
+	//项目进度统计
+	getXmjd(pid);
+	//重点工程完工统计
+	getChart1();
+	//单位工程完工统计
+	getChart2();
+	//累计产值统计
+	getChart3(pid);
+	//各类工程进度
+	getChart4();
+})
+
+	function getXmjd(pid){
+	$("#xmztz").html('90329.422');
+	$("#xmwce").html('12328');
+	$("#ndztz").html('27977.6484');
+	$("#ndwce").html('5730.59');
+		$.request({
+			url : $$pageContextPath+'main/progress/xmjd?pid='+pid,
+			success : function(response){
+			var jhrq=response.parameters.xmjd.jhrq;
+			var zgq=response.parameters.xmjd.zgq;
+			var ykg=response.parameters.xmjd.ykg;
+			
+			var xmztz=response.parameters.xmjd.xmztz;
+			var xmwce=response.parameters.xmjd.xmwce;
+			var ndztz=response.parameters.xmjd.ndztz;
+			var ndwce=response.parameters.xmjd.ndwce;
+			
+			$("#jhrq").html(jhrq);
+			$("#zgq").html(zgq);
+			$("#ykg").html(ykg);
+			
+			//$("#xmztz").html(xmztz);
+			//$("#xmwce").html(xmwce);
+			//$("#ndztz").html(ndztz);
+			//$("#ndwce").html(ndwce);
+			}
+		})
+	}
+
+
+function  getChart1() {
+	 var dom = document.getElementById("zdgcwgtj");
+	 var myChart = echarts.init(dom);
+	 var app = {};
+	 option = null;
+	 option = {
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: { 
+			            type: 'shadow' ,
+			            textStyle: {
+			                color: '#fff',
+			                fontSize: '26'
+			            },
+			        }
+			    },
+			    legend: {
+			        data: ['计划', '实际'],
+			        textStyle:{
+			            fontSize:12,
+			            color:'white'
+			        },
+			        icon:'rect'
+			    },
+			    grid: {
+			        top:60,
+			        left:50,
+			        bottom:60,
+			        right:60
+			    },
+			    xAxis: [{
+			        type: 'category',
+			        axisTick:{
+			            show:false
+			        },
+			        axisLine:{
+			            show:false
+			        },
+			        axisLabel:{
+			            color:'white',
+			            fontSize:14,
+			            margin:21,
+			            fontWeight:'bold'
+			        },
+			        data: ['桩基', '墩身', '承台','盖梁','桥台','预制梁','钢箱梁'],
+			       
+			    }],
+			    yAxis: [{
+			        name:'单位：万元',
+			        nameTextStyle:{
+			            color:'white',
+			            fontSize:12,
+			            padding:[0, 0, 0, -5]
+			        },
+			        max: function(value) {
+			            if(value.max<5){
+			                return 5
+			            }else{
+			                return value.max
+			            }
+			        },
+			        type: 'value',
+			        axisLine:{
+			            show:false
+			        },
+			        axisLabel:{
+			            color:'white',
+			            fontSize:12,
+			            margin:5
+			        },
+			        splitLine:{
+			            show:false
+			        },
+			        axisTick:{
+			            show:false
+			        }
+			    }],
+			    series: [
+			        {
+			            name: '计划',
+			            type: 'bar',
+			            label:{
+			                show:true,
+			                position:'top',
+			                fontSize:14,
+			                color:'#497fff',
+			                fontWeight:'bold'
+			            },
+			            barMaxWidth:40,
+			            itemStyle:{
+			                color: {
+			                    type: 'linear',
+			                    x: 0,
+			                    y: 0,
+			                    x2: 0,
+			                    y2: 1,
+			                    colorStops: [{
+			                        offset: 0, color: '#497fff' // 0% 处的颜色
+			                    }, {
+			                        offset: 1, color: '#205cea' // 100% 处的颜色
+			                    }]
+			                }
+			            },
+			            data: ['8309','2848','618','3368','1036.17','6776.42','0']
+			        }, 
+			        {
+			            name: '实际',
+			            type: 'bar',
+			                        label:{
+			                show:true,
+			                position:'top',
+			                fontSize:14,
+			                color:'#32daff',
+			                fontWeight:'bold'
+			            },
+			            barMaxWidth:40,
+			            itemStyle:{
+			                color: {
+			                    type: 'linear',
+			                    x: 0,
+			                    y: 0,
+			                    x2: 0,
+			                    y2: 1,
+			                    colorStops: [{
+			                        offset: 0, color: '#32daff' // 0% 处的颜色
+			                    }, {
+			                        offset: 1, color: '#00a9ce' // 100% 处的颜色
+			                    }]
+			                }
+			            },
+			            data:['1992.42','45.62','150.47','62.92','18.09','6000','0'] 
+			        }
+			    ]
+			};
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }
+	
+}
+
+
+
+
+
+function  getChart2() {
+	 var dom = document.getElementById("dwgcwgtj");
+	 var myChart = echarts.init(dom);
+	 var app = {};
+	 option = null;
+	 option = {
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: { 
+			            type: 'shadow' ,
+			            textStyle: {
+			                color: '#fff',
+			                fontSize: '26'
+			            },
+			        }
+			    },
+			    grid: {
+			        top:60,
+			        left:50,
+			        bottom:60,
+			        right:60
+			    },
+			    xAxis: [{
+			        type: 'category',
+			        axisTick:{
+			            show:false
+			        },
+			        axisLine:{
+			            show:false
+			        },
+			        axisLabel:{
+			            color:'white',
+			            fontSize:14,
+			            margin:10,
+			            interval:0
+			        },
+			        data: ['预制梁', '桩基', '温接缝', '塔柱','主桥钢箱梁','墩身','梁盖','承台'],
+			       
+			    }],
+			    yAxis: [{
+			        name:'单位：万元',
+			        nameTextStyle:{
+			            color:'white',
+			            fontSize:12,
+			            padding:[0, 0, 0, -5]
+			        },
+			        max: function(value) {
+			            if(value.max<10){
+			                return 10
+			            }else{
+			                return value.max
+			            }
+			        },
+			        type: 'value',
+			        axisLine:{
+			            show:false
+			        },
+			        axisLabel:{
+			            color:'white',
+			            fontSize:12,
+			            margin:20
+			        },
+			        splitLine:{
+			            show:false
+			        },
+			        axisTick:{
+			            show:false
+			        }
+			    }],
+			    series: [
+			        {
+			            type: 'bar',
+			      
+			            label:{
+			                show:true,
+			                position:'top',
+			                fontSize:14,
+			                color:'#f8b100',
+			                fontWeight:'bold'
+			            },
+			            barMaxWidth:30,
+			            itemStyle:{
+			                color: {
+			                    type: 'linear',
+			                    x: 0,
+			                    y: 0,
+			                    x2: 0,
+			                    y2: 1,
+			                    colorStops: [{
+			                        offset: 0, color: '#f8b100' // 0% 处的颜色
+			                    }, {
+			                        offset: 1, color: '#c28a00' // 100% 处的颜色
+			                    }]
+			                }
+			            },
+			            data: [0,1992.42,0,0,0,45.62,62.92,150.47]
+			        }
+			    ]
+			};
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }
+	
+}
+
+
+function  getChart3(pid) {
+	//$.request({
+	//	url : $$pageContextPath+'main/progress/ljczwc?prjid='+pid,
+	//	success : function(response){
+	var response = {"currentDataWrap":"dataWrap","dataWraps":{},"errorMessage":"","message":"","parameters":{"ljczwc":{"listAll":["2021-01","2021-02","2021-03","2021-04","2021-05","2021-06"],"ndjhlist":{"data":[1114,179,1075.5555,1618.6295,1252.483,1959.9504]},"ndsjlist":{"data":[3426.2,2775.5,4075.8,5003.6,5799.49,75]}}}};
+	 var dom = document.getElementById("ljcztj");
+	 var myChart = echarts.init(dom);
+	 var t=response.parameters.ljczwc;
+	 var app = {};
+	 option = null;
+	    const color = ['#0090FF', '#FFC005', '#36CE9E']
+	    const xAxisData = t.listAll
+
+	    //计划
+	    const yAxisData1 = t.ndjhlist.data
+	    //实际
+	    const yAxisData2 = t.ndsjlist.data
+	    //计量
+	   // const yAxisData3 = t.ndjllist.data
+
+	    const hexToRgba = (hex, opacity) => {
+	        let rgbaColor = ''
+	        const reg = /^#[\da-f]{6}$/i
+	        if (reg.test(hex)) {
+	            rgbaColor = `rgba(${parseInt('0x' + hex.slice(1, 3))},${parseInt('0x' + hex.slice(3, 5))},${parseInt('0x' + hex.slice(5, 7))},${opacity})`
+	        }
+	        return rgbaColor
+	    }
+	    const lineStyle = (index) => {
+	        return {
+	            normal: {
+	                color: color[index],
+	                shadowColor: hexToRgba(color[index], 0.5),
+	                shadowBlur: 3,
+	                shadowOffsetY: 8
+	            }
+	        }
+	    }
+	    const areaStyle = (index) => {
+	        return {
+	            normal: {
+	                color: new echarts.graphic.LinearGradient(0, 0, 0, 1,
+	                    [{
+	                        offset: 0,
+	                        color: hexToRgba(color[index], 0.3)
+	                    }, {
+	                        offset: 1,
+	                        color: hexToRgba(color[index], 0.1)
+	                    }]
+	                ),
+	                shadowColor: hexToRgba(color[index], 0.1),
+	                shadowBlur: 10
+	            }
+	        }
+	    }
+
+	    option = {
+	        color: color,
+	        grid: {
+	            top: '8%',
+	            left: '8%',
+	            right: '5%',
+	            bottom: '11%'
+	        },
+	        legend: {
+	            icon: 'circle',
+	            itemHeight: 12,
+	            itemWidth: 12,
+	            top: 5,
+	            textStyle: {
+	                fontSize: 12,
+	                color: 'white'
+	            }
+	        },
+	        tooltip: {
+	            trigger: 'axis',
+	            axisPointer: {
+	                type: 'line'
+	            },
+	            extraCssText: 'font-size:14px;line-height:24px;color:#567;background:#fff;box-shadow:0 0 3px rgba(0, 0, 0, 0.2)',
+	            formatter: function(params) {
+	                let html = ''
+	                params.forEach(v => {
+	                    console.log(v)
+	                    html += `<div><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${color[v.componentIndex]};"></span>${v.seriesName}<span style="color:${color[v.componentIndex]};font-size:18px;font-weight:700">:${v.value}</span>`
+	                })
+	                return html
+	            }
+	        },
+	        xAxis: {
+	                  axisTick: {
+				                show: false
+				            },
+				            axisLine: {
+				                show: true,
+				                lineStyle: {
+				                    color: '#363e83',
+				                }
+				            },
+	            axisLabel: {
+				            textStyle: {
+				                color: '#fff',
+				                fontWeight: 'normal',
+				                fontSize: '14',
+				            },
+				        },
+	            data: xAxisData
+	        },
+	        yAxis: {
+	        	name:'单位：万元',
+	        	 nameTextStyle:{
+			            color:'white',
+			            fontSize:12,
+			            padding:[0, 0, 0, -5]
+			        },
+	            show: true,
+	               axisLabel: {
+				            textStyle: {
+				                color: 'white',
+				                fontWeight: 'normal',
+				                fontSize: '14',
+				            },
+				        },
+				         axisTick: {
+				            show: false
+				        },
+				        axisLine: {
+				            show: true,
+				            lineStyle: {
+				                color: '#363e83',
+				            }
+				        },
+				        splitLine: {
+				            show: true,
+				            lineStyle: {
+				                color: '#363e83 ',
+				            }
+				        }
+	        },
+	        series: [{
+	            name: '计划',
+	            type: 'line',
+	            data: yAxisData1,
+	           
+	            symbolSize: 6,
+	            lineStyle: lineStyle(0),
+	            areaStyle: areaStyle(0)
+	        }, {
+	            name: '实际',
+	            type: 'line',
+	            data: yAxisData2,
+	            
+	            symbolSize: 6,
+	            lineStyle: lineStyle(1),
+	            areaStyle: areaStyle(1)
+	       // }
+	        //, {
+	       //     name: '计量',
+	        //    type: 'line',
+	        //    data: yAxisData3,
+	           
+	         //   symbolSize: 6,
+	        //    lineStyle: lineStyle(2),
+	         //   areaStyle: areaStyle(2)
+	        }]
+	    };
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }
+	//	}
+	//})
+}
+
+
+
+function  getChart4() {
+	 var dom = document.getElementById("glgcjd");
+	 var myChart = echarts.init(dom);
+	 var app = {};
+	 option = null;
+	 option = {
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: { 
+			            type: 'shadow' ,
+			            textStyle: {
+			                color: '#fff',
+			                fontSize: '26'
+			            },
+			        }
+			    },
+			    legend: {
+			        data: ['累计产值','总产值'],
+			        textStyle:{
+			            fontSize:12,
+			            color:'white'
+			        },
+			        icon:'rect'
+			    },
+			    grid: {
+			        top:60,
+			        left:50,
+			        bottom:60,
+			        right:60
+			    },
+			    xAxis: [{
+			        type: 'category',
+			        axisTick:{
+			            show:false
+			        },
+			        axisLine:{
+			            show:false
+			        },
+			        axisLabel:{
+			            color:'white',
+			            fontSize:14,
+			            margin:21,
+			            fontWeight:'bold'
+			        },
+			        data: ['路基工程', '路面工程', '桥梁工程', '涵洞工程','隧道工程'],
+			       
+			    }],
+			    yAxis: [{
+			        name:'单位：万元',
+			        nameTextStyle:{
+			            color:'white',
+			            fontSize:12,
+			            padding:[0, 0, 0, -5]
+			        },
+			        max: function(value) {
+			            if(value.max<5){
+			                return 5
+			            }else{
+			                return value.max
+			            }
+			        },
+			        type: 'value',
+			        axisLine:{
+			            show:false
+			        },
+			        axisLabel:{
+			            color:'white',
+			            fontSize:12,
+			            margin:5
+			        },
+			        splitLine:{
+			            show:false
+			        },
+			        axisTick:{
+			            show:false
+			        }
+			    }],
+			    series: [
+			       
+			        {
+			            name: '总产值',
+			            type: 'bar',
+			                        label:{
+			                show:true,
+			                position:'top',
+			                fontSize:14,
+			                color:'#0affc6',
+			                fontWeight:'bold'
+			            },
+			            barMaxWidth:40,
+			            itemStyle:{
+			                color: {
+			                    type: 'linear',
+			                    x: 0,
+			                    y: 0,
+			                    x2: 0,
+			                    y2: 1,
+			                    colorStops: [{
+			                        offset: 0, color: '#0affc6' // 0% 处的颜色
+			                    }, {
+			                        offset: 1, color: '#3fc2a3' // 100% 处的颜色
+			                    }]
+			                }
+			            },
+			            data:[9061.64,0,33393.87,391,0]
+			        },
+			        {
+			            name: '累计产值',
+			            type: 'bar',
+			            label:{
+			                show:true,
+			                position:'top',
+			                fontSize:14,
+			                color:'#25d6ff',
+			                fontWeight:'bold'
+			            },
+			            barMaxWidth:40,
+			            itemStyle:{
+			                color: {
+			                    type: 'linear',
+			                    x: 0,
+			                    y: 0,
+			                    x2: 0,
+			                    y2: 1,
+			                    colorStops: [{
+			                        offset: 0, color: '#25d6ff' // 0% 处的颜色
+			                    }, {
+			                        offset: 1, color: '#01aad1' // 100% 处的颜色
+			                    }]
+			                }
+			            },
+			            data:  [0,0,2255.06,16.93,0]
+			        },
+			    ]
+			};
+	 if (option && typeof option === "object") {
+		 myChart.clear();
+		 myChart.setOption(option, true);
+	 }
+	
+}
+
+</script>

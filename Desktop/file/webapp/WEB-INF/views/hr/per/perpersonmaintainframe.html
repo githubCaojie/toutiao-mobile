@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="130,*" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea title="" :href="topUrl" id="topUrl">
+			</hy-fillarea> 
+			<hy-fillarea >
+				<hy-filllayout cols="200,*" :showborder="false"  :showpadding="false"> 
+					<hy-fillarea title="">
+						<hy-tree id="firstTree" @nodeclick="treeClick" 
+				  		valueprovider="com.haiyisoft.hr.per.tree.PerPersonInfoListTree"  v-model="code" ></hy-tree>
+					</hy-fillarea> 
+					<hy-fillarea title="" href="/" id="perInfoId"></hy-fillarea> 
+				</hy-filllayout>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var partyId;
+	var uuid;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				code : null,
+				topUrl : "",
+			},
+			mounted : function(){
+				this.topUrl = $$pageContextPath + 'per/perbaseinfo/top?partyId='+this.partyId;
+				$("#perInfoId iframe").attr("src",$$pageContextPath +'per/person/queryOne?partyId='+this.partyId+"&uuid="+this.uuid+"&editFlag="+this.editFlag);
+			},
+			methods : {		
+				treeClick : function(){
+					var treeBean = firstTree.getSelectedNode();
+					$("#perInfoId iframe").attr("src",$$pageContextPath +treeBean.url+'?partyId='+vm.partyId+"&uuid="+vm.uuid+"&editFlag="+vm.editFlag);
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

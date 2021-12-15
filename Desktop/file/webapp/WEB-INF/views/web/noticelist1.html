@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>普通通知</title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/nqi/common.js}"></script>
+<script th:src="@{/nqi/wpinfo.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="45,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea>
+				<table>
+			       <tr>
+			     	<td align="right" width="80px">信息标题</td> <td width="120px" align="left"><hy-input name="dataWrap.query.infoTitle_LIKE"  :upload="true"  ></hy-input> </td>
+			        <td align="right" width="80">发布部门</td>
+					<td width="120" align="left"><hy-droptree name="dataWrap.query.createOrg"  :highlight-current="true"  valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree" :upload="true" /></td>		
+			        <td>
+				        <hy-button text="查询" @click="query"></hy-button>	
+						<hy-button text="添加" @click="add"></hy-button>	
+						<hy-button text="删除" @click="remove"></hy-button>	</td>
+			        <tr/>
+			    </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				 <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%" @queryfunc="query" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+					<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+					<hy-table-column title="信息标题"  name="infoTitle" align="center"	width="200"></hy-table-column> 
+					<hy-table-column  title="操作"  width="250" align="center">
+						<template scope="scope">
+							 <a href="javascript:void(0)" @click="detail(scope.row)">详细</a>
+							 <a href="javascript:void(0)" @click="display(scope.row)">浏览</a>
+							 <a href="javascript:void(0)" @click="upload(scope.row)">上传</a>
+							 <a href="javascript:void(0)" @click="istop(scope.row)" v-if="scope.row.isTop=='Y'?false:true">置顶</a>
+							 <a href="javascript:void(0)" @click="nottop(scope.row)" v-if="scope.row.isTop=='Y'?true:false">取消置顶</a>
+						</template>
+					</hy-table-column>
+				</hy-table> 
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+</body>
+</html>
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+
+		},
+		mounted : function() {
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {
+			query : function() {
+				Query('/web/notify/query?type=1&menuId=' + vm.menuId);
+			},
+			istop : Istop,
+			nottop : NotTop,
+			add : Add,
+			remove : Remove,
+			detail : DetailWithType,
+			display : Display,
+			upload : UploadPDF
+		}
+	});
+
+</script>

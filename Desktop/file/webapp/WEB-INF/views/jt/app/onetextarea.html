@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	
+	<hy-filllayout rows="35,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea >
+				<hy-button text="确定" @click="setValue"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="100" :readonly="false"
+					label-suffix="：" :cols="5" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput  title="模板信息" placeholder="请输入模板内容！"name="textTemplate"  :rules="{ required: true}":rowspan="3" :colspan="4" type="textarea"></hy-forminput>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+<script th:inline="javascript">
+var templateType;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+
+			},
+			mounted : function(){
+				debugger;
+				console.log(response.getAjaxDataWrap("dataWrap"));
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				templateType = response.getParameter("templateType");
+			},
+			methods : {		
+				setValue : function(){
+				myform.validate(function(data){
+					if(data){
+						var formData = myform.collectData();
+						var dataArr = [];
+						dataArr.push(formData);
+						$.request({
+							url : $$pageContextPath + 'jt/app/selecttexttemplate/save?templateType=' + templateType,
+							data : dataArr,
+							success : function(response){
+								$.close(response);
+							}
+						});	
+					}	
+				});
+			
+			}
+				/* setValue :function () {
+					if( $("#textTemplate").val()==""||$("#textTemplate").val()=="请输入模板内容！"){
+						setRM("error","请输入正确的模板内容！");
+						return ;
+					}
+					//方法体
+					$.close( $("#textTemplate").val());//需要返回值应当写好对应的return方法
+
+				} */
+			}
+			
+		});
+		function callback(data){
+			alert(data);
+		}
+	</script>
+</body>
+</html>

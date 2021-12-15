@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/hr/confige/per/jquery.imgareaselect.pack.js}"></script>
+<script th:src="@{/hr/confige/per/ajaxfileupload.js}"></script>
+<link th:href="@{/hr/confige/css/imgareaselect-default.css}" rel="stylesheet" type="text/css" >
+</head>
+<body>
+	<div id="app" view>
+	 	<hy-row  :height="400">
+	 		<hy-filllayout cols="*,43%" :showborder="true">
+	 			<hy-fillarea>
+	 				<table width="100%" height="100%">
+	 					<tr>
+	 						<td align="center"><img id="headPhoto" src="getFileInputStream?fileId=${fileId }" onerror="this.src='../../images/hr/000.jpg'" /></td>
+	 					</tr>
+	 				</table>
+	 			</hy-fillarea>
+	 			<hy-fillarea >
+	 				<hy-row :height="200" :gutter="1">
+	 					<hy-col  :span="8">
+		 				</hy-col>
+	 					<hy-col :span="10">
+							<div style="position:relative;overflow:hidden;width: 120px;height: 150px">
+								<img id="previewImg" alt="图片预览" src="photo"  width="120" height="150" onerror="this.src='../../images/hr/000.jpg'" />
+							</div>
+						</hy-col>
+					</hy-row>
+		 			<hy-row  :height="30" :gutter="1">
+		 				<hy-col  :span="3">
+		 				</hy-col>
+		 				<hy-col  :span="3">
+		 					<th>X1：</th>
+		 				</hy-col>
+		 				<hy-col :span="5">
+							<input name="property.x1" id="x1" style="width:90%;border:#CCCCCC solid 1px;" readonly="readonly"/>
+		 				</hy-col>
+		 				<hy-col :span="3">
+							<th>Y1：</th>
+						</hy-col>
+		 				<hy-col :span="5">
+							<input name="property.y1" id="y1" style="width:90%;border:#CCCCCC solid 1px;" readonly="readonly"/>
+		 				</hy-col>
+		 				<hy-col  :span="3">
+		 				</hy-col>
+					</hy-row>
+		 			<hy-row :height="30" :gutter="1">
+		 				<hy-col  :span="3">
+		 				</hy-col>
+		 				<hy-col  :span="3">
+		 					<th>X2：</th>
+		 				</hy-col>
+		 				<hy-col :span="5">
+		 					<input name="property.x2" id="x2" style="width:90%;border:#CCCCCC solid 1px;" readonly="readonly"/>
+		 				</hy-col>
+		 				<hy-col :span="3">
+							<th>Y2：</th>
+		 				</hy-col>
+		 				<hy-col :span="5">
+							<input name="property.y2" id="y2" style="width:90%;border:#CCCCCC solid 1px;" readonly="readonly"/>
+						</hy-col>
+						<hy-col  :span="3">
+		 				</hy-col>
+					</hy-row>
+		 			<hy-row  :height="30" :gutter="1">
+		 				<hy-col  :span="3">
+		 				</hy-col>
+		 				<hy-col  :span="3">
+		 					<th>宽度：</th>
+		 				</hy-col>
+		 				<hy-col :span="5">
+							<input name="property.width" id="width" style="width:90%;border:#CCCCCC solid 1px;" readonly="readonly"/>
+		 				</hy-col>
+		 				<hy-col :span="3">
+							<th>高度：</th>		 				
+						</hy-col>
+		 				<hy-col :span="5">
+							<input name="property.height" id="height" style="width:90%;border:#CCCCCC solid 1px;" readonly="readonly"/>
+		 				</hy-col>
+		 				<hy-col  :span="3">
+		 				</hy-col>
+					</hy-row>
+		 			<hy-row  :height="30" :gutter="1">
+		 				<hy-col :span="20">
+							  <input type="text" id="fileText" style="width:90%" class="type-file-text" readonly="readonly" /> 
+						</hy-col>				
+										
+		 			</hy-row>
+		 			<hy-row  :height="30" :gutter="1">
+		 				<hy-col :span="20">
+							<input name="file" id="uploadFile" type="file" onchange="uploadfile()" class="type-file-file"  size="100" />
+						</hy-col>			
+		 			</hy-row>
+		 			<hy-row :height="30" :gutter="1">
+		 				<hy-col :span="20">注：图片上传之后，如需裁剪图片，可以直接在左侧的图片上拖动鼠标，点击【裁剪】按钮。
+						</hy-col>	
+		 			</hy-row>	
+	 			</hy-fillarea>
+	 		</hy-filllayout>
+	 	</hy-row>
+	 	<hy-row :height="35" >	
+	 		<hy-col :span="10">
+			</hy-col>
+	 		<hy-col :span="10">
+	 			<hy-button text="裁剪" onclick="clip()"/>
+	 			<hy-button text="确定" onclick="updateData()"/>
+	 			<hy-button text="取消" onclick="closeWindow()"/>
+			</hy-col>
+	 	</hy-row>
+	</div>
+	<script th:inline="javascript">
+	var fileId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				perUuid : null,
+				fileUuid : null
+			},
+			mounted : function(){
+			},
+			methods : {				
+			}
+			
+		});
+		function uploadfile(){
+			var fileName = $("#uploadFile").val();
+			$("#fileText").val(fileName);
+			var suffix = fileName.substring(fileName.lastIndexOf(".")+1);
+			var allowSuffix = "jpg,jpeg,bmp,png,JPG,JPEG,BMP,PNG,";
+			if(allowSuffix.indexOf(suffix+",")<0){
+				setRM("error","上传文件格式不符合要求！");
+				return false;
+			}
+			$.ajaxFileUpload({
+				url : $$pageContextPath + "per/perPersonPicturecut/picUpload?perUuid="+vm.perUuid,
+				secureuri : false,
+				fileElementId : 'uploadFile',
+				dataType : 'json',
+				success : function(data){
+					fileId = data.parameters.fileId;
+					var d = new Date();
+					var url =  $$pageContextPath + "per/perPersonPicturecut/getFileInputStream?fileId="+fileId+"&t="+d;
+					$("#headPhoto").attr("src",url).removeAttr("height").removeAttr("width");
+					$('#previewImg').attr("src",url);
+					$('#headPhoto').imgAreaSelect({handles: true,aspectRatio:"3:4",keys :true,onSelectChange: preview });
+				}
+			});
+		}
+		
+		function clip(){
+			if(fileId==""){
+				setRM("error","尚未上传图片！");
+				return false;
+			}
+			var w = $('#width').val()*1;
+            var h = $('#height').val()*1; 
+            if(w==0||h==0){
+            	setRM("error","您所选的区域不正确，请重新选择！");
+				return false;
+	        }
+
+        	var fileName = $("#fileText").val();
+				var suffix = fileName.substring(fileName.lastIndexOf(".")+1);
+				var dataValue = {"fileId":fileId,"x": $('#x1').val(),
+						"y": $('#y1').val(),"width":w,"height":h,"fileType":suffix};
+	            $.ajax({
+	    	        url: $$pageContextPath + "per/perPersonPicturecut/cut",
+	    	        type: "post",  
+	    	        data:dataValue,
+	    	        dataType:"json",
+	    	        success:function(data){
+	    	        	if(data.parameters.flag==1){
+							var d = new Date();
+							var url =  $$pageContextPath + "per/perPersonPicturecut/getFileInputStream?fileId="+fileId+"&t="+d;
+							$("#headPhoto").attr("src",url).attr("width",w).attr("height",h);
+							$('#previewImg').attr("src",url);
+							$('#headPhoto').imgAreaSelect({handles: true,aspectRatio:"3:4",onSelectChange: preview,x1: 0, y1: 0, x2: w, y2: h}); 
+							 $('#x1').val("0");
+					         $('#y1').val("0");
+			    	    }else{
+	    		        	$.alert("提示信息：","图片裁剪失败！");
+	    			    }				        
+	    	        },
+	    	        error:function(){
+	    	        	 $.alert("提示信息：","图片裁剪失败！");
+	    	        }
+	       		 });	
+		}
+		
+		function preview(img, selection) {
+		    var scaleX = 120 / (selection.width || 1);
+		    var scaleY = 150 / (selection.height || 1);
+		    var w = $('#headPhoto').css("width");
+		    w = w.substring(0,w.length-2);
+		    var h = $('#headPhoto').css("height");
+		    h = h.substring(0,h.length-2);
+		    $('#previewImg').css({
+		        width: Math.round(scaleX * w) + 'px',
+		        height: Math.round(scaleY * h) + 'px',
+		        marginLeft: '-' + Math.round(scaleX * selection.x1) + 'px',
+		        marginTop: '-' + Math.round(scaleY * selection.y1) + 'px'
+		    });
+		    $('#x1').val(selection.x1);
+            $('#y1').val(selection.y1);
+            $('#x2').val(selection.x2);
+            $('#y2').val(selection.y2);  
+            $('#width').val(selection.width);
+            $('#height').val(selection.height); 
+		}
+		function updateData(){
+			if(fileId==""||fileId==null){
+				$.alert("尚未上传图片！");
+				return false;
+			}
+			 $.ajax({
+	    	        url: $$pageContextPath + "per/perPersonPicturecut/upload",
+	    	        type: "post",  
+	    	        data:{"fileId":fileId,
+	    	        	  "perUuid" : vm.perUuid,
+	    	        	  "fileUuid" : vm.fileUuid},
+	    	        dataType:"json",
+	    	        success:function(response){
+	    	        	$.close(true);
+	    	        },
+	    	        error:function(){
+	    	        	 $.alert("提示信息：","图片裁剪失败！");
+	    	        }
+	       		 });
+		}
+		function closeWindow(){
+			$.close(true);
+		}
+	</script>
+</body>
+</html>

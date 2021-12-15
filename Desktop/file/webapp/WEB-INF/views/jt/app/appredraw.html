@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+    	<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				工作单号  <hy-input  id="appNoId" v-model="appNo" :upload="true" width="200"></hy-input>
+				工单类型 <hy-select dropname="JT.APP_TYPE"  v-model="appType" clearable  width="150"></hy-select>
+				当前环节 <hy-input  id="curTaskNameId" v-model="curTaskName" :upload="true" width="200"></hy-input> 
+				<hy-button text="查询" @click="retrieve" />
+			</hy-fillarea> 
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="retrieve" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+						<hy-table-column title="工作单号" width="80" align="center">
+					    <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="openTaskExecInfo(scope.row)">{{scope.row.appNo}}</a>&nbsp;
+					    </template>
+					    </hy-table-column>
+						<hy-table-column title="工作单类型"  name="appType" align="center" width="100" type="drop" dropname="JT.APP_TYPE" ></hy-table-column> 
+						<hy-table-column title="申请人"  name="loginId" align="center" width="100" type="drop" dropname="UEP.ACCOUNT_NAME" ></hy-table-column> 
+						<hy-table-column title="处理时间"  name="taskReachTime" align="center" width="150" type="datetime" ></hy-table-column> 
+						
+						<hy-table-column title="处理环节"  name="activityName" align="center"	width="120"></hy-table-column> 
+						<hy-table-column title="信息"  name="content" align="center"	width="350"></hy-table-column> 
+						<hy-table-column
+					      title="操作"
+					      width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="appRedraw(scope.row)">抽回</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var action;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				appType : "",
+				appNo : "",
+				curTaskName : ""
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				retrieve : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/appRedraw/retrieve',
+						data : dataArr,
+						params : { "appType": this.appType,
+								   "appNo" : this.appNo,
+								   "curTaskName" : this.curTaskName},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				openTaskExecInfo : function(cell){
+					$.popWindow({
+						title:ajaxgrid.getColumnLabel(cell.keyId-1,"appType")+"("+cell.appNo+")",
+						url:$$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + cell.instanceId+"&appTaskId=" +cell.taskId+ "&openMode=4" ,
+						callback:vm.retrieve,
+						button:0,
+						css:{width:1200,height:800,type:1},
+					});
+				},
+				appRedraw : function(row) {
+					$.confirm("请确认：","确定要抽回工单："+row.appNo,function(){$.request({
+						url :  $$pageContextPath + "jt/app/appRedraw/appRedraw",
+						params:{"appInstanceId":row.instanceId,"appTaskId":row.taskId},
+						success : vm.appRedrawlCallBack
+					});},function(){return false;});
+				},
+				appRedrawlCallBack : function(response){
+					setRM("success",response.getMessage(),vm.retrieve);
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

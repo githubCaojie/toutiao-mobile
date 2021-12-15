@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="200,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea title="项目">
+				<hy-tree id="myTree" valueprovider="com.haiyisoft.fslq.tree.PmPrjTree" @nodeclick="query"  
+					 :expandlevel="3" :rootvisible="false"></hy-tree>
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="标段">
+						 <table>
+			              <tr> 
+							<td align="right" width="80px">标段编号</td>
+							<td align="left" width="120px"><hy-input name="dataWrap.query.secNo_LIKE"  :upload="true" ></hy-input></td>
+							<td align="right" width="80px">标段名称</td>
+							<td align="left" width="150px"><hy-input name="dataWrap.query.secName_LIKE"  :upload="true" ></td>
+							<td align="right" width="80">施工类型</td>
+							<td width="80"align="left"><hy-select name="dataWrap.query.workType"  :upload="true" dropname="FSLQ.WORK_TYPE" :clearable="true" @change="query"></hy-select></td>
+							<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+		           		  </tr>
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea align="left">
+			      		<div style="float:left">
+							<hy-button text="添加" @click="add" :pkain="true"></hy-button>
+							<hy-button text="删除" @click="remove" :pkain="true" ></hy-button>
+			      		</div>
+					</hy-fillarea>
+					<hy-fillarea>
+				          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 99%">
+								<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+								<hy-table-column title="标段编号"  name="secNo" align="center"	width="150"></hy-table-column> 
+								<hy-table-column title="标段简称"  name="secShortName" align="center"	width="100"></hy-table-column> 
+								<hy-table-column title="标段名称"  name="secName" align="center"	width="150"></hy-table-column> 
+								<hy-table-column title="施工类型"  name="workType" align="center" width="150" type="drop" dropname="FSLQ.WORK_TYPE"></hy-table-column> 
+								<hy-table-column title="中标企业"  name="winUnit" align="center" width="200" ></hy-table-column> 
+								<hy-table-column title="施工单位"  name="winUnit" align="center" width="200" type="inputbutton" labelprovider="com.haiyisoft.fslq.labelprovider.GcUnitNameLabel"></hy-table-column> 
+								<hy-table-column title="合同价"  name="contractMoney" align="center" width="100" ></hy-table-column> 
+								<hy-table-column title="结算价"  name=costMoney align="center" width="100" ></hy-table-column> 
+								<hy-table-column title="开工日期"  name="beginDate" align="center" width="100" type="date" ></hy-table-column> 
+								<hy-table-column title="状态" name="status" type="drop" dropname="FSLQ.PRO_STATUS" width="80" align="center"></hy-table-column>
+							    <hy-table-column title="操作" width="230" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>
+							     	<a href="javascript:void(0)" @click="person(scope.row)">人员管理 </a>
+							     	<a href="javascript:void(0)" @click="secInfo(scope.row,'3')" v-show="secType=='1'||secType=='2'">施工标段 </a>
+							     	<a href="javascript:void(0)" @click="secInfo(scope.row,'1')" v-show="secType=='3'">监理标段</a>
+							     	<a href="javascript:void(0)" @click="secInfo(scope.row,'2')" v-show="secType=='3'">检测中心</a>
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+				if(this.secType=='3') {
+					ajaxgrid.hiddenColumn(6,true);
+				} else{
+					ajaxgrid.hiddenColumn(7,true);
+				}
+			},
+			methods : {
+				query : function(response, b, c){
+					var treeBean = myTree.getSelectedNode();
+					if(!treeBean){
+						return setRM("alert","请选择项目！");
+					}
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pmSection/list',
+						data : dataArr,  
+						params :{
+							"prjId":treeBean.code,
+							"secType":vm.secType
+						},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+			    detail : function(row){
+					$.popWindow({
+						title:"详细",
+						url: $$pageContextPath + 'pmSection/pageform?id='+row.id+"&secType="+vm.secType,
+						callback:vm.query,
+						button:0,
+						css:{width:900,height:680},
+					});
+				},
+				add : function(){
+					var treeBean = myTree.getSelectedNode();
+					if(!treeBean){
+						return setRM("alert","请选择项目！");
+					}
+					$.popWindow({
+						title:"添加",
+						url:  $$pageContextPath + 'pmSection/pageform?prjId='+treeBean.code+"&secType="+vm.secType,
+						callback: vm.onsavecomplete,
+						button:0,
+						css:{width:1000,height:680},
+					});
+				},
+				remove : function(response,b,c){
+					dataDel(ajaxgrid,$$pageContextPath + 'pmSection/del',vm.query);
+				}, 
+				onsavecomplete : function(response){
+					setRM(vm.query());
+				},
+				secInfo : function(row,secType){
+					var treeBean = myTree.getSelectedNode();
+					if(!treeBean){
+						return setRM("alert","请选择项目！");
+					}
+					var tempEditFlag = editFlag;
+					if(vm.secType=="3"){
+						tempEditFlag = 'N';
+					}
+					$.popWindow({
+						title:"关联标段",
+						url:  $$pageContextPath + 'pmSection/pageRela?id='+row.id+'&prjId='+treeBean.code+"&secType="+secType+"&editFlag="+tempEditFlag,
+						callback: vm.onsavecomplete,
+						button:0,
+						css:{width:1000,height:600},
+					});
+				},
+				person : function(node) {
+					$.showModalDialog($$pageContextPath + 'pmPrjPerReal/?prjPartyId='+node.partyId+'&realType='+vm.secType, 
+							"人员管理", vm.onsavecomplete, null, 1200, 800, 0);
+				}
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+				<hy-filllayout rows="queryh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea>
+						<table>
+			              <tr>
+			                <td>APP名称</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.appName_LIKE"  :upload="true" ></hy-input> </td>
+			                <td align="center" wtdth="150">硬件平台</td>
+							<td width="100"><hy-select name="dataWrap.query.hardwarePlatform"  :upload="true"dropname="JT.YD_HARD_PLATFORM" ></hy-select></td>
+			                <td align="center" wtdth="150">系统平台</td>
+							<td width="100"><hy-select name="dataWrap.query.softPlatform"   :upload="true"dropname="JT.YH_SOFT_PLATFORM" ></hy-select></td>
+			                <td align="right" width="100"><hy-button text="查询" @click="query" icon="icon-search"></hy-button></td>
+							<td align="right" width="60"><hy-button text="添加" @click="add" :pkain="true" icon="icon-pluscircleo" :plain="true"></hy-button></td>
+							<td align="right" width="60"><hy-button text="删除" plain="true" @click="remove" icon="icon-minuscircleo" type="danger"></hy-button></td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="版本号"  name="curVersion" align="center"	width="120"></hy-table-column> 
+								<hy-table-column title="硬件平台"  name="hardwarePlatform" dropname="JT.YD_HARD_PLATFORM"align="center"	type="drop" width="120"></hy-table-column> 
+								<hy-table-column title="系统平台"  name="softPlatform"  dropname="JT.YH_SOFT_PLATFORM" align="center" type="drop" 	width="140"></hy-table-column> 
+								<hy-table-column title="是否强制更新"  name="forceUpdate" dropname="UEP.YES_OR_NO" type="drop"align="center" width="100" ></hy-table-column> 
+								<hy-table-column title="APP名称"  name="appName" align="center"	width="150"></hy-table-column> 
+								<hy-table-column title="支持最低系统版本"  name="minSystemVersion" align="center" width="140"   ></hy-table-column> 
+								<hy-table-column title="支持最高系统版本"  name="maxSystemVersion" align="center" width="140" ></hy-table-column> 
+								<hy-table-column title="状态"  name="status"  dropname="JT.PUNISH_STATUS" align="center" type="drop" 	width="80"></hy-table-column> 
+								<hy-table-column  title="操作"  width="180"  align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="detail(scope.row)">
+							     		<img src="../../images/table/detail.png" style="width: 15px;height: 15px">
+					     	 			<span>详细</span></a>&nbsp;
+							     	<a href="javascript:void(0)" @click="issue(scope.row)" v-show="scope.row.status=='N'">
+							     		<img src="../../images/table/publish.png" style="width: 15px;height: 15px">
+					     	 			<span>发布</span></a>&nbsp;
+							     	<a href="javascript:void(0)" @click="cancelIss(scope.row)" v-show="scope.row.status=='Y'">
+							     		<img src="../../images/table/canclepublish.png" style="width: 15px;height: 15px">
+					     	 			<span>取消发布</span></a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+// 				slTreeCode :"" 
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'mobile/jtMobileUpgrade/queryOne?id='+row.id, "详细",  vm.query, null, 950, 550, 0,1);
+				},
+				add : function(){
+					$.showModalDialog($$pageContextPath + 'mobile/jtMobileUpgrade/queryOne?', "添加",  vm.query, null, 950, 550, 0,1);
+				},
+				remove : function(){
+					//只能删除未发布的。
+					var checked = ajaxgrid.getCheckedRecords();
+					if(checked.length == 0)
+						return setRM("alert","请选择要删除的数据！");
+					for(var i=0;i<checked.length;i++){
+						if(checked[i].data.status == "Y")
+							return setRM("alert","只能删除未发布的数据！");
+					}
+					dataDel(ajaxgrid,$$pageContextPath + 'mobile/jtMobileUpgrade/remove',vm.query);
+				},
+				onsavecomplete : function(response){
+					setRM(vm.query());
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'mobile/jtMobileUpgrade/query',
+						data : dataArr,
+// 						params : {"upUuid":vm.slTreeCode,"menuClass":vm.menuClass},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				issue : function(row){
+					//有附件才可以发布
+					$.request({
+						url : $$pageContextPath + "mobile/jtMobileUpgrade/issue",
+						params : {
+							id : row.id
+						},
+						success : function(response){
+							var flag = response.getParameter("flag");
+							if(flag == "Y"){
+								return setRM(vm.query());
+							}else{
+								return setRM("alert","未上传文件，不允许发布！");
+							}
+						}
+					});
+				},
+				cancelIss : function(row){
+					$.request({
+						url : $$pageContextPath + "mobile/jtMobileUpgrade/cancelIss",
+						params : {
+							id : row.id
+						},
+						success : function(response){
+							return setRM("success",response.getMessage(),vm.query());
+						}
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

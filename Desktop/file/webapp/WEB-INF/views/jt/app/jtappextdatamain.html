@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:jt="http://www.w3.org/1999/xhtml">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/jt/app/appcommon.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+			<hy-filllayout rows="toolh,*"> 
+				<hy-fillarea :display="(editFlag=='Y'||confirmTask=='O')?'block':'none'">
+					<template th:substituteby="jt/app/appbutton.html"></template>
+					<hy-button text="办理过程" @click="spDetail" :visible="appInstanceId!=null&&appTaskId!=null&&appTaskId!=1"></hy-button>
+				</hy-fillarea>
+				<hy-fillarea >
+					<hy-form id="myform" name="dataWrap"
+						labelposition="right" label-width="100" :readonly="editFlag!='N'?false:true"
+						label-suffix="：" :cols="2" size="normal"> 
+<!-- 						<hy-forminput label="工单号" name="instanceId" readonly></hy-forminput> -->
+						<template v-for= "(group,index) in groupList">
+						<hy-formgroup :title="group.groupName">
+							 <template v-for= "(data,index) in group.tacheforms">
+							 	<hy-forminput  :type="data.jtExtField.useRows!=null&&data.jtExtField.useRows>1?'textarea':'text'"  :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols"
+						 		 	:label="data.jtExtField.fieldName" v-if="(data.jtExtField.inputForm==''||data.jtExtField.inputForm=='FIELD')&&data.jtExtField.fieldType=='string'&&data.rightFlag!='3'" :readonly="data.rightFlag=='2'?true:false" :name="'dataMap.'+data.jtExtField.id" :rules="{ required: data.jtExtField.isMust=='Y'}" >
+									<template slot="append" v-if="data.jtExtField.unit!=null &&data.jtExtField.unit!=''  ">{{data.jtExtField.unit}}</template>
+								</hy-forminput> 
+								<hy-formselect :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols"
+									:label="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id" :items="getItemDrop(data.itemDrop)" :readonly="data.rightFlag=='2'?true:false"
+									v-if="data.jtExtField.inputForm=='DROP'" :rules="{ required: data.jtExtField.isMust=='Y'}"  :nullable="true" ></hy-formselect>
+								<hy-forminput :type="data.jtExtField.useRows!=null&&data.jtExtField.useRows>1?'textarea':'text'"    :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols"
+									:label="data.jtExtField.fieldName" v-if="(data.jtExtField.inputForm==''||data.jtExtField.inputForm=='FIELD')&&(data.jtExtField.fieldType=='bigdecimal' || data.jtExtField.fieldType=='long' || data.jtExtField.fieldType=='int')&&data.rightFlag!='3'" :readonly="data.rightFlag=='2'?true:false" :name="'dataMap.'+data.jtExtField.id"  :rules="[{pattern: /^\d+$|^\d+[.]?\d+$/, message:'请输入数字'},{required: data.jtExtField.isMust=='Y'}]" >
+									<template slot="append" v-if="data.jtExtField.unit!=null  &&data.jtExtField.unit!=''">{{data.jtExtField.unit}}</template>
+								</hy-forminput> 
+								<hy-formdatepicker :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols" :readonly="data.rightFlag=='2'?true:false"
+									:label="data.jtExtField.fieldName" v-if="data.jtExtField.inputForm=='YEAR'&&data.rightFlag!='3'" type="year"  :rules="{ required: data.jtExtField.isMust=='Y'}"  :name="'dataMap.'+data.jtExtField.id" >
+								</hy-formdatepicker> 
+								<hy-formdatepicker :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols" :readonly="data.rightFlag=='2'?true:false"
+									:label="data.jtExtField.fieldName" v-if="data.jtExtField.inputForm=='MONTH'&&data.rightFlag!='3'" type="month" :rules="{ required: data.jtExtField.isMust=='Y'}"  :name="'dataMap.'+data.jtExtField.id" >
+								</hy-formdatepicker> 
+								<hy-formdatepicker :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols" :readonly="data.rightFlag=='2'?true:false"
+									:label="data.jtExtField.fieldName" v-if="data.jtExtField.inputForm=='DATE'&&data.rightFlag!='3'"  :rules="{ required: data.jtExtField.isMust=='Y'}"  :name="'dataMap.'+data.jtExtField.id" >
+								</hy-formdatepicker> 
+								<hy-formdatepicker :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols" :readonly="data.rightFlag=='2'?true:false"
+									:label="data.jtExtField.fieldName" v-if="data.jtExtField.inputForm=='DATETIME'&&data.rightFlag!='3'"  type="datetime"  :rules="{ required: data.jtExtField.isMust=='Y'}"  :name="'dataMap.'+data.jtExtField.id" >
+								</hy-formdatepicker> 
+								<hy-formdroptree :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols" :readonly="data.rightFlag=='2'?true:false"
+									:label="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id" :valueprovider="data.jtExtField.extCode1"
+										v-if="data.jtExtField.inputForm=='TREE'&&data.rightFlag!='3'" :rules="{ required: data.jtExtField.isMust=='Y'}" :highlight-current="true" default-expand-all size="large" ></hy-formdroptree>
+						    	<hy-forminputbutton  :rowspan="data.jtExtField.useRows==null?1:data.jtExtField.useRows" :colspan="data.jtExtField.useCols==null?1:data.jtExtField.useCols" :readonly="data.rightFlag=='2'?true:false"
+						    		:label="data.jtExtField.fieldName" :name="'dataMap.'+data.jtExtField.id" v-if="data.jtExtField.inputForm=='INPUTBUTTON'&&data.rightFlag!='3'" 
+						    		@click="inputbtnSelect(data.jtExtField.extCode1, data.jtExtField.id)" @change="dataChange( data.jtExtField.id)"
+									:rules="{ required: data.jtExtField.isMust=='Y'}" :labelprovider="data.jtExtField.extCode2" :editable="false"> </hy-forminputbutton>
+						    </template>
+					    </hy-formgroup>
+					    </template>
+				    	<template v-for= "(data,index) in fileList">
+				    		<hy-formgroup :title="data.jtExtField.fieldName">
+								<div :id="'upload'+data.jtExtField.id" ></div>
+							</hy-formgroup>
+				    	</template>
+						
+					</hy-form> 
+			    </hy-fillarea>
+			</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+
+		var i;
+		var count;
+		var dataArray;
+		var arr;
+		var vm = new Vue({
+			el : "#app",
+			data : {},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				$(this.fileList).each(function() {
+					cusUpload('upload'+this.jtExtField.id,  myform.getColumnValue("dataMap")[this.jtExtField.id], '1', this.rightFlag=='2'?'N':editFlag);
+				});
+				
+			},
+			methods : {	
+				save : function(callback){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/app/jtAppExtDataMain/save',
+								data : dataArr,
+								params: {"appTemplateNo":vm.appTemplateNo},
+								success : function(response){
+									if(!!callback && typeof callback === "function"){
+										callback();
+									}else{
+										vm.saveSuccess(response)
+									}
+								}
+							});
+							
+						}	
+					});
+				},
+				getItemDrop:function(str){
+					return eval("(this."+str+")");
+				},
+				saveSuccess : function(response) {
+					return setRM(function(){
+						vm.appBusiUuid = response.getParameter("appBusiUuid");
+						vm.appInstanceId = response.getParameter("appInstanceId");
+						window.location.href=$$pageContextPath +"jt/app/jtAppExtDataMain/?appBusiUuid="+response.getParameter("appBusiUuid");
+					});
+				},
+				inputbtnSelect : function(location, id) {
+					var dataMap = myform.getColumnValue("dataMap");
+					var fieldValueId = dataMap[id];
+					location += location.indexOf("?") > 0 ? "&" : "?";
+					$.popWindow({
+						url: $$pageContextPath + location + "fieldValueId=" + fieldValueId,
+						title: "弹窗",	
+						arguments : id,
+						callback: function (data,id) {
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'jt/app/jtAppExtDataMain/resetData',
+								data : dataArr,
+								params : {"fieldId":id},
+								success : function(response2){
+									myform.setRecord(new HyRecord());
+									myform.resetFields();
+									setTimeout(function(){									
+										myform.setRecord(response2.getAjaxDataWrap("dataWrap").getData()) ;
+										myform.resetFields();
+									})
+								}
+							});
+						},
+						css:{width:1400,height:650,type:1},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				dataChange : function(id){
+					var dataMap = myform.getColumnValue("dataMap");
+					var fieldValueId = dataMap[id];
+					if(!fieldValueId){
+						var formData = myform.collectData();
+						var dataArr = [];
+						dataArr.push(formData);
+						$.request({
+							url : $$pageContextPath + 'jt/app/jtAppExtDataMain/resetData',
+							data : dataArr,
+							params : {"fieldId":id},
+							success : function(response2){
+								myform.setRecord(response2.getAjaxDataWrap("dataWrap").getData()) ;
+							}
+						});
+					}
+				},
+				spDetail : function(){
+					$.popWindow({
+						title:"办理过程",
+						url: $$pageContextPath + 'jt/app/jtAppExtDataMain/spDetail?appInstanceId='+vm.appInstanceId+"&appTaskId="+vm.appTaskId,
+						callback:null,
+						button:0,
+						css:{width:1200,height:810,type:1},
+						isRunCallback :false
+					});
+				}
+			}
+			
+		});
+		function normalSend(){
+			vm.save(function(){
+				$.request({
+					url : $$pageContextPath + 'jt/app/common/normalSend',
+					params : {"appInstanceId" : vm.appInstanceId,
+							  "appTaskId" : vm.appTaskId},
+				    success : flowOverBack
+				});	
+			})
+			
+		}
+	</script>
+</body>
+</html>

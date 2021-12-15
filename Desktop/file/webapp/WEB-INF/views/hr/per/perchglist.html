@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="38,33,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea title="查询条件" >
+				<table>
+	              <tr>
+	                <td align="right" width="80px">姓名</td>
+	                <td width="120px" align="left"><hy-input name="personName" :upload="true"></hy-input>
+	                <td align="right" width="80px">是否撤销</td>
+	                <td width="120px" align="left"><hy-select name="isRepeal" 
+	                	dropname="UEP.YES_OR_NO" :upload="true" v-model="isRepealId" :clearable="true" @change="query"></hy-select>
+	                <td align="right" width="50">变更时间</td>
+							<td width="160"><hy-datepicker name="dataWrap.query.updateTime_egt" type="date" :upload="true" ></hy-datepicker></td>
+							<td align="right" width="10">~</td>
+							<td width="160"><hy-datepicker name="dataWrap.query.updateTime_elt" type="date" :upload="true" ></hy-datepicker></td>
+	                <td width="30px"></td>
+	               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+	              <tr />
+	            </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				<hy-button text="添加" @click="add"></hy-button>	
+<!-- 				<hy-button text="删除" @click="remove"></hy-button>	 -->
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="80" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+						<hy-table-column  title="操作" width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>&nbsp;
+					     	<a href="javascript:void(0)" @click="repeal(scope.row)">撤销</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+						<hy-table-column title="姓名" name="partyId" align="center" width="100" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column>
+						<hy-table-column type="inputbutton" name="orgId" title="原部门" align="center" width="200"
+							labelprovider="com.haiyisoft.hr.org.labelprovider.OrgNameLabel"/>
+						<hy-table-column type="inputbutton" name="chgOrgId" title="变更部门" align="center" width="200"
+							labelprovider="com.haiyisoft.hr.org.labelprovider.OrgNameLabel"/>
+						<hy-table-column title="变更人" name="updateMan" align="center" width="100" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column>
+						<hy-table-column title="变更时间" name="updateTime" align="center" width="100" type="date"></hy-table-column>
+						<hy-table-column title="是否撤销" name="isRepeal" align="center" width="100" type="drop" dropname="UEP.YES_OR_NO"></hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				isRepealId : "N"
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'per/perChg/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'per/perChg/queryOne?id='+row.id+"&editFlag=N", "详细", vm.query, null, 800, 300,
+							0);
+				},
+				add : function(){
+					$.showModalDialog($$pageContextPath + 'per/perChg/queryOne?editFlag=Y', "添加", vm.query, null, 800, 300,
+							0);
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'per/perChg/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				},
+				repeal : function(row){
+					if(row.isRepeal=='Y')
+						return setRM("alert","该数据已撤销！");
+					$.confirm("提示","确定要撤销选中的记录？",function(){
+						$.request({
+							url : $$pageContextPath + 'per/perChg/repeal',
+							params : {
+								id : row.id
+							},
+							success : function(response){
+								setRM("success",response.getMessage(),vm.query());
+							}
+						});
+				　　　},function(){});
+					
+				},
+				onsavecomplete : function(response){
+					setRM(vm.query());
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

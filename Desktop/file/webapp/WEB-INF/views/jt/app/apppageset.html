@@ -1,0 +1,167 @@
+<hy-button text="保存" @click="save" v-if="editFlag=='Y'" ></hy-button>	 
+<hy-button text="传递" onclick="normalSend()" v-if="editFlag=='Y'"></hy-button>
+<hy-button text="退回上一环节" onclick="appReturnTask()" v-if="editFlag=='Y'" ></hy-button>	
+<hy-button text="办理意见" onclick="normalSendAdvice()" v-if="editFlag=='Y'" ></hy-button>	
+<!-- <hy-button text="确认办理" onclick="confirm()" v-if="confirmTask=='O'&&(openMode=='1'||openMode=='3')" ></hy-button>	 -->
+<!-- <hy-button text="取消办理" onclick="taskUnclaim()" v-if="editFlag=='Y'&&confirmTask=='C'" ></hy-button>		 -->
+<!-- <hy-button text="选择传递环节" onclick="openSelectSend()" v-if="editFlag=='Y'&&openMode=='1'" ></hy-button>	 -->
+<!-- <hy-button text="分派" onclick="openSelectAssignedMan()" v-if="editFlag=='Y'&&openMode=='1'" ></hy-button> -->
+<!-- <hy-button text="传递人员（单位）" onclick="appNormalSendBusi()" v-if="editFlag=='Y'&&openMode=='1'" ></hy-button>	 -->
+<!-- <hy-button text="传递人员（部门）" onclick="appNormalSendOrg()" v-if="editFlag=='Y'&&openMode=='1'" ></hy-button> -->
+<input type="hidden" id="appInstanceId" name="appInstanceId"  th:value="${responseData.parameters.appInstanceId}" upload='true'/>
+<input type="hidden" id="appBusiUuid" name="appBusiUuid"  th:value="${responseData.parameters.appBusiUuid}" upload='true'/>
+<input type="hidden" id="appTaskId" name="appTaskId"  th:value="${responseData.parameters.appTaskId}" upload='true'/>
+<input type="hidden" id="openMode" name="openMode"  th:value="${responseData.parameters.openMode}" upload='true'/>
+<input type="hidden" id="appTemplateNo" name="appTemplateNo" th:value="${responseData.parameters.appTemplateNo}" upload='true' />
+<input type="hidden" id="appVersionNo" name="appVersionNo" th:value="${responseData.parameters.appVersionNo}" upload='true' />
+<input type="hidden" id="appActivityNo" name="appActivityNo" th:value="${responseData.parameters.appActivityNo}" upload='true' />
+<input type="hidden" id="activityInstanceNo" name="activityInstanceNo" th:value="${responseData.parameters.activityInstanceNo}" upload='true' />
+<script type="text/javascript" th:inline="javascript">
+function normalSend(){
+	$.request({
+		url : $$pageContextPath + 'jt/app/common/normalSend',
+		params : {"appInstanceId" : $("#appInstanceId").val(),
+				  "appTaskId" : $("#appTaskId").val()},
+	    success : flowOverBack
+	});	
+}
+function flowOverBack(){
+	var curMul = getFrameworkActiveTask();
+	closeTabTask("APP_CUR",'待办工单');
+	openTabTask("APP_CUR",'待办工单', 'jt/app/curTask/',true,null,"hr");
+	closeTabTask(curMul.code,curMul.name); 
+}
+function appReturnTask(){
+	$.confirm("确认", "确定要将工单退回？", returnTask)
+}
+/**
+ * 工单退回加理由
+ */
+function returnTask() {
+	$.showModalDialog($$pageContextPath+"jt/app/appSendAdvice/?sendType=2&appInstanceId=" + $("#appInstanceId").val() + "&appTaskId=" + $("#appTaskId").val(), "退回理由", function() {
+		$.request({
+			url : $$pageContextPath + 'jt/app/common/returnTask',
+			params : {"appInstanceId" : $("#appInstanceId").val(),
+					  "appTaskId" : $("#appTaskId").val()},
+		    success : flowOverBack
+		});	
+	}, null, 500, 180, 0)
+}
+
+
+function normalSendAdvice() {//传递意见。
+	if ($("#appInstanceId").val() == "") {
+		setRM("alert", "请先保存工作单！");
+		return;
+	}
+	$.showModalDialog($$pageContextPath+"jt/app/appSendAdvice/?sendType=4&appInstanceId=" + $("#appInstanceId").val() + "&appTaskId=" + $("#appTaskId").val() + "&editFlag=" + vm.editFlag, "传递意见", null, null, 500, 180, 0)
+}
+/**
+ * 确认办理
+ */
+function confirm(){
+	$.request({
+		url : $$pageContextPath + '/jt/app/common/confirm',
+		params : {"appInstanceId" : $("#appInstanceId").val(),
+				  "appTaskId" : $("#appTaskId").val()},
+	    success : function(){
+	    	var curMul = getFrameworkActiveTask();
+	    	var newCode = curMul.code;
+	    	var newTitle = curMul.title;
+	    	var newUrl = curMul.url;
+	    	closeTabTask(curMul.code,curMul.title);
+	    	openTabTask(newCode,newTitle,newUrl,true,null);
+    	}
+	});	
+}
+/**
+ * 取消办理
+ */
+function taskUnclaim(){
+	$.request({
+		url : $$pageContextPath + '/jt/app/common/taskUnclaim',
+		params : {"appInstanceId" : $("#appInstanceId").val(),
+				  "appTaskId" : $("#appTaskId").val()},
+	    success : function(){
+	    	var curMul = getFrameworkActiveTask();
+	    	var newCode = curMul.code;
+	    	var newTitle = curMul.title;
+	    	var newUrl = curMul.url;
+	    	closeTabTask(curMul.code,curMul.name);
+	    	openTabTask(newCode,newTitle,newUrl,true,null);
+	    }
+	});	
+}
+/**
+ * 选择传递环节
+ */
+function openSelectSend() {
+	$.showModalDialog($$pageContextPath+"jt/app/appNextActi/?appInstanceId=" + $("#appInstanceId").val() + "&appTaskId=" + $("#appTaskId").val(), "请选择跳转的环节", setSendAdvice, null, 500, 160, 0);
+}
+
+function setSendAdvice(response) {
+	$.showModalDialog($$pageContextPath+"jt/app/appSendAdvice/?sendType=3&appInstanceId=" + $("#appInstanceId").val() + "&appTaskId=" + $("#appTaskId").val(), "传递理由", function() {
+		$.request({
+			url : $$pageContextPath + '/jt/app/common/selectSend',
+			params : {"appInstanceId" : $("#appInstanceId").val(),
+					  "appTaskId" : $("#appTaskId").val(),
+					  "appActivityNo" : $("#appActivityNo").val(),
+					  "endActivityNoId" : response},
+		    success : flowOverBack
+		});	
+	}, null, 500, 150, 0);
+}
+/**
+ * 分派
+ */
+function openSelectAssignedMan() {
+	$.showModalDialog($$pageContextPath+"jt/app/selectOneReceiver/", "分派人员", assignBack, null, 800, 400, 0);
+}
+
+function assignBack(retV, arg, isCancel) {
+	if (isCancel != 0 && retV != "") {
+		$.request({
+			url : $$pageContextPath + '/jt/app/common/appAssign',
+			params : {"appInstanceId" : $("#appInstanceId").val(),
+					  "appTaskId" : $("#appTaskId").val(),
+					  "assignedMan" : retV.loginId},
+		    success : flowOverBack
+		});	
+	}
+}
+
+
+/**
+ * 选择单位下的角色的人传递。
+ */
+function appNormalSendBusi() {
+	debugger;
+	if ($("#appInstanceId").val() == "") {
+		setRM("alert", "请先保存工作单！");
+		return;
+	}
+	$.showModalDialog($$pageContextPath+"jt/app/appSelectPerSend/?perType=BUSI&appInstanceId=" + $("#appInstanceId").val() + "&appTaskId=" + $("#appTaskId").val(), "跳转页面", sendback, null, 750, 420, 0);
+}
+
+
+function sendback(data) {
+	$.request({
+		url : $$pageContextPath + '/jt/app/common/selectPerSend',
+		params : {"appInstanceId" : $("#appInstanceId").val(),
+				  "appTaskId" : $("#appTaskId").val(),
+				  "loginIds" : data.loginIds,
+				  "nextActId" : data.nextActId},
+	    success : flowOverBack
+	});	
+}
+/**
+ *  选择部门下的角色的人传递。
+ */
+function appNormalSendOrg() {
+	if ($("#appInstanceId").val() == "") {
+		setRM("alert", "请先保存工作单！");
+		return;
+	}
+	$.showModalDialog($$pageContextPath+"jt/app/appSelectPerSend/?perType=ORG&appInstanceId=" + $("#appInstanceId").val() + "&appTaskId=" + $("#appTaskId").val(), "跳转页面", sendback, null, 750, 420, 0);
+}
+</script>

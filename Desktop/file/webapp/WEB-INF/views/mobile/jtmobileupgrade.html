@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*,toolh" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="100" :readonly="false"
+					label-suffix="：" :cols="2" size="normal"> 
+					<hy-formgroup title="基本信息">
+					<hy-formselect label="硬件平台"  name="hardwarePlatform" dropname="JT.YD_HARD_PLATFORM" :rules="{ required: true}"></hy-formselect> 
+					<hy-formselect label="系统平台"  name="softPlatform" dropname="JT.YH_SOFT_PLATFORM" :rules="{ required: true}" ></hy-formselect> 
+					<hy-forminput label="APP名称"  name="appName" :maxlength="16"></hy-forminput> 
+					<hy-formselect label="是否强制更新"  name="forceUpdate"  :rules="{ required: true}"  dropname="UEP.YES_OR_NO"></hy-formselect> 
+					<hy-forminput label="支持最低</br>系统版本"  name="minSystemVersion" :maxlength="10"  :rules="[{ required: true},{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"  ></hy-forminput> 
+					<hy-forminput label="支持最高</br>系统版本"  name="maxSystemVersion":maxlength="10" :rules="[{ required: true},{pattern: /^\d*$/ ,message: '只能为数字' ,trigger: 'blur,change'}]"  ></hy-forminput> 
+					<hy-forminput label="当前版本号"  name="curVersion" :maxlength="7" :rules="[{ required: true}]" ></hy-forminput> 
+					<hy-formdatepicker label="更新时间"  name="uploadTime" type="datetime"  :readonly="true" ></hy-formdatepicker> 
+					<hy-forminput label="下载数量"  name="downloadNum" :maxlength="32":readonly="true"  ></hy-forminput> 
+					<hy-formselect label="状态"  name="status" dropname="JT.PUNISH_STATUS" :readonly="true"  ></hy-formselect> 
+					<hy-forminput label="版本描述"  name="versionDes" :rowspan="2" :colspan="2" type="textarea" :maxlength="128" ></hy-forminput>
+			     </hy-formgroup>
+			     <hy-formgroup title="附件" >
+					<div id="upload1"></div>
+				</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		    <hy-fillarea >
+				<div style="text-align:center">
+					<hy-button text="保存" @click="save"></hy-button>	
+					<hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>	
+				</div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+				cusUpload('upload1',myform.getRecord().get("id"),null,editFlag);
+			},
+			methods : {		
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url :$$pageContextPath + 'mobile/jtMobileUpgrade/save',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){$.close('')});
+								}
+							});		
+						}	
+					});
+				},
+			}
+		});
+	</script>
+</body>
+</html>

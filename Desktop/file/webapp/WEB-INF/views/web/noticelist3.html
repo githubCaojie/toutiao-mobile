@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>须知</title>
+<template th:substituteby="framework/pageset.html"></template>
+<script th:src="@{/nqi/common.js}"></script>
+<script th:src="@{/nqi/wpinfo.js}"></script>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="45,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea>
+				<table>
+			       <tr>
+			     	<td align="right" width="80px">信息标题</td> <td width="120px" align="left"><hy-input name="dataWrap.query.infoTitle_LIKE"  :upload="true"  ></hy-input> </td>
+			        <td align="right" width="80">发布部门</td>
+					<td width="120" align="left"><hy-droptree name="dataWrap.query.createOrg"  :highlight-current="true"  valueprovider="com.haiyisoft.hr.org.tree.HrOrgBasicTree" :upload="true" /></td>		
+			        <td>
+				        <hy-button text="查询" @click="query"></hy-button>
+				        <hy-button text="添加" @click="add"></hy-button>	
+						<hy-button text="删除" @click="remove"></hy-button>	
+						<hy-button text="审核" @click="commit"></hy-button>
+						</td>	
+			        <tr/>
+			    </table>
+			</hy-fillarea> 
+			<hy-fillarea >
+				 <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%" @queryfunc="query" titlealign="center" style="width: 100%">
+					<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+					<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+					<hy-table-column title="业务分类"  name="bizClassify" align="center"	width="200" type="drop" dropname="ZS.YWFL"></hy-table-column> 
+					<hy-table-column title="信息标题"  name="infoTitle" align="center"	width="200"></hy-table-column> 
+					<hy-table-column title="维护部门"  name="createOrg" type="drop" dropname="ORG.ORG_PARTY_NAME" align="center"  width="100"></hy-table-column> 
+					<hy-table-column title="维护时间"  name="createTime"   width="150"></hy-table-column> 
+					<hy-table-column title="维护人"  name="createMan"  width="100" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column> 
+					<hy-table-column title="审核人"  name="approveMan"   width="150" type="drop" dropname="ORG.PERSON_NAME"></hy-table-column> 
+					<hy-table-column title="审核时间"  name="issueTime"   width="150" type="date"></hy-table-column> 
+					<hy-table-column title="审核意见"  name="issuePath"   width="150"></hy-table-column> 
+					<hy-table-column title="状态"  name="status" align="center" width="80" type="drop" dropname="WP.WY_STATUS"  ></hy-table-column> 
+					<hy-table-column  title="操作"  width="250" align="center">
+						<template scope="scope">				
+							 <a href="javascript:void(0)" @click="detail(scope.row)" v-if="(scope.row.status!='3'&&scope.row.status!='2')?true:false">详细</a>
+							 <a href="javascript:void(0)" @click="upload(scope.row)" v-if="(scope.row.status!='3'&&scope.row.status!='2')?true:false">上传</a>
+							 <a href="javascript:void(0)" @click="display(scope.row)">浏览</a>
+<!-- 							  <a href="javascript:void(0)" @click="commit" v-if="(scope.row.status=='1'||scope.row.status=='4')?true:false">提交审核</a> -->
+							 <a href="javascript:void(0)" @click="istop(scope.row)" v-if="(scope.row.isTop=='N'&&scope.row.status=='3')?true:false">置顶</a>
+							 <a href="javascript:void(0)" @click="nottop(scope.row)" v-if="(scope.row.isTop=='Y'&&scope.row.status=='3')?true:false">取消置顶</a>
+						</template>
+					</hy-table-column>
+				</hy-table> 
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+</body>
+</html>
+<script>
+	var vm = new Vue({
+		el : "#app",
+		data : {
+
+		},
+		mounted : function() {
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+		methods : {
+			query : function() {
+				Query('/web/notify/query?type=3&menuId=' + vm.menuId,);
+			},
+			add : Add,
+			remove : Remove,
+			detail : DetailWithType,
+			display : Display,
+			upload : Upload,
+			commit : Commit,
+			istop : Istop,
+			nottop : NotTop,
+		}
+	});
+	function Commit() {
+		delCheckItem(ajaxgrid, "web/wpInfo/commit", "提交成功")
+	}
+	
+	function Upload(row){
+		cusUpload2(row.id,3,"Y","pdf");
+	}
+</script>

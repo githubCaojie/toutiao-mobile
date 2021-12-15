@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-tabs  id="myTab"  :showtabbar="true" type="card" v-model="selectedindex" >
+		    <hy-tab-pane  title="待处理" >
+		    	<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea >
+						<table>
+			              <tr> 
+			              	<td align="right" >工作单号</td>
+			              	<td width="120px" align="left"><hy-input  id="appNoId" v-model="appNo" :upload="true" width="200"></hy-input></td>
+			              	<td align="right" width="80px">工单类型 </td>
+			              	<td width="120px" align="left"><hy-select dropname="JT.APP_TYPE"  v-model="appType" clearable  width="150" @change="query"></hy-select></td>
+			              	<td align="right" width="80px">工单内容</td>
+			              	<td width="120px" align="left"> <hy-input  id="contentId" v-model="content" :upload="true" width="200"></hy-input> </td>
+			              	<td align="right" width="80"><hy-button text="查询" @click="query"></hy-button></td>
+			              </tr>
+			             </table>
+					</hy-fillarea>
+					<hy-fillarea >
+						<hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%" @queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+								<hy-table-column  title="操作" width="100" align="center" v-if="editFlag!='N'">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="openTaskExecInfo(scope.row)">办理</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+								<hy-table-column title="工作单号" width="80" align="center" name="appNo"> </hy-table-column>
+								<hy-table-column title="工作单类型"  name="appTypeName" align="center"	width="120"></hy-table-column> 
+								<hy-table-column title="当前环节"  name="activityName" align="center"	width="120"></hy-table-column> 
+								<hy-table-column title="申请人"  name="loginId" align="center" width="100" type="drop" dropname="UEP.ACCOUNT_NAME"></hy-table-column> 
+								<hy-table-column title="传来时间"  name="taskReachTime" align="center" width="150" type="datetime" ></hy-table-column> 
+								<hy-table-column title="工单内容"  name="content" align="center"	width="300"></hy-table-column> 
+								<hy-table-column title="管理单位"  name="busiCode" align="center" width="140" type="drop" dropname="ORG.ORG_PARTY_NAME" ></hy-table-column> 
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		    </hy-tab-pane>
+		    <hy-tab-pane  title="已处理"  href="../curTask/retrieveHis" :lazy="true"> </hy-tab-pane>
+		</hy-tabs>
+	</div>
+	<script th:inline="javascript">
+	var action;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				appType : "",
+				appNo : "",
+				content : "",
+				selectedindex : 0
+			},
+			created : function(){
+				action = response.getParameter("action");
+				if (action == 'normalSend' || action == "dispatchSend"
+						|| action == "dispatch"||action=="selectPerSend") {
+					var curTask = getFrameworkActiveTask();
+					var tasks = getFrameworkTasks();
+					for ( var i = tasks.length-1; i >=0 ; i--) {
+						if ((tasks[i].code == "APP_CUR"
+								|| tasks[i].code.indexOf("APP_NO") >= 0)&&tasks[i].code!=curTask.code) {
+							closeTabTask(tasks[i].code, tasks[i].title);
+						}
+					}
+					openTabTask("APP_CUR", "待办任务",
+							$$pageContextPath + "jt/app/appCurTaskAction.do", false);
+					closeAllPopwindow();
+					closeTabTask(curTask.code, curTask.title);
+				} 
+			},
+			mounted : function(){
+				if (action == 'normalSend' || action == "dispatchSend"
+						|| action == "dispatch") {
+				}else{
+					ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+				}
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/curTask/retrieve',
+						data : dataArr,
+						params : { "appType": this.appType,
+							   "appNo" : this.appNo,
+							   "content" : this.content},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				openTaskExecInfo : function(cell){
+					$.popWindow({
+						title:cell.appTypeName+"("+cell.appNo+")",
+						url:$$pageContextPath + "jt/app/taskExecInfo/?appInstanceId=" + cell.instanceId+"&appTaskId=" +cell.taskId+ "&openMode=1" ,
+						callback:vm.query,
+						button:0,
+						css:{width:1200,height:800,type:1},
+					});
+				},
+				openTaskDeal : function(cell){
+					$.request({
+						url : $$pageContextPath + 'jt/app/taskExecInfo/getTacheUrl',
+						params : { "appInstanceId": cell.instanceId,
+							   "appTaskId" : cell.taskId,
+							   "busiUuid":cell.busiUuid,
+							   "openMode" : "1"
+						},
+						success : function(response){
+							$.popWindow({
+								title: response.parameters.tacheName,
+								url:response.parameters.tacheUrl ,
+								callback:vm.query,
+								button:0,
+								css:{width:800,height:500,type:1},
+							});
+						}
+					});					
+				},
+				itemChange : function(code) {
+					var row = ajaxgrid.getSelectedRecord().data;
+					if (code == 'openTaskExecInfo') {//详细
+						vm.openTaskExecInfo(row);
+					} 
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

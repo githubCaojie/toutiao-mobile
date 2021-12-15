@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+			<hy-filllayout rows="toolh,*" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea :display="editFlag=='Y'?'block':'none'">
+				<hy-button text="添加" @click="add"></hy-button>	
+				<hy-button text="删除" @click="remove"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center"  type="selection"></hy-table-column> 
+						<hy-table-column title="消息名称"  name="msgName" align="center"	width="160"  ></hy-table-column> 
+						<hy-table-column title="列名1"  name="colName1" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="列名2"  name="colName2" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="列名3"  name="colName3" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="列名4"  name="colName4" align="center" width="150" ></hy-table-column> 
+						<hy-table-column title="列名5"  name="colName5" align="center" width="150" ></hy-table-column> 
+						<hy-table-column
+					      title="操作"
+					      width="100" align="center">
+					      <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				code : null
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/msg/msgType/query',
+						data : dataArr,
+						params:{"msgClass":this.msgClass},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					 $.popWindow({
+							url: $$pageContextPath + 'jt/msg/msgType/pageGet?editFlag=Y&msgClass='+vm.msgClass,
+							title: "详细",
+							callback: vm.query,
+							css:{width:1000,height:700},
+							button:0,
+							isRunCallback :true
+						});
+				},
+				remove : function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'jt/msg/msgType/remove',function(){
+						vm.query();
+					});
+					
+				},
+				detail : function(row){
+					$.popWindow({
+						url: $$pageContextPath + 'jt/msg/msgType/pageGet?editFlag=Y&id='+row.id,
+						title: "详细",
+						callback:  vm.query,
+						css:{width:1000,height:700},
+						button:0,
+						isRunCallback :true
+					});
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

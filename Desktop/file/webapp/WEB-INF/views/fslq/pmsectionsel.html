@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="*,40" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea>
+		          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+						@queryfunc="query" titlealign="center" style="width: 99%">
+						<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+						<hy-table-column title="标段编号"  name="secNo" align="center"	width="80"></hy-table-column> 
+						<hy-table-column title="标段名称"  name="secName" align="center" width="150"></hy-table-column> 
+						<hy-table-column title="施工类型"  name="workType" align="center" width="80" type="drop" dropname="FSLQ.WORK_TYPE"></hy-table-column> 
+						<hy-table-column title="中标企业"  name="winUnit" align="center" width="200" ></hy-table-column> 
+						<hy-table-column title="合同价"  name="contractMoney" align="center" width="100"></hy-table-column> 
+						<hy-table-column title="结算价"  name=costMoney align="center" width="100" ></hy-table-column> 
+					    <hy-table-column title="操作" width="80" align="center">
+					      <template scope="scope">
+					     	<a href="javascript:void(0)" @click="detail(scope.row)">详细</a>
+					      </template>
+					    </hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		      <hy-fillarea>
+				<div style="text-align:center">
+					<hy-button text="确定" @click="ok" ></hy-button>
+	      		</div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				query : function(response, b, c){
+					var treeBean = myTree.getSelectedNode();
+					if(!treeBean){
+						return setRM("alert","请选择项目！");
+					}
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pmSection/listSel',
+						data : dataArr,  
+						params :{
+							"id":vm.id,
+							"secType":vm.secType,
+							"prjId":vm.prjId
+							},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				ok : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						setRM("alert", "请选择要关联的标段!");
+					} 
+					var subIds = "";
+					for(var i=0;i<checked.length;i++){
+						subIds +=","+checked[i].data.id;
+					}
+					if(subIds.length>0)
+						subIds = subIds.substring(1);
+					$.close(subIds);
+				},
+			    detail : function(row){
+					$.popWindow({
+						title:"详细",
+						url: $$pageContextPath + 'pmSection/pageform?id='+row.id+"&editFlag=N",
+						callback:vm.query,
+						button:0,
+						css:{width:900,height:450},
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

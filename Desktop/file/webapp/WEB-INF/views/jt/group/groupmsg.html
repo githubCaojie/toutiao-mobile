@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*,40" :showborder="false"  :showpadding="false"> 
+			<hy-fillarea >
+					<hy-form id="myform" name="dataWrap" label-position="left" :labelwidth="80" :readonly="false"
+						label-suffix="：" :cols="1" size="normal" :upload="true"> 
+							  <hy-input title="群组名称"  type="input" width="100%" name="groupName" v-model="groupName" readonly="true" ></hy-input>
+							  <hy-input title="群消息内容"  type="textarea"  :rowspan="5" name="content" v-model="content"  ></hy-input>
+					  </hy-form>
+		    </hy-fillarea>
+		    <hy-fillarea >
+			    <div style="text-align:center">
+			        	<hy-button text="发送" @click="save" ></hy-button>	
+			          <hy-button text="关闭" onClick="$.close(true)" :plain="true"></hy-button>		
+			    </div>
+			</hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				groupName : '',
+				content : '',
+				uuid : ''
+			},
+			mounted : function() {
+				this.uuid = response.getParameter("uuid");
+				this.groupName = response.getParameter("groupName");
+			},
+			methods : {
+				save:function(){
+					var content = vm.content;
+					var uuid = vm.uuid;
+					$.request({
+						url : $$pageContextPath + 'jt/com/group/sendMsg',
+						params : {
+							uuid :uuid,
+							content : content
+						},
+						success : function(response) {
+							if ("success" == response.getMessage()) {
+								setRM("success", "发送成功",function(){
+									$.close(true);
+								})
+							} else {
+								setRM("error", response.getMessage())
+							}
+						}
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

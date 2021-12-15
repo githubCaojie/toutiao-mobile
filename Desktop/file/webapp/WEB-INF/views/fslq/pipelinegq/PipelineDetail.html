@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	<hy-filllayout rows="*" :showborder="true"  :showpadding="false"> 
+			
+			<hy-fillarea>
+				<hy-form id="myform" name="dataWrap"
+					label-position="left" :labelwidth="120" :readonly="editFlag=='N'?true:false"
+					label-suffix="：" :cols="2" size="normal"> 
+<!-- 						<hy-forminputbutton name="caruser" id="caruser" label="驾驶员"  @click="selectPerson" labelprovider="com.hncr.tysoft.carmanage.hr.per.labelprovider.JsyNameLabel"  :rules="{ required: true}" > </hy-forminputbutton> 			 -->
+						
+<!-- 						<hy-forminput label="事故地点"  name="" :rules="[{pattern: /(^[\u4E00-\u9FA5A-Za-z0-9]{1,20}$)/, message: '请输入中文、数字或字母组成的文本' ,trigger: 'blur,change',required: 'true'}]" :maxlength="64" :rules="{ required: true}"  ></hy-forminput> -->
+						<hy-forminput label="项目"  name="" :rules="[{pattern: /(^[\u4E00-\u9FA5A-Za-z0-9]{1,20}$)/, message: '请输入中文、数字或字母组成的文本' ,trigger: 'blur,change',required: 'true'}]" :maxlength="20"></hy-forminput>
+						<hy-forminput label="标段"  name="sectionId"  :rules="{ required: true}" ></hy-forminput>
+						<hy-forminput label="区"   name="area" dropname="CAR.SGLX" :rules="{ required: true}"	 ></hy-forminput>
+						<hy-forminput label="镇"   name="town" dropname="CAR.SGCD" :rules="{ required: true}"	 ></hy-forminput>
+						<hy-forminput label="管线编号"   name="" dropname="CAR.ZRHF" :rules="{ required: true}"	 ></hy-forminput>
+						<hy-forminput label="管线类型"   name="type" dropname="CAR.ZRHF" :rules="{ required: true}"	 ></hy-forminput>
+						<hy-forminput label="管线名称"   name="gxmc" dropname="CAR.ZRHF" :rules="{ required: true}"	 ></hy-forminput>
+						<hy-forminput label="管线长度(m)"   name="gxcd" dropname="CAR.ZRHF" :rules="{ required: true}"	 ></hy-forminput>
+						<hy-formselect label="迁改状态"   name="qgzt" dropname="ZDCQ.CQZT" :rules="{ required: true}"	 ></hy-formselect>
+						<hy-forminput label="位置桩号"  name="wzzh" :rules="[{pattern: /(^[\u4E00-\u9FA5A-Za-z0-9]{1,20}$)/, message: '请输入中文、数字或字母组成的文本' ,trigger: 'blur,change',required: 'true'}]" :maxlength="128"></hy-forminput>
+						<hy-formdatepicker label="计划时间" name="jhrq" type="datetime" :rules="{ required: true}" ></hy-formdatepicker> 
+						<hy-formdatepicker label="完成时间" name="wcrq" type="datetime" :rules="{ required: true}" @change="getDrvingage"></hy-formdatepicker> 					
+					<!-- <hy-formgroup title="影像资料">
+					
+							<div id="upload1"></div>
+					</hy-formgroup> -->
+				
+				</hy-form> 
+		    </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData());
+			},
+			methods : {				
+				
+				getDrvingage:function(obj){
+					var record = myform.getRecord();
+					if (obj != '' && obj != null) {
+						var startDate= new Date(obj);
+						var endDate = new Date();
+						if(startDate > endDate){
+				            record.set('accidenttime',null);
+				            $.alert("error", "计划时间不能大于完成时间!");
+						}
+					}
+				}
+				
+			}
+		});
+	</script>
+</body>
+</html>

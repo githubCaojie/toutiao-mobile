@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+	
+	<hy-filllayout rows="toolh,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea :display="editFlag=='N'?'none':'block'">
+				<hy-button text="保存" @click="save"></hy-button>	
+			</hy-fillarea>
+			<hy-fillarea >
+				<hy-form id="myform" name="dataWrap" 
+					label-position="left" :labelwidth="100" :readonly="editFlag=='N'"
+					label-suffix="：" :cols="3" size="normal"> 
+					<hy-formgroup title="基本信息">
+						<hy-forminput label="姓名"  name="personName" :rules="{ required: true}" :maxlength="16" ></hy-forminput> 
+						<hy-forminput label="登录账号"  name="loginCode" :rules="[{ required: true}, {pattern: /^[A-Za-z0-9]+$/, message: '只能有字母和数字组成'}]" :maxlength="32" ></hy-forminput> 
+						<hy-forminput label="手机号"  name="linkmenPhone" :maxlength="32" :rules="[{ required: true}, {pattern: /(^1\d{10}$)|(^\d{7}$)|(\d{4}-\d{7})/, message: '请输入正确的联系方式'}]" ></hy-forminput> 
+						<hy-formselect label="性别"  name="gender"  dropname="ORG.GENDER"></hy-formselect> 
+						<hy-forminput label="身份证号"  name="idCard" :maxlength="20" :rules="{pattern: /^(\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x))$/, message: '只能为15、18位数字或字母组合'}"  ></hy-forminput> 
+						<hy-formselect label="民族" clearable name="nation" dropname="HR.PER_NATION" ></hy-formselect>
+						<hy-formselect label="政治面貌" clearable name="politicalStatus" dropname="PER.POLITY" ></hy-formselect>
+						<hy-forminput label="籍贯"  name="nativePlace" :maxlength="50"  ></hy-forminput> 
+						<hy-formselect label="人员类别" clearable name="personType" dropname="HR.IN_SYSTEM_TYPE" ></hy-formselect>
+						<hy-formdatepicker label="出生日期" name="personBirthday"></hy-formdatepicker>
+						<hy-formselect label="人员状态" clearable name="partyStatus" dropname="HR.PER_STATUS_ITEM" ></hy-formselect>
+					  	<hy-forminputbutton label="角色" name="roleCodes" v-model="role" @click="selRole" :colspan="2"
+					  			labelprovider="com.haiyisoft.fslq.labelprovider.RoleMulLabel"></hy-forminputbutton>
+					  </hy-formselect>
+					</hy-formgroup>
+				</hy-form> 
+		    </hy-fillarea>
+		    <div id="showphoto"
+				style="position: absolute; width: 200; height: 200; z-index: 10; left: 415px; top: 0px; display: none;">
+				<img id="bigpic" style="width: 200px; height: 250px;"
+					:src="[edocService+'fileupload-api/getFileInputStream?fileUuid='+fileUuid] " >
+			</div>
+			<div id="closeDiv"
+				style="position: absolute; z-index: 20; left: 595px; top: 5px; width: 15px; height: 15px; cursor: pointer; display: none;">
+				<img src="../../images/hr/close.png" alt="关闭"
+					style="width: 15px; height: 15px;" />
+			</div>
+		</hy-filllayout>
+	</div>
+	<script type="text/javascript">
+	//头像关闭
+	$(function() {
+		$("#closeDiv").click(function() {
+			$("#showphoto").toggle();
+			$(this).toggle();
+		});
+	});
+	</script>
+	<script th:inline="javascript">
+	
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				posId : null,
+				orgIds : null,
+				fileUuid : null,
+				perUuid : null,
+				role : null
+			},
+			mounted : function(){
+				myform.setRecord(response.getAjaxDataWrap("dataWrap").getData()) ;
+			},
+			methods : {	
+				addLabel : function(){
+					$.showModalDialog($$pageContextPath + 'jt/com/jtLabel/selectlabel?labelClass=1', "添加标签", vm.addCallback, null, 600, 400,
+							0);
+				},
+				addCallback : function (data){
+					  var me = this;
+				 $.request({
+						url : $$pageContextPath + 'jt/com/jtLabel/addLabel',
+						params:{"uuid":myform.getRecord().data.uuid,"labels":data.uuids},
+						success : function(response) {
+				          }
+					});
+			      }, 
+			      handleClose:function(tag){
+			          $.request({
+							url : $$pageContextPath + 'jt/com/jtLabel/removeLabel',
+							params:{"uuid":myform.getRecord().data.uuid,"labels":tag.uuid},
+							success : function(response){
+								setRM("success",response.getMessage());
+							}
+						});
+			        },
+				save : function(){
+					myform.validate(function(data){
+						if(data){
+							var formData = myform.collectData();
+							var dataArr = [];
+							dataArr.push(formData);
+							$.request({
+								url : $$pageContextPath + 'per/person/gcUnitSave',
+								data : dataArr,
+								success : function(response){
+									setRM(function(){
+										var record = response.getAjaxDataWrap("dataWrap").getData() ? response.getAjaxDataWrap("dataWrap").getData() : {};
+										var partyId = record.data.partyId;
+										var uuid = record.data.uuid;
+										setRM(function(){
+											window.location.href=$$pageContextPath +"per/person/gcUnitQueryOne?partyId="+partyId+"&uuid"+uuid+"&editFlag=Y";
+										});
+									});
+								}
+							});	
+						}	
+					});
+				
+				},
+				selectOrg : function(){
+					$.showModalDialog($$pageContextPath + 'org/select/mul', "详细", vm.selectOrgComp, null, 600, 400,
+							0);
+				},
+				selectOrgComp : function(data){
+					this.orgIds = data;
+				},
+				uploadPic:function(data){
+					$.showModalDialog( $$pageContextPath + "per/perPersonPicturecut/?perUuid="+myform.getRecord().data.uuid,
+							"头像上传", vm.uploadCallback, null, 900, 450, 0);
+				},
+				uploadCallback:function(a, b, c) {
+					vm.refreshTopInfo();
+				},
+				refreshTopInfo() {
+					var perId = myform.getRecord().get("partyId");
+					var url =$$pageContextPath + 'per/perbaseinfo/top?partyId='+perId;
+					$("#topUrl_content iframe", parent.document.body).attr("src", url);
+					$.request({
+						url : $$pageContextPath + 'per/person/getPerFileUuid',
+						params : {"perUuid":vm.perUuid},
+						success : function(response){
+							vm.fileUuid = response.parameters.fileUuid;
+						}
+					});	
+				},				
+				selectPos : function(){
+					var orgId = myform.getRecord().data.orgId;
+					if (typeof(orgId) == 'undefined' || orgId == null) {
+						setRM("alert","请选择部门!");
+						return;
+					}
+					$.showModalDialog($$pageContextPath + 'pos/position/select/?orgId='+orgId, "详细", vm.selectPosComp, null, 600, 400,
+							0);
+				},
+				selectPosComp : function(data){
+					this.posId = data;
+				},
+				selRole : function() {
+					var partyId = myform.getValue("partyId");
+					if(!partyId)
+						return setRM("alert", "请先保存人员!");
+					$.showModalDialog($$pageContextPath + 'jt/right/selectRole/mulRole/?type=2&partyId='+partyId, 
+							"选择角色", vm.selRoleComp, null, window.top.innerWidth, window.top.innerHeight, 0);
+				},
+				selRoleComp : function(data) {
+					this.role = data.roleCodes;
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

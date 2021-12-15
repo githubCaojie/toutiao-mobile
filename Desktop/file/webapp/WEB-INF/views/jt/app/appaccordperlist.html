@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="queryh,*" :showborder="true"  :showpadding="false">
+			<hy-fillarea>
+				 <table>
+		              <tr> 
+						<td align="right">模板号</td>
+						<td width="120" align="left"><hy-input name="templateNo" :upload="true" class="reSetClass"/></td>
+						<td align="right" width="80">模板名称</td>
+						<td width="120" align="left"><hy-input name="templateName" :upload="true" class="reSetClass"/></td>
+						<td align="right"width="80"><hy-button text="查询" @click="query"></hy-button></td>
+						<td align="right"width="60"><hy-button text="初始化" @click="initAll"></hy-button></td>
+						<td align="right"width="60"><hy-button text="保存" @click="save"></hy-button></td>
+		              <tr/>
+		            </table>
+			</hy-fillarea> 
+			
+			<!-- <hy-fillarea align="left">
+	      		<div style="float:left">
+					<hy-button text="初始化" @click="initAll"></hy-button>	
+					<hy-button text="保存" @click="save"></hy-button>
+		      		</div>
+			</hy-fillarea> -->
+			
+			<hy-fillarea >
+		          <hy-table border name="dataWrap"
+						id="ajaxgrid" showpage height="100%" :readonly="false"
+						@queryfunc="query" titlealign="center" style="width: 100%">
+						<hy-table-column title="序号" align="center" width="60" type="index"></hy-table-column>
+						<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+					    <hy-table-column title="操作" width="120" align="center">
+					      <template scope="scope">
+					     	 <a href="javascript:void(0)" @click="activePer(scope.row)">环节办理人</a>&nbsp;
+					      </template>
+					    </hy-table-column>
+						<hy-table-column title="模板号" name="temNo"  align="center"  width="80"  :readonly="true"></hy-table-column> 
+						<hy-table-column title="工单类型" name="templateNo" dropname="JT.APP_TYPE" type="drop"  align="center"  width="150"  :readonly="true"></hy-table-column> 
+						<hy-table-column title="名称"  name="name" align="center" width="120"  :rules="{ required: true, message: '必填'}"></hy-table-column> 
+<!-- 						<hy-table-column title="流程类型" name="appType" dropname="JT.APP_SP_TYPE" type="drop"  align="center"  width="150"/> -->
+<!-- 						<hy-table-column title="模块url" name="moduleName" align="center" width="200" ></hy-table-column> -->
+						<hy-table-column title="服务名" name="serviceName" align="center" width="200" ></hy-table-column>
+					</hy-table> 
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	
+	<script th:inline="javascript">
+	var vm = new Vue({
+		el : "#app",
+		data : {
+		},
+		mounted : function(){
+			ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+		},
+			methods : {				
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath +'jt/app/appAccord/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'jt/app/appAccord/queryOne?editFlag=N&templateNo='+row.templateNo, "详细", vm.onsavecomplete, null, 600, 350, 0);
+				},
+				//环节维护
+				activePer : function(row){
+					$.popWindow({
+						url: $$pageContextPath + 'jt/app/jtAppDealman/?editFlag=Y&appType='+row.templateNo,
+						title: "环节维护",	
+						callback: vm.onsavecomplete,
+						css:{width:900,height:600,type:1},
+						button:0,
+						isRunCallback :false
+					});
+				},
+				initAll : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/app/appAccord/init',
+						data : dataArr,
+						success : function(response){
+							setRM(vm.query());
+						}
+					});					
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						$.alert("error", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'jt/app/appAccord/remove',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				},	
+				save : function(){
+					if(ajaxgrid.isValid()){
+						var gridData = ajaxgrid.collectData(true,"all") ;
+						var dataArr = [];
+						dataArr.push(gridData) ;
+						$.request({
+							url : $$pageContextPath +'jt/app/appAccord/saveList',
+							data : dataArr,
+							success : vm.onsavecomplete
+						});					
+					}
+				},
+				onsavecomplete : function(response,b,c){
+					setRM(vm.query());
+				},
+			}
+		});
+	</script>
+</body>
+</html>

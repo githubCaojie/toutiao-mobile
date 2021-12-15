@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="queryh,toolh,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea>
+						<table>
+			              <tr>
+			                <td align="right" width="80px">名称</td>
+			                <td width="200px" align="left"><hy-input  name="dataWrap.query.typeName_LIKE"  :upload="true"> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea>
+						<hy-button text="添加" @click="add"></hy-button>
+						<hy-button text="删除" @click="remove"></hy-button>
+					</hy-fillarea>
+					<hy-fillarea >
+				          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="操作" width=70 align="center">
+							      <template scope="scope">
+							     	 <a href="javascript:void(0)" @click="detail(scope.row)">详情</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+								<hy-table-column title="名称"  name="typeName"align="center"	width="150"></hy-table-column> 
+								<hy-table-column title="字段类型"  name="fieldType" align="center" type="drop" dropname="JT.FIELD_TYPE" width="100"></hy-table-column> 
+								<hy-table-column title="输入方式"  name="inputType" align="center" type="drop" dropname="JT.INPUT_FORM"  width="100"></hy-table-column> 
+								<hy-table-column title="扩展值"  name="extValue" align="center"  width="100"></hy-table-column> 
+								<hy-table-column title="扩展值2"  name="extValue2" align="center"  width="100"></hy-table-column> 
+								<hy-table-column title="默认值"  name="defaultValue" align="center"  width="120"></hy-table-column> 
+								<hy-table-column title="固定属性"  name="fixFlag" align="center" type="drop" dropname="UEP.YES_OR_NO" width="100"></hy-table-column> 
+								<hy-table-column title="排序号"  name="orderSn" align="center"  width="80"></hy-table-column> 
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+	var infoId;
+		var vm = new Vue({
+			el : "#app",
+			data : {
+				fromId : null
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {		
+				detail : function(row){
+					$.showModalDialog($$pageContextPath + 'jt/jtExtFieldType/pageForm?id='+row.id, "详细", vm.onsavecomplete, null, 1200, 800, 0);
+				},
+				add : function(){
+					$.showModalDialog($$pageContextPath + 'jt/jtExtFieldType/pageForm', "添加", vm.onsavecomplete, null, 1200, 800, 0);
+				},
+				remove : function(){
+					dataDel(ajaxgrid,$$pageContextPath + 'jt/jtExtFieldType/remove',this.query);
+				},
+				onsavecomplete : function(response){
+					vm.query() ;
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'jt/jtExtFieldType/list',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+			}
+			
+		});
+	</script>
+</body>
+</html>

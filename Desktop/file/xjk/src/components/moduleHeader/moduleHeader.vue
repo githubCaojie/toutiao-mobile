@@ -18,7 +18,7 @@ export default {
   height: 48px;
   display: flex;
   align-items: center;
-  font-size: var(--the-title-font-size);
+  font-size: 16px;
   color: #415261;
   background: linear-gradient(90deg, rgba(214, 232, 243) 0%, rgba(247, 250, 252) 100%);
   .icon {

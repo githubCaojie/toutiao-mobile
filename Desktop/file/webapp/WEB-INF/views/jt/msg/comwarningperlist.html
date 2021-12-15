@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout cols="*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea >
+				<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+					<hy-fillarea title="查询条件" >
+						<table>
+			              <tr>
+			                <td align="right" width="80px">消息类型</td>
+			                <td width="120px" align="left"><hy-select  name="dataWrap.query.infoType" dropName="JT.MSG_TYPE" :upload="true" clearable ></hy-select> </td>
+			                <td align="right" width="80px">消息内容</td>
+			                <td width="120px" align="left"><hy-input name="dataWrap.query.infoContent_LIKE"  :upload="true"  ></hy-input> </td>
+			                <td align="right" width="80px">是否已读</td>
+			                <td width="120px" align="left"><hy-select name="dataWrap.query.status" dropName="JT.MSG_STATUS" :upload="true"  ></hy-select> </td>
+			                <td width="30px"></td>
+			               	<td><hy-button text="查询" @click="query"></hy-button>	</td>
+			              <tr />
+			            </table>
+					</hy-fillarea> 
+					<hy-fillarea >
+				          <hy-table border name="dataWrap"
+								id="ajaxgrid" showpage :readonly="true" height="100%"
+								@queryfunc="query" titlealign="center" style="width: 100%">
+								<hy-table-column title="序号" align="center" width="40" type="index"></hy-table-column>
+								<hy-table-column title="多选" align="center" type="selection"></hy-table-column> 
+								<hy-table-column title="消息类型" type="drop" dropname="JT.MSG_TYPE" name="infoType"align="center"	width="150"></hy-table-column> 
+								<hy-table-column title="状态"  name="status" align="center" type="drop" dropname="JT.MSG_STATUS"	width="100"></hy-table-column> 
+								<hy-table-column title="人员"  name="perPartyId" dropname="ORG.PERSON_NAME" type="drop" 	width="150"></hy-table-column> 
+								<hy-table-column title="消息时间"  name="createTime" align="center"  type="datetime" width="150"></hy-table-column> 
+								<hy-table-column title="消息内容"  name="infoContent" align="center"  width="320"></hy-table-column> 
+								<hy-table-column  title="操作"  width="80" align="center">
+							      <template scope="scope">
+							     	<a href="javascript:void(0)" @click="msgdetail(scope.row)">详细</a>&nbsp;
+							      </template>
+							    </hy-table-column>
+							</hy-table> 
+				      </hy-fillarea>
+				</hy-filllayout>
+		      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {	
+				msgdetail : function(row){
+					$.request({
+						url : $$pageContextPath +'jt/msg/jtMsgType/getUrl?id='+row.infoType+"&uuid="+row.uuid+"&editFlag=N",
+						success : function(response){
+							var Url= response.getParameter("url");
+							if(!!Url){
+								vm.detailUrl(Url);
+							}
+							else{
+								vm.detail(row);
+							}
+						}
+					});	
+				},
+				detailUrl : function(Url){
+					$.popWindow({
+						url:$$pageContextPath + Url+"&editFlag=N",
+						title: "详细",
+						callback:  vm.onsavecomplete,
+						css:{width:800,height:650},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				detail : function(row){
+					$.popWindow({
+						url:$$pageContextPath + 'jt/comWarningPer/queryOne?editFlag=N&uuid='+row.uuid,
+						title: "详细",
+						callback:  vm.onsavecomplete,
+						css:{width:800,height:350},
+						button:0,
+						isRunCallback :true
+					});
+				},
+				onsavecomplete : function(response,b,c){
+					if(c!=0)
+					vm.query() ;
+				},
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath +'jt/comWarningPer/query',
+						data : dataArr,
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>

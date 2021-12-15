@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<template th:substituteby="framework/pageset.html"></template>
+</head>
+<body>
+	<div id="app" view>
+		<hy-filllayout rows="40,*" :showborder="true"  :showpadding="false"> 
+			<hy-fillarea align="left">
+	      		<div style="float:left">
+					<hy-button text="添加" @click="add" :pkain="true"></hy-button>
+					<hy-button text="保存" @click="save" :pkain="true"></hy-button>
+					<hy-button text="删除" @click="remove" :pkain="true"></hy-button>
+	      		</div>
+			</hy-fillarea>
+			<hy-fillarea>
+	          <hy-table border name="dataWrap" id="ajaxgrid" showpage :readonly="false" height="100%"
+				@queryfunc="query" titlealign="center" style="width: 99%">
+				<hy-table-column title="序号" align="center" width="50" type="index"></hy-table-column>
+				<hy-table-column title="多选" align="center" type="selection"></hy-table-column>
+				<hy-table-column title="重难点描述" name="content" width="800" :rules="[{ required: true}]" :maxlength="128" align="center" ></hy-table-column>
+			</hy-table> 
+	      </hy-fillarea>
+		</hy-filllayout>
+	</div>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el : "#app",
+			data : {
+			},
+			mounted : function(){
+				ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+			},
+			methods : {
+				query : function(){
+					var gridData = ajaxgrid.collectData(true) ;
+					var dataArr = [];
+					dataArr.push(gridData) ;
+					$.request({
+						url : $$pageContextPath + 'pmXmZnd/list',
+						data : dataArr,
+						params : {
+							prjId : vm.prjId
+						},
+						success : function(response){
+							ajaxgrid.setData(response.getAjaxDataWrap("dataWrap"));
+						}
+					});					
+				},
+				add : function(){
+					$.request({
+						url : $$pageContextPath + 'pmXmZnd/get',
+						params : {
+							prjId : vm.prjId
+					   	},
+						success : function(response){
+							ajaxgrid.addRecord(response.getAjaxDataWrap("dataWrap").data);
+						}
+					});	
+				},
+				save : function(){
+					debugger;
+					var a = ajaxgrid.isValid();
+					if (ajaxgrid.isValid()) {
+						var gridData = ajaxgrid.collectData(true, "update");
+						var dataArr = [];
+						dataArr.push(gridData);
+						$.request({
+							url : $$pageContextPath + 'pmXmZnd/save',
+							data : dataArr,
+							success : vm.onsavecomplete
+						});	
+					}
+				},
+				remove : function(){
+					var checked = ajaxgrid.getCheckedRecords();
+					if (checked.length <= 0) {
+						return setRM("alert", "请选择要删除的记录!");
+					}else{
+						$.confirm("提示","确定要删除选中的记录？",function(){
+							var gridData = ajaxgrid.collectData(true, "checked");
+							var dataArr = [];
+							dataArr.push(gridData);
+							$.request({
+								url : $$pageContextPath + 'pmXmZnd/del',
+								data : dataArr,
+								success : function(response){
+									setRM("success",response.getMessage(),vm.query());
+								}
+							});
+					　　　},function(){});
+					}
+				}, 
+				onsavecomplete : function(response){
+					setRM("success",'保存成功',vm.query());
+				}
+			}
+		});
+	</script>
+</body>
+</html>
